@@ -1,0 +1,9 @@
+# IDE
+.idea
+
+# Generated dirs
+dist
+node_modules
+
+# Misc
+README.md

@@ -1,12 +1,12 @@
-version: '3.9'
+version: "3.9"
 
 # Inject env vars at runtime by entering 'docker-compose --env-file .env.local up [--detach] [--force-recreate] [--renew-anon-volumes]'
 services:
-  app:
-    image: express-movers-docker:latest
-    build: .
-    ports:
-      - 3000:${APP_PORT}
-    container_name: express_app
-    environment:
-      - PORT=${APP_PORT}
+    app:
+        image: express-movers-docker:latest
+        build: .
+        ports:
+            - 3000:${APP_PORT}
+        container_name: express_app
+        environment:
+            - PORT=${APP_PORT}

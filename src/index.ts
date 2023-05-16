@@ -10,7 +10,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
 	console.log(`App starting on port ${port}`);
 });
-
-function addFruit(fruit: string) {
-	console.log(fruit);
-}

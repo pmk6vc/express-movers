@@ -6,3 +6,7 @@ dist
 
 # Packages
 node_modules
+
+# Terraform
+infra/.terraform
+infra/.terraform.lock.hcl

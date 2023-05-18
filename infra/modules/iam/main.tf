@@ -19,11 +19,17 @@ resource "google_project_iam_member" "project_iam_admin" {
 }
 
 /**
-* Assign the role required to modify Terraform state file in GCS
+* Assign the role required to modify Terraform state file in GCS bucket
 * Needs to be applied before this service account can be used to manage cloud resources during CI/CD
+* Also assumes that Terraform has been set up with pre-existing bucket as remote backend
 */
-resource "google_project_iam_member" "storage_object_admin" {
-  project = var.gcp_project_id
+#resource "google_project_iam_member" "storage_object_admin" {
+#  project = var.gcp_project_id
+#  role = "roles/storage.objectAdmin"
+#  member = "serviceAccount:${google_service_account.service_account.email}"
+#}
+resource "google_storage_bucket_iam_member" "tf_state_bucket_storage_object_admin" {
+  bucket = "zugzwang-terraform-backend"
   role = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.service_account.email}"
 }

@@ -59,15 +59,15 @@ resource "google_project_iam_member" "project_iam_admin" {
 *
 * NOTE - cannot move this to separate module, since sensitive SA outputs cannot be used in terraform for_each arguments
 */
-#module "oidc" {
-#  source = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
-#  project_id = var.gcp_project_id
-#  pool_id = "tf-pool"
-#  provider_id = "tf-pool-provider"
-#  sa_mapping = {
-#    (google_service_account.service_account.account_id) = {
-#      sa_name = google_service_account.service_account.name
-#      attribute = "attribute.repository/pmk6vc/express-movers"
-#    }
-#  }
-#}
+module "oidc" {
+  source = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
+  project_id = var.gcp_project_id
+  pool_id = "tf-pool"
+  provider_id = "tf-pool-provider"
+  sa_mapping = {
+    (google_service_account.service_account.account_id) = {
+      sa_name = google_service_account.service_account.name
+      attribute = "attribute.repository/pmk6vc/express-movers"
+    }
+  }
+}

@@ -119,6 +119,7 @@ jobs:
         env:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
+      # Authenticated service by default - will need to make public for the first deployment
       - name: Deploy
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v1.0.1
@@ -132,16 +133,6 @@ jobs:
             --memory=512Mi
             --cpu=1
             --port=${{ env.SERVICE_PORT }}
-        env:
-          DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
-          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
-
-      - name: Expose service
-        run: |
-          gcloud run services add-iam-policy-binding ${{ env.SERVICE_NAME }} \
-            --member="allUsers" \
-            --role="roles/run.invoker" \
-            --region="${{ vars.GCP_REGION }}"
 
       - name: Show URL
         run: echo ${{ steps.deploy.outputs.url }}

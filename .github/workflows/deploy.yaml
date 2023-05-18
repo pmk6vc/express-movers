@@ -141,6 +141,7 @@ jobs:
           gcloud run services add-iam-policy-binding ${{ env.SERVICE_NAME }} \
             --member="allUsers" \
             --role="roles/run.invoker"
+            --region="${{ vars.GCP_REGION }}"
 
       - name: Show URL
         run: echo ${{ steps.deploy.outputs.url }}

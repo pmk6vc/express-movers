@@ -10,6 +10,6 @@ variable "region" {
 }
 
 variable "service_account" {
-  description = "Service account ID to manage cloud resources and CI/CD"
+  description = "Service account ID to manage cloud resources and CI/CD (name excluding "
   type        = string
 }

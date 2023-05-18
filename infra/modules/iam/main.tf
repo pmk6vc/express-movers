@@ -26,23 +26,23 @@ resource "google_project_iam_member" "project_editor" {
 #  member  = "serviceAccount:${google_service_account.service_account.email}"
 #}
 
-resource "google_project_iam_member" "storage_admin" {
-  project = var.gcp_project_id
-  role    = "roles/storage.admin"
-  member  = "serviceAccount:${google_service_account.service_account.email}"
-}
-
-resource "google_project_iam_member" "artifact_registry_admin" {
-  project = var.gcp_project_id
-  role    = "roles/artifactregistry.admin"
-  member  = "serviceAccount:${google_service_account.service_account.email}"
-}
-
-resource "google_project_iam_member" "secret_accessor" {
-  project = var.gcp_project_id
-  role    = "roles/secretmanager.secretAccessor"
-  member  = "serviceAccount:${google_service_account.service_account.email}"
-}
+#resource "google_project_iam_member" "storage_admin" {
+#  project = var.gcp_project_id
+#  role    = "roles/storage.admin"
+#  member  = "serviceAccount:${google_service_account.service_account.email}"
+#}
+#
+#resource "google_project_iam_member" "artifact_registry_admin" {
+#  project = var.gcp_project_id
+#  role    = "roles/artifactregistry.admin"
+#  member  = "serviceAccount:${google_service_account.service_account.email}"
+#}
+#
+#resource "google_project_iam_member" "secret_accessor" {
+#  project = var.gcp_project_id
+#  role    = "roles/secretmanager.secretAccessor"
+#  member  = "serviceAccount:${google_service_account.service_account.email}"
+#}
 
 /**
 * Create OpenID provider to manage keyless authentication for GitHub CI/CD workflows

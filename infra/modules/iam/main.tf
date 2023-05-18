@@ -104,6 +104,13 @@ resource "google_project_iam_member" "cloud_run_developer" {
   member  = "serviceAccount:${google_service_account.service_account.email}"
 }
 
+# TODO: Make more granular
+resource "google_project_iam_member" "project_editor" {
+  project = var.gcp_project_id
+  role    = "roles/editor"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}
+
 /**
 * Assign the role required to manage secrets
 */

@@ -22,8 +22,8 @@ module "iam" {
   service_account = var.service_account
 }
 
-module "artifact_registry" {
-  source               = "./modules/artifact_registry"
-  gcp_project_id       = var.gcp_project_id
-  registry_repo_region = var.region
-}
+#module "artifact_registry" {
+#  source               = "./modules/artifact_registry"
+#  gcp_project_id       = var.gcp_project_id
+#  registry_repo_region = var.region
+#}

@@ -1,6 +1,6 @@
 /**
-* Create service account and assign the role required to manage IAM policies
-* Needs to be applied before this service account can be used to manage other IAM policies via CI/CD
+* Create service account to use for CI/CD
+* Needs to be applied before this service account can be used to manage cloud resources via CI/CD
 */
 resource "google_service_account" "service_account" {
   project = var.gcp_project_id
@@ -8,9 +8,23 @@ resource "google_service_account" "service_account" {
   display_name = "Terraform-managed service account"
 }
 
+/**
+* Assign the role required to manage IAM policies
+* Needs to be applied before this service account can be used to manage other IAM policies during CI/CD
+*/
 resource "google_project_iam_member" "project_iam_admin" {
   project = var.gcp_project_id
   role = "roles/resourcemanager.projectIamAdmin"
+  member = "serviceAccount:${google_service_account.service_account.email}"
+}
+
+/**
+* Assign the role required to modify Terraform state file in GCS
+* Needs to be applied before this service account can be used to manage cloud resources during CI/CD
+*/
+resource "google_project_iam_member" "storage_object_admin" {
+  project = var.gcp_project_id
+  role = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.service_account.email}"
 }
 

@@ -2,7 +2,7 @@ name: Deploy main branch to production env
 
 on:
   push:
-    branches: [ main ]
+    branches: [ cloudrun ]
 
 env:
   TF_WORKSPACE_NAME: production
@@ -57,3 +57,82 @@ jobs:
         id: repo
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: echo "artifact_repo=$(terraform output artifact_registry_repo | tr -d '"')" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: terraform
+    runs-on: ubuntu-latest
+    environment: PRODUCTION
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get registry image name
+        id: image_name
+        run: echo "IMAGE_NAME=${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}" >> $GITHUB_OUTPUT
+        env:
+          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+
+      - name: Authenticate to Google Cloud
+        id: gcp_auth
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      - name: Delete images in registry
+        run: |
+          if [[ $(gcloud artifacts docker images list ${{ env.IMAGE }}) ]]; then
+            echo "At least one version of ${{ env.IMAGE }} version found - deleting"
+            gcloud artifacts docker images delete ${{ env.IMAGE }}
+          else
+            echo "${{ env.IMAGE }} not found - nothing to delete"
+          fi
+        env:
+          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
+
+      - name: Authorize Docker to push to registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ vars.GCP_REGION }}-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.gcp_auth.outputs.access_token }}
+
+      - name: Build and push Docker image to registry
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          build-args: |
+            SERVICE_PORT=${{ env.SERVICE_PORT }}
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
+          push: true
+        env:
+          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
+
+      - name: Deploy
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v1.0.1
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ vars.GCP_REGION }}
+          image: ${{ env.IMAGE }}:${{ github.sha }}
+          flags: |
+            --min-instances=0
+            --max-instances=1
+            --memory=512Mi
+            --cpu=1
+            --port=${{ env.SERVICE_PORT }}
+            --allow-unauthenticated
+        env:
+          DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
+          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
+
+      - name: Show URL
+        run: echo ${{ steps.deploy.outputs.url }}

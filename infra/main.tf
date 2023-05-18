@@ -16,6 +16,12 @@ provider "google" {
   project = var.gcp_project_id
 }
 
+module "iam" {
+  source = "./modules/iam"
+  gcp_project_id = var.gcp_project_id
+  service_account = var.service_account
+}
+
 module "artifact_registry" {
   source               = "./modules/artifact_registry"
   gcp_project_id       = var.gcp_project_id

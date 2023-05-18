@@ -1,0 +1,59 @@
+name: Deploy main branch to production env
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  TF_WORKSPACE_NAME: production
+  TF_WORKING_DIR: infra
+  SERVICE_NAME: express-movers
+  SERVICE_PORT: 8080
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    environment: PRODUCTION
+    outputs:
+      ARTIFACT_REPO_NAME: ${{ steps.repo.outputs.artifact_repo }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Use keyless authentication to authenticate remaining actions
+      # This obviously assumes that the service account, IAM roles, and OIDC pools / providers have already been created prior to running pipeline
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Initialize Terraform
+        working-directory: infra
+        run: terraform init
+
+      - name: Select Terraform workspace
+        working-directory: infra
+        run: terraform workspace select $TF_WORKSPACE_NAME
+
+      - name: Apply Terraform resources
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_gcp_project_id: ${{ vars.GCP_PROJECT_ID }}
+          TF_VAR_region: ${{ vars.GCP_REGION }}
+          TF_VAR_service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}
+
+      - name: Fetch artifact registry repo name
+        id: repo
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: echo "artifact_repo=$(terraform output artifact_registry_repo | tr -d '"')" >> "$GITHUB_OUTPUT"

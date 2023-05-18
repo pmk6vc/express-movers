@@ -81,20 +81,6 @@ module "oidc" {
   }
 }
 
-#resource "google_project_iam_member" "project_editor" {
-#  project = var.gcp_project_id
-#  role    = "roles/editor"
-#  member  = "serviceAccount:${google_service_account.service_account.email}"
-#}
-
-
-#resource "google_project_iam_member" "service_account_token_creator" {
-#  project = var.gcp_project_id
-#  role    = "roles/iam.serviceAccountTokenCreator"
-#  member  = "serviceAccount:${google_service_account.service_account.email}"
-#}
-
-#
 #resource "google_project_iam_member" "artifact_registry_admin" {
 #  project = var.gcp_project_id
 #  role    = "roles/artifactregistry.admin"

@@ -40,6 +40,16 @@ resource "google_project_iam_member" "workload_identity_user" {
 }
 
 /**
+* Assign the role required to fetch service account IAM policies for applying Terraform changes
+* Needs to be applied before this service account can be used to manage cloud resources during CI/CD
+*/
+resource "google_project_iam_member" "service_account_viewer" {
+  project = var.gcp_project_id
+  role    = "roles/iam.serviceAccountViewer"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}
+
+/**
 * Assign the role required to fetch workload identity pools
 * Needs to be applied before this service account can be used to manage cloud resources during CI/CD
 */

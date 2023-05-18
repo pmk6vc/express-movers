@@ -23,9 +23,9 @@ resource "google_project_iam_member" "project_iam_admin" {
 * Needs to be applied before this service account can be used to manage cloud resources during CI/CD
 * Also assumes that Terraform has been set up with pre-existing bucket as remote backend
 */
-resource "google_storage_bucket_iam_member" "tf_state_bucket_storage_object_admin" {
+resource "google_storage_bucket_iam_member" "tf_state_bucket_storage_admin" {
   bucket = "zugzwang-terraform-backend"
-  role = "roles/storage.objectAdmin"
+  role = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.service_account.email}"
 }
 
@@ -36,6 +36,16 @@ resource "google_storage_bucket_iam_member" "tf_state_bucket_storage_object_admi
 resource "google_project_iam_member" "workload_identity_user" {
   project = var.gcp_project_id
   role    = "roles/iam.workloadIdentityUser"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}
+
+/**
+* Assign the role required to fetch workload identity pools
+* Needs to be applied before this service account can be used to manage cloud resources during CI/CD
+*/
+resource "google_project_iam_member" "workload_identity_pools_viewer" {
+  project = var.gcp_project_id
+  role    = "roles/iam.workloadIdentityPoolViewer"
   member  = "serviceAccount:${google_service_account.service_account.email}"
 }
 
@@ -74,11 +84,6 @@ module "oidc" {
 #  member  = "serviceAccount:${google_service_account.service_account.email}"
 #}
 
-#resource "google_project_iam_member" "storage_admin" {
-#  project = var.gcp_project_id
-#  role    = "roles/storage.admin"
-#  member  = "serviceAccount:${google_service_account.service_account.email}"
-#}
 #
 #resource "google_project_iam_member" "artifact_registry_admin" {
 #  project = var.gcp_project_id

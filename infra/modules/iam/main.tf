@@ -7,12 +7,17 @@ resource "google_service_account" "service_account" {
   display_name = "Terraform-managed service account"
 }
 
-# TODO: Evaluate whether this role is necessary
-resource "google_project_iam_member" "project_editor" {
+resource "google_project_iam_member" "project_iam_admin" {
   project = var.gcp_project_id
-  role    = "roles/editor"
-  member  = "serviceAccount:${google_service_account.service_account.email}"
+  role = "roles/resourcemanager.projectIamAdmin"
+  member = "serviceAccount:${google_service_account.service_account.email}"
 }
+
+#resource "google_project_iam_member" "project_editor" {
+#  project = var.gcp_project_id
+#  role    = "roles/editor"
+#  member  = "serviceAccount:${google_service_account.service_account.email}"
+#}
 
 #resource "google_project_iam_member" "workload_identity_user" {
 #  project = var.gcp_project_id

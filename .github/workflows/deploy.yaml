@@ -38,11 +38,11 @@ jobs:
           terraform_wrapper: false
 
       - name: Initialize Terraform
-        working-directory: infra
+        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
 
       - name: Select Terraform workspace
-        working-directory: infra
+        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform workspace select $TF_WORKSPACE_NAME
 
       - name: Apply Terraform resources

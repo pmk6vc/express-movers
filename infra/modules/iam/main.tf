@@ -96,6 +96,24 @@ resource "google_project_iam_member" "artifact_registry_admin" {
 }
 
 /**
+* Assign the role required to manage Cloud Run services
+*/
+resource "google_project_iam_member" "cloud_run_developer" {
+  project = var.gcp_project_id
+  role    = "roles/run.developer"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}
+
+/**
+* Assign the role required to act as Cloud Run compute service account
+*/
+resource "google_project_iam_member" "service_account_user" {
+  project = var.gcp_project_id
+  role = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}
+
+/**
 * Assign the role required to manage secrets
 */
 resource "google_project_iam_member" "secret_accessor" {

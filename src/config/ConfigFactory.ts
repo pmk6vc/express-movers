@@ -9,6 +9,7 @@ class EnvironmentFactory {
     ['production', new ProductionHandler()]
   ])
 
+  // TODO: Can mock this method call out with Jest during testing to return a test Environment instance instead
   static getEnvironment(): Environment {
     const handler = this.configMap.get(process.env.NODE_CONFIG_ENV!)!
     return handler.getEnvironment(config)

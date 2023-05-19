@@ -1,0 +1,10 @@
+{
+  "cloud": {
+    "gcpProjectId": "some-project-id",
+    "dbConnectionName": "db-connection-name",
+    "dbUsernameSecret": "db-username-secret",
+    "dbUsernameSecretVersion": 1,
+    "dbPasswordSecret": "db-password-secret",
+    "dbPasswordSecretVersion": 3
+  }
+}

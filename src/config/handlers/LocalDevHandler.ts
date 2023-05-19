@@ -13,7 +13,7 @@ export class LocalDevHandler implements EnvironmentHandler {
     return {
       url: process.env.DB_URL!,
       username: process.env.DB_USERNAME!,
-      password: process.env.DB_PASSWORD!
+      password: process.env.DB_PASSWORD!,
     }
   }
 

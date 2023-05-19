@@ -17,8 +17,8 @@ provider "google" {
 }
 
 module "iam" {
-  source = "./modules/iam"
-  gcp_project_id = var.gcp_project_id
+  source          = "./modules/iam"
+  gcp_project_id  = var.gcp_project_id
   service_account = var.service_account
 }
 

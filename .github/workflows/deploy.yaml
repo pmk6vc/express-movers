@@ -8,7 +8,7 @@ env:
   TF_WORKSPACE_NAME: production
   TF_WORKING_DIR: infra
   SERVICE_NAME: express-movers
-  SERVICE_PORT: 8080
+  SERVICE_PORT: 5000
 
 jobs:
   terraform:

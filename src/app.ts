@@ -3,7 +3,7 @@ import express from "express";
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("oombwah!");
+  res.send("Hello, world!");
 });
 
 export default app;

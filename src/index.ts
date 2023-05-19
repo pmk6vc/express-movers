@@ -1,7 +1,9 @@
 import app from "./app";
+import { EnvironmentFactory } from "./config/ConfigFactory";
 
-const port = +(process.env.PORT || 3000);
+const environment = EnvironmentFactory.getEnvironment()
 
-app.listen(port, () => {
-	console.log(`App starting on port ${port}`);
+app.listen(environment.server.serverPort, () => {
+	console.log(`App starting on port ${environment.server.serverPort}`);
+	console.log(environment)
 });

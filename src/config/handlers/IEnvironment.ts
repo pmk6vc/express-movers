@@ -5,7 +5,9 @@ export interface ServerConfig {
 }
 
 export interface DatabaseConfig {
-  url: string
+  database: string
+  host: string
+  port: number
   username: string
   password: string
 }

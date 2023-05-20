@@ -3,7 +3,9 @@ import { IConfig } from "config";
 
 interface CloudConfig {
   gcpProjectId: string,
-  dbConnectionName: string,
+  dbIp: string
+  dbPort: number
+  dbName: string
   dbUsernameSecret: string,
   dbUsernameSecretVersion: number,
   dbPasswordSecret: string,
@@ -20,7 +22,9 @@ export class ProductionHandler implements EnvironmentHandler {
   private getCloudConfig(config: IConfig): CloudConfig {
     return {
       gcpProjectId: config.get('cloud.gcpProjectId'),
-      dbConnectionName: config.get('cloud.dbConnectionName'),
+      dbIp: config.get('cloud.databaseIp'),
+      dbPort: config.get('cloud.databasePort'),
+      dbName: config.get('cloud.databaseName'),
       dbUsernameSecret: config.get('cloud.dbUsernameSecret'),
       dbUsernameSecretVersion: config.get('cloud.dbUsernameSecretVersion'),
       dbPasswordSecret: config.get('cloud.dbPasswordSecret'),
@@ -31,7 +35,9 @@ export class ProductionHandler implements EnvironmentHandler {
   private getDatabase(cloudConfig: CloudConfig): DatabaseConfig {
     // TODO: Use GCP secret manager to build properties here
     return {
-      url: `${cloudConfig.gcpProjectId}://${cloudConfig.dbConnectionName}`,
+      database: cloudConfig.dbName,
+      host: cloudConfig.dbIp,
+      port: cloudConfig.dbPort,
       username: `sm://${cloudConfig.dbUsernameSecret}/${cloudConfig.dbUsernameSecretVersion}`,
       password: `sm://${cloudConfig.dbPasswordSecret}/${cloudConfig.dbPasswordSecretVersion}`
     }

@@ -1,0 +1,12 @@
+{
+  "cloud": {
+    "gcpProjectId": "some-project-id",
+    "databaseIp": "0.0.0.0",
+    "databasePort": 1234,
+    "databaseName": "postgres",
+    "dbUsernameSecret": "db-username-secret",
+    "dbUsernameSecretVersion": 1,
+    "dbPasswordSecret": "db-password-secret",
+    "dbPasswordSecretVersion": 3
+  }
+}

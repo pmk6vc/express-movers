@@ -1,12 +1,7 @@
-import express from "express";
+import app from "./app";
+import environment from "./config/ConfigFactory";
 
-const port = +(process.env.PORT || 3000);
-const app = express();
-
-app.get("/", (req, res) => {
-	res.send("oombwah!");
-});
-
-app.listen(port, () => {
-	console.log(`App starting on port ${port}`);
+app.listen(environment.server.serverPort, () => {
+	console.log(`App starting on port ${environment.server.serverPort}`);
+	console.log(environment)
 });

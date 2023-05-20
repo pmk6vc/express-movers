@@ -11,6 +11,7 @@ WORKDIR /app
 COPY --from=builder ./app/dist ./dist
 COPY package.json .
 RUN npm install --production
+COPY src/config/configs ./config
 ARG SERVICE_PORT
 ENV PORT=$SERVICE_PORT
 EXPOSE $PORT

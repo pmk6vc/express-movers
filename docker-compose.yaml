@@ -7,7 +7,7 @@ services:
         image: 'postgres:14-alpine'
         container_name: pgdb
         env_file:
-            -   .env/.env.db
+            - .env/db.env
         healthcheck:
             test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
             interval: 10s
@@ -27,4 +27,10 @@ services:
             postgres-db:
                 condition: service_healthy
         env_file:
-            - .env/.env.app
+            - .env/app.env
+        environment:
+            - DB_NAME=${POSTGRES_DB}
+            - DB_HOST=postgres-db
+            - DB_PORT=5432
+            - DB_USERNAME=${POSTGRES_USER}
+            - DB_PASSWORD=${POSTGRES_PASSWORD}

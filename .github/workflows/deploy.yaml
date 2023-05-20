@@ -135,6 +135,7 @@ jobs:
             --port=${{ env.SERVICE_PORT }}
           env_vars: |
             NODE_ENV=production
+            NODE_CONFIG_ENV=production
         env:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 

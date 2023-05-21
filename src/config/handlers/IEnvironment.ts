@@ -10,6 +10,7 @@ export interface DatabaseConfig {
   port: number;
   username: string;
   password: string;
+  url: string;
 }
 
 export interface Environment {

@@ -5,6 +5,7 @@ import {
   ServerConfig,
 } from "./IEnvironment";
 import { IConfig } from "config";
+import PostgresConfig from "../util/PostgresConfig";
 
 export class LocalDevHandler implements EnvironmentHandler {
   private getServer(): ServerConfig {
@@ -14,13 +15,13 @@ export class LocalDevHandler implements EnvironmentHandler {
   }
 
   private getDatabase(): DatabaseConfig {
-    return {
-      database: process.env.DB_NAME!,
-      host: process.env.DB_HOST!,
-      port: +process.env.DB_PORT!,
-      username: process.env.DB_USERNAME!,
-      password: process.env.DB_PASSWORD!,
-    };
+    return new PostgresConfig(
+      process.env.DB_NAME!,
+      process.env.DB_HOST!,
+      +process.env.DB_PORT!,
+      process.env.DB_USERNAME!,
+      process.env.DB_PASSWORD!,
+    );
   }
 
   getEnvironment(config: IConfig): Environment {

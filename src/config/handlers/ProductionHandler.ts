@@ -5,6 +5,7 @@ import {
   ServerConfig,
 } from "./IEnvironment";
 import { IConfig } from "config";
+import PostgresConfig from "../util/PostgresConfig";
 
 interface CloudConfig {
   gcpProjectId: string;
@@ -38,13 +39,13 @@ export class ProductionHandler implements EnvironmentHandler {
 
   private getDatabase(cloudConfig: CloudConfig): DatabaseConfig {
     // TODO: Use GCP secret manager to build properties here
-    return {
-      database: cloudConfig.dbName,
-      host: cloudConfig.dbIp,
-      port: cloudConfig.dbPort,
-      username: `sm://${cloudConfig.dbUsernameSecret}/${cloudConfig.dbUsernameSecretVersion}`,
-      password: `sm://${cloudConfig.dbPasswordSecret}/${cloudConfig.dbPasswordSecretVersion}`,
-    };
+    return new PostgresConfig(
+      cloudConfig.dbName,
+      cloudConfig.dbIp,
+      cloudConfig.dbPort,
+      `sm://${cloudConfig.dbUsernameSecret}/${cloudConfig.dbUsernameSecretVersion}`,
+      `sm://${cloudConfig.dbPasswordSecret}/${cloudConfig.dbPasswordSecretVersion}`
+    )
   }
   getEnvironment(config: IConfig): Environment {
     return {

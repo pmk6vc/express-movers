@@ -1,11 +1,11 @@
 import {
   DatabaseConfig,
   Environment,
-  EnvironmentHandler,
   ServerConfig,
 } from "./IEnvironment";
 import { IConfig } from "config";
 import PostgresConfig from "../util/PostgresConfig";
+import AbstractHandler from "./AbstractHandler";
 
 interface CloudConfig {
   gcpProjectId: string;
@@ -17,40 +17,49 @@ interface CloudConfig {
   dbPasswordSecret: string;
   dbPasswordSecretVersion: number;
 }
-export class ProductionHandler implements EnvironmentHandler {
-  private getServer(): ServerConfig {
+export class ProductionHandler extends AbstractHandler {
+
+  private cloudConfig: CloudConfig | null
+  constructor(config: IConfig) {
+    super(config);
+    this.cloudConfig = null
+  }
+  protected getServer(): ServerConfig {
     return {
       serverPort: +process.env.PORT!,
     };
   }
 
-  private getCloudConfig(config: IConfig): CloudConfig {
-    return {
-      gcpProjectId: config.get("cloud.gcpProjectId"),
-      dbIp: config.get("cloud.databaseIp"),
-      dbPort: config.get("cloud.databasePort"),
-      dbName: config.get("cloud.databaseName"),
-      dbUsernameSecret: config.get("cloud.dbUsernameSecret"),
-      dbUsernameSecretVersion: config.get("cloud.dbUsernameSecretVersion"),
-      dbPasswordSecret: config.get("cloud.dbPasswordSecret"),
-      dbPasswordSecretVersion: config.get("cloud.dbPasswordSecretVersion"),
-    };
+  private getCloudConfig(): CloudConfig {
+    if (this.cloudConfig == null) {
+      this.cloudConfig = {
+        gcpProjectId: this.config.get("cloud.gcpProjectId"),
+        dbIp: this.config.get("cloud.databaseIp"),
+        dbPort: this.config.get("cloud.databasePort"),
+        dbName: this.config.get("cloud.databaseName"),
+        dbUsernameSecret: this.config.get("cloud.dbUsernameSecret"),
+        dbUsernameSecretVersion: this.config.get("cloud.dbUsernameSecretVersion"),
+        dbPasswordSecret: this.config.get("cloud.dbPasswordSecret"),
+        dbPasswordSecretVersion: this.config.get("cloud.dbPasswordSecretVersion"),
+      }
+    }
+    return this.cloudConfig
   }
 
-  private getDatabase(cloudConfig: CloudConfig): DatabaseConfig {
+  protected getDatabase(): DatabaseConfig {
     // TODO: Use GCP secret manager to build properties here
     return new PostgresConfig(
-      cloudConfig.dbName,
-      cloudConfig.dbIp,
-      cloudConfig.dbPort,
-      `sm://${cloudConfig.dbUsernameSecret}/${cloudConfig.dbUsernameSecretVersion}`,
-      `sm://${cloudConfig.dbPasswordSecret}/${cloudConfig.dbPasswordSecretVersion}`
+      this.getCloudConfig().dbName,
+      this.getCloudConfig().dbIp,
+      this.getCloudConfig().dbPort,
+      `sm://${this.getCloudConfig().dbUsernameSecret}/${this.getCloudConfig().dbUsernameSecretVersion}`,
+      `sm://${this.getCloudConfig().dbPasswordSecret}/${this.getCloudConfig().dbPasswordSecretVersion}`
     );
   }
-  getEnvironment(config: IConfig): Environment {
+  getEnvironment(): Environment {
     return {
       server: this.getServer(),
-      database: this.getDatabase(this.getCloudConfig(config)),
+      database: this.getDatabase(),
     };
   }
 }

@@ -1,20 +1,19 @@
 import {
   DatabaseConfig,
   Environment,
-  EnvironmentHandler,
   ServerConfig,
 } from "./IEnvironment";
-import { IConfig } from "config";
 import PostgresConfig from "../util/PostgresConfig";
+import AbstractHandler from "./AbstractHandler";
 
-export class LocalDevHandler implements EnvironmentHandler {
-  private getServer(): ServerConfig {
+export class LocalDevHandler extends AbstractHandler {
+  protected getServer(): ServerConfig {
     return {
       serverPort: +process.env.PORT!,
     };
   }
 
-  private getDatabase(): DatabaseConfig {
+  protected getDatabase(): DatabaseConfig {
     return new PostgresConfig(
       process.env.DB_NAME!,
       process.env.DB_HOST!,
@@ -24,7 +23,7 @@ export class LocalDevHandler implements EnvironmentHandler {
     );
   }
 
-  getEnvironment(config: IConfig): Environment {
+  getEnvironment(): Environment {
     return {
       server: this.getServer(),
       database: this.getDatabase(),

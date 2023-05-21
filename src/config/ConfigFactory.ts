@@ -1,18 +1,19 @@
-import { Environment, EnvironmentHandler } from "./handlers/IEnvironment";
+import { Environment } from "./handlers/IEnvironment";
 import config from "config";
 import { LocalDevHandler } from "./handlers/LocalDevHandler";
 import { ProductionHandler } from "./handlers/ProductionHandler";
+import AbstractHandler from "./handlers/AbstractHandler";
 
 class EnvironmentFactory {
-  private static configMap = new Map<string, EnvironmentHandler>([
-    ["local-dev", new LocalDevHandler()],
-    ["production", new ProductionHandler()],
+  private static configMap = new Map<string, AbstractHandler>([
+    ["local-dev", new LocalDevHandler(config)],
+    ["production", new ProductionHandler(config)],
   ]);
 
   // TODO: Can mock this method call out with Jest during testing to return a test Environment instance instead
   static getEnvironment(): Environment {
     const handler = this.configMap.get(process.env.NODE_CONFIG_ENV!)!;
-    return handler.getEnvironment(config);
+    return handler.getEnvironment();
   }
 }
 

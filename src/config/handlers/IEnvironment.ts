@@ -17,7 +17,3 @@ export interface Environment {
   server: ServerConfig;
   database: DatabaseConfig;
 }
-
-export interface EnvironmentHandler {
-  getEnvironment(config: IConfig): Environment;
-}

@@ -1,22 +1,22 @@
 import { IConfig } from "config";
 
 export interface ServerConfig {
-  serverPort: number
+  serverPort: number;
 }
 
 export interface DatabaseConfig {
-  database: string
-  host: string
-  port: number
-  username: string
-  password: string
+  database: string;
+  host: string;
+  port: number;
+  username: string;
+  password: string;
 }
 
 export interface Environment {
-  server: ServerConfig
-  database: DatabaseConfig
+  server: ServerConfig;
+  database: DatabaseConfig;
 }
 
 export interface EnvironmentHandler {
-  getEnvironment (config: IConfig): Environment
+  getEnvironment(config: IConfig): Environment;
 }

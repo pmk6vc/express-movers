@@ -16,14 +16,14 @@ app.get("/pgCatalogTableCount", async (req, res) => {
     host: environment.database.host,
     database: environment.database.database,
     password: environment.database.password,
-    port: environment.database.port
-  })
-  const result = await pool.query("SELECT COUNT(*) FROM pg_catalog.pg_tables")
-  await pool.end()
-  res.send({
-    "rowCount": result.rowCount,
-    "rows": result.rows
+    port: environment.database.port,
   });
-})
+  const result = await pool.query("SELECT COUNT(*) FROM pg_catalog.pg_tables");
+  await pool.end();
+  res.send({
+    rowCount: result.rowCount,
+    rows: result.rows,
+  });
+});
 
 export default app;

@@ -45,7 +45,7 @@ export class ProductionHandler implements EnvironmentHandler {
       cloudConfig.dbPort,
       `sm://${cloudConfig.dbUsernameSecret}/${cloudConfig.dbUsernameSecretVersion}`,
       `sm://${cloudConfig.dbPasswordSecret}/${cloudConfig.dbPasswordSecretVersion}`
-    )
+    );
   }
   getEnvironment(config: IConfig): Environment {
     return {

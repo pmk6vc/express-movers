@@ -1,6 +1,16 @@
 import express from "express";
-import { Pool, Client } from "pg";
+import { Pool } from "pg";
 import environment from "./config/ConfigFactory";
+import { PrismaClient } from "@prisma/client";
+
+// DB migration
+const prismaClient = new PrismaClient({
+  datasources: {
+    db: {
+      url: environment.database.url
+    }
+  }
+})
 
 // Spin up app
 const app = express();

@@ -24,6 +24,6 @@ export default class PostgresConfig implements DatabaseConfig {
   }
 
   buildUrl(): string {
-    return `jdbc:postgresql://${this.host}:${this.port}/${this.database}`;
+    return `postgresql://${this.username}:${this.password}@${this.host}:${this.port}/${this.database}`;
   }
 }

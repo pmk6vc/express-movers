@@ -5,14 +5,24 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-# Copy app code, build, and start app
+# Copy built app code and install production dependencies
 FROM node:18-alpine
 WORKDIR /app
 COPY --from=builder ./app/dist ./dist
 COPY package.json .
 RUN npm install --production
+
+# Copy environment configuration files
 COPY src/config/configs ./config
+
+# Generate Prisma client for DB migrations
+COPY prisma ./prisma
+RUN npx prisma generate
+
+# Set PORT and expose for service
 ARG SERVICE_PORT
 ENV PORT=$SERVICE_PORT
 EXPOSE $PORT
+
+# Start service
 ENTRYPOINT ["node", "."]

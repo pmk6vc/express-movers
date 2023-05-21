@@ -1,14 +1,6 @@
 import express from "express";
 import { Pool, Client } from "pg";
 import environment from "./config/ConfigFactory";
-import liquibase from "./config/liquibase/lb";
-
-// Run LB migrations first
-// TODO: LB doesn't work, use Prisma instead?
-// async function runMigrations() {
-//   return await liquibase.update({})
-// }
-// runMigrations()
 
 // Spin up app
 const app = express();

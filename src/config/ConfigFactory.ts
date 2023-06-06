@@ -20,7 +20,5 @@ class EnvironmentFactory {
   }
 }
 
-// TODO: This feels a little redundant
-const environment = EnvironmentFactory.getEnvironment();
-export const handler = EnvironmentFactory.getHandler();
-export default environment;
+const handler = EnvironmentFactory.getHandler();
+export default handler;

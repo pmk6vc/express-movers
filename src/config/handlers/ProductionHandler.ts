@@ -1,6 +1,5 @@
 import {
   DatabaseConfig,
-  Environment,
   ServerConfig,
 } from "./IEnvironment";
 import { IConfig } from "config";
@@ -56,10 +55,8 @@ export class ProductionHandler extends AbstractHandler {
       `sm://${this.getCloudConfig().dbPasswordSecret}/${this.getCloudConfig().dbPasswordSecretVersion}`
     );
   }
-  getEnvironment(): Environment {
-    return {
-      server: this.getServer(),
-      database: this.getDatabase(),
-    };
+
+  runMigration(): void {
+    // TODO
   }
 }

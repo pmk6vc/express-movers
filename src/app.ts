@@ -1,8 +1,6 @@
 import express from "express";
 import { Pool } from "pg";
-import environment from "./config/ConfigFactory";
-
-// DB migration
+import handler from "./config/ConfigFactory";
 
 // Spin up app
 const app = express();
@@ -14,6 +12,7 @@ app.get("/", (req, res) => {
 app.get("/pgCatalogTableCount", async (req, res) => {
   // TODO: Update DatabaseConfig to return Pool object instead of properties
   // TODO: Figure out how to configure things like isolation levels, transactions, clients, etc
+  const environment = handler.getEnvironment();
   const pool = new Pool({
     user: environment.database.username,
     host: environment.database.host,

@@ -1,6 +1,5 @@
 import { IConfig } from "config";
 import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
-import { exec } from "child_process";
 
 export default abstract class AbstractHandler {
   protected config: IConfig
@@ -12,6 +11,7 @@ export default abstract class AbstractHandler {
 
   protected abstract getServer(): ServerConfig
   protected abstract getDatabase(): DatabaseConfig
+  abstract runMigration(): void
 
   getEnvironment(): Environment {
     if (this.environment == null) {
@@ -21,12 +21,5 @@ export default abstract class AbstractHandler {
       }
     }
     return this.environment
-  }
-
-  runMigration() {
-    process.env.DATABASE_URL = this.getDatabase().url
-    exec(`npx prisma migrate deploy`, {
-      env: process.env
-    })
   }
 }

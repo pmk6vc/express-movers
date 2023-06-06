@@ -1,7 +1,6 @@
 import { IConfig } from "config";
 import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
-import { PrismaClient } from "@prisma/client";
-import { execSync } from "child_process";
+import { exec } from "child_process";
 
 export default abstract class AbstractHandler {
   protected config: IConfig
@@ -25,13 +24,9 @@ export default abstract class AbstractHandler {
   }
 
   runMigration() {
-    const prismaClient = new PrismaClient({
-      datasources: {
-        db: {
-          url: this.getEnvironment().database.url
-        }
-      }
+    process.env.DATABASE_URL = this.getDatabase().url
+    exec(`npx prisma migrate deploy`, {
+      env: process.env
     })
-    execSync("npx prisma migrate deploy")
   }
 }

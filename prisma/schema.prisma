@@ -1,6 +1,7 @@
 datasource db {
   provider = "postgresql"
-  url = "" // Injected at runtime by application
+  // url = "" // Injected at runtime by application
+  url = "postgresql://local-user:local-password@localhost:5432/postgres?connect_timeout=300" // TODO: Revert back to empty URL after testing
 }
 
 generator client {

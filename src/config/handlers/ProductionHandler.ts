@@ -1,7 +1,4 @@
-import {
-  DatabaseConfig,
-  ServerConfig,
-} from "./IEnvironment";
+import { DatabaseConfig, ServerConfig } from "./IEnvironment";
 import { IConfig } from "config";
 import PostgresConfig from "../util/PostgresConfig";
 import AbstractHandler from "./AbstractHandler";
@@ -17,11 +14,10 @@ interface CloudConfig {
   dbPasswordSecretVersion: number;
 }
 export class ProductionHandler extends AbstractHandler {
-
-  private cloudConfig: CloudConfig | null
+  private cloudConfig: CloudConfig | null;
   constructor(config: IConfig) {
     super(config);
-    this.cloudConfig = null
+    this.cloudConfig = null;
   }
   protected getServer(): ServerConfig {
     return {
@@ -37,12 +33,16 @@ export class ProductionHandler extends AbstractHandler {
         dbPort: this.config.get("cloud.databasePort"),
         dbName: this.config.get("cloud.databaseName"),
         dbUsernameSecret: this.config.get("cloud.dbUsernameSecret"),
-        dbUsernameSecretVersion: this.config.get("cloud.dbUsernameSecretVersion"),
+        dbUsernameSecretVersion: this.config.get(
+          "cloud.dbUsernameSecretVersion"
+        ),
         dbPasswordSecret: this.config.get("cloud.dbPasswordSecret"),
-        dbPasswordSecretVersion: this.config.get("cloud.dbPasswordSecretVersion"),
-      }
+        dbPasswordSecretVersion: this.config.get(
+          "cloud.dbPasswordSecretVersion"
+        ),
+      };
     }
-    return this.cloudConfig
+    return this.cloudConfig;
   }
 
   protected getDatabase(): DatabaseConfig {
@@ -51,8 +51,12 @@ export class ProductionHandler extends AbstractHandler {
       this.getCloudConfig().dbName,
       this.getCloudConfig().dbIp,
       this.getCloudConfig().dbPort,
-      `sm://${this.getCloudConfig().dbUsernameSecret}/${this.getCloudConfig().dbUsernameSecretVersion}`,
-      `sm://${this.getCloudConfig().dbPasswordSecret}/${this.getCloudConfig().dbPasswordSecretVersion}`
+      `sm://${this.getCloudConfig().dbUsernameSecret}/${
+        this.getCloudConfig().dbUsernameSecretVersion
+      }`,
+      `sm://${this.getCloudConfig().dbPasswordSecret}/${
+        this.getCloudConfig().dbPasswordSecretVersion
+      }`
     );
   }
 

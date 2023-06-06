@@ -1,7 +1,4 @@
-import {
-  DatabaseConfig,
-  ServerConfig,
-} from "./IEnvironment";
+import { DatabaseConfig, ServerConfig } from "./IEnvironment";
 import PostgresConfig from "../util/PostgresConfig";
 import AbstractHandler from "./AbstractHandler";
 import { exec } from "child_process";
@@ -24,9 +21,9 @@ export class LocalDevHandler extends AbstractHandler {
   }
 
   runMigration() {
-    process.env.DATABASE_URL = this.getEnvironment().database.url
+    process.env.DATABASE_URL = this.getEnvironment().database.url;
     exec(`npx prisma migrate dev --name local-dev`, {
-      env: process.env
-    })
+      env: process.env,
+    });
   }
 }

@@ -1,24 +1,24 @@
 import { Environment } from "./handlers/IEnvironment";
-import config from "config";
 import { LocalDevHandler } from "./handlers/LocalDevHandler";
 import { ProductionHandler } from "./handlers/ProductionHandler";
 import AbstractHandler from "./handlers/AbstractHandler";
+import ISecretManager from "./util/ISecretManager";
 
-class EnvironmentFactory {
-  private static configMap = new Map<string, AbstractHandler>([
-    ["local-dev", new LocalDevHandler(config)],
-    ["production", new ProductionHandler(config)],
-  ]);
+export default class EnvironmentFactory {
+  private configMap: Map<string, AbstractHandler>
+  constructor(secretManager: ISecretManager) {
+    this.configMap = new Map<string, AbstractHandler>([
+      ["local-dev", new LocalDevHandler()],
+      ["production", new ProductionHandler(secretManager)],
+    ]);
+  }
 
-  static getHandler(): AbstractHandler {
+  getHandler(): AbstractHandler {
     return this.configMap.get(process.env.NODE_CONFIG_ENV || "local-dev")!;
   }
 
   // TODO: Can mock this method call out with Jest during testing to return a test Environment instance instead
-  static getEnvironment(): Environment {
+  getEnvironment(): Environment {
     return this.getHandler().getEnvironment();
   }
 }
-
-const handler = EnvironmentFactory.getHandler();
-export default handler;

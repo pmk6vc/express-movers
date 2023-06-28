@@ -1,9 +1,11 @@
 import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
 
 export default abstract class AbstractHandler {
-  private environment: Environment | null;
+  protected serverConfig?: ServerConfig;
+  protected dbConfig?: DatabaseConfig
+  private environment?: Environment;
   constructor() {
-    this.environment = null;
+    this.environment = undefined;
   }
 
   protected abstract getServer(): ServerConfig;
@@ -11,7 +13,7 @@ export default abstract class AbstractHandler {
   abstract runMigration(): void;
 
   getEnvironment(): Environment {
-    if (this.environment == null) {
+    if (this.environment == undefined) {
       this.environment = {
         server: this.getServer(),
         database: this.getDatabase(),

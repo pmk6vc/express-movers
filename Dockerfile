@@ -12,9 +12,6 @@ COPY --from=builder ./app/dist ./dist
 COPY package.json .
 RUN npm install --production
 
-# Copy environment configuration files
-COPY src/config/configs ./config
-
 # Generate Prisma client for DB migrations
 COPY prisma ./prisma
 RUN npx prisma generate

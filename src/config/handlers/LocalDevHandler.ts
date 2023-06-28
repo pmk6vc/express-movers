@@ -4,19 +4,17 @@ import AbstractHandler from "./AbstractHandler";
 import { exec } from "child_process";
 
 export class LocalDevHandler extends AbstractHandler {
-  private serverConfig: ServerConfig | null = null;
-  private dbConfig: DatabaseConfig | null = null;
   protected getServer(): ServerConfig {
-    if (this.serverConfig == null) {
+    if (this.serverConfig == undefined) {
       this.serverConfig = {
-        serverPort: +process.env.PORT!
-      }
+        serverPort: +process.env.PORT!,
+      };
     }
-    return this.serverConfig
+    return this.serverConfig;
   }
 
   protected getDatabase(): DatabaseConfig {
-    if (this.dbConfig == null) {
+    if (this.dbConfig == undefined) {
       this.dbConfig = new PostgresConfig(
         process.env.DB_NAME!,
         process.env.DB_HOST!,

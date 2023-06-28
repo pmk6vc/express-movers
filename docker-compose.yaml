@@ -27,6 +27,7 @@ services:
       postgres-db:
         condition: service_healthy
     environment:
+      - NODE_ENV=development
       - DB_NAME=${POSTGRES_DB}
       - DB_HOST=postgres-db
       - DB_PORT=${POSTGRES_PORT}

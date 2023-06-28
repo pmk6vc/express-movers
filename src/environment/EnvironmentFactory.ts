@@ -16,9 +16,4 @@ export default class EnvironmentFactory {
   getHandler(): AbstractHandler {
     return this.configMap.get(process.env.NODE_CONFIG_ENV || "local-dev")!;
   }
-
-  // TODO: Can mock this method call out with Jest during testing to return a test Environment instance instead
-  getEnvironment(): Environment {
-    return this.getHandler().getEnvironment();
-  }
 }

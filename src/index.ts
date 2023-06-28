@@ -1,12 +1,9 @@
 import app from "./app";
-import EnvironmentFactory from "./config/ConfigFactory";
-import SecretManager from "./config/util/SecretManager";
+import EnvironmentResolver from "./environment/EnvironmentResolver";
 
 console.log("Fetching environment");
-const secretManager = new SecretManager();
-const environmentFactory = new EnvironmentFactory(secretManager)
-const handler = environmentFactory.getHandler()
-const environment = environmentFactory.getEnvironment();
+const handler = EnvironmentResolver.getEnvironmentHandler()
+const environment = EnvironmentResolver.getEnvironment();
 
 console.log("Running prisma DB migrations");
 handler.runMigration();

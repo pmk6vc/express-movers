@@ -18,9 +18,9 @@ export default class EnvironmentResolver {
   }
 
   // TODO: Can mock this method call out with Jest during testing to return a test Environment instance instead
-  static getEnvironment() {
+  static async getEnvironment() {
     if (this.environment == undefined) {
-      this.environment = this.getEnvironmentHandler().getEnvironment()
+      this.environment = await this.getEnvironmentHandler().getEnvironment()
     }
     return this.environment
   }

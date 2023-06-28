@@ -8,15 +8,18 @@ export default abstract class AbstractHandler {
     this.environment = undefined;
   }
 
-  protected abstract getServer(): ServerConfig;
-  protected abstract getDatabase(): DatabaseConfig;
+  protected abstract getServer(): Promise<ServerConfig>;
+  protected abstract getDatabase(): Promise<DatabaseConfig>;
   abstract runMigration(): void;
 
-  getEnvironment(): Environment {
+  async getEnvironment() {
     if (this.environment == undefined) {
+      const [serverConfig, databaseConfig] = await Promise.all([
+        this.getServer(), this.getDatabase()
+      ])
       this.environment = {
-        server: this.getServer(),
-        database: this.getDatabase(),
+        server: serverConfig,
+        database: databaseConfig,
       };
     }
     return this.environment;

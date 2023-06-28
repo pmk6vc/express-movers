@@ -1,10 +1,9 @@
-import { DatabaseConfig, ServerConfig } from "./IEnvironment";
 import PostgresConfig from "../util/PostgresConfig";
 import AbstractHandler from "./AbstractHandler";
 import { exec } from "child_process";
 
 export class LocalDevHandler extends AbstractHandler {
-  protected getServer(): ServerConfig {
+  protected async getServer() {
     if (this.serverConfig == undefined) {
       this.serverConfig = {
         serverPort: +process.env.PORT!,
@@ -13,7 +12,7 @@ export class LocalDevHandler extends AbstractHandler {
     return this.serverConfig;
   }
 
-  protected getDatabase(): DatabaseConfig {
+  protected async getDatabase() {
     if (this.dbConfig == undefined) {
       this.dbConfig = new PostgresConfig(
         process.env.DB_NAME!,
@@ -26,10 +25,12 @@ export class LocalDevHandler extends AbstractHandler {
     return this.dbConfig;
   }
 
-  runMigration() {
-    process.env.DATABASE_URL = this.getEnvironment().database.url;
+  async runMigration() {
+    const env = await this.getEnvironment()
+    process.env.DATABASE_URL = env.database.url;
     exec(`npx prisma migrate dev --name local-dev`, {
       env: process.env,
     });
+    delete process.env.DATABASE_URL;
   }
 }

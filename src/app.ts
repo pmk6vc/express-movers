@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
 app.get("/pgCatalogTableCount", async (req, res) => {
   // TODO: Update DatabaseConfig to return Pool object instead of properties
   // TODO: Figure out how to configure things like isolation levels, transactions, clients, etc
-  const environment = EnvironmentResolver.getEnvironment();
+  const environment = await EnvironmentResolver.getEnvironment();
   const pool = new Pool({
     user: environment.database.username,
     host: environment.database.host,

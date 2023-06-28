@@ -22,7 +22,7 @@ export class ProductionHandler extends AbstractHandler {
     this.secretManager = secretManager
   }
 
-  protected getServer(): ServerConfig {
+  protected async getServer() {
     return {
       serverPort: +process.env.PORT!,
     };
@@ -44,26 +44,27 @@ export class ProductionHandler extends AbstractHandler {
     return this.cloudConfig;
   }
 
-  protected getDatabase(): DatabaseConfig {
-    // TODO: Figure out how to introspect returned promises
+  protected async getDatabase() {
     const cloudConfig = this.getCloudConfig();
     if (this.dbConfig == undefined) {
-      const username = this.secretManager.getSecretValue(
-        cloudConfig.gcpProjectId,
-        cloudConfig.dbUsernameSecret,
-        cloudConfig.dbUsernameSecretVersion
-      )
-      const password = this.secretManager.getSecretValue(
-        cloudConfig.gcpProjectId,
-        cloudConfig.dbPasswordSecret,
-        cloudConfig.dbPasswordSecretVersion
-      )
+      const [username, password] = await Promise.all([
+        this.secretManager.getSecretValue(
+          cloudConfig.gcpProjectId,
+          cloudConfig.dbUsernameSecret,
+          cloudConfig.dbUsernameSecretVersion
+        ),
+        this.secretManager.getSecretValue(
+          cloudConfig.gcpProjectId,
+          cloudConfig.dbPasswordSecret,
+          cloudConfig.dbPasswordSecretVersion
+        )
+      ])
       this.dbConfig = new PostgresConfig(
         cloudConfig.dbName,
         cloudConfig.dbIp,
         cloudConfig.dbPort,
-        "",
-        ""
+        username,
+        password
       )
     }
     return this.dbConfig

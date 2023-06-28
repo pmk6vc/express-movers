@@ -1,4 +1,4 @@
-import PostgresConfig from "../util/PostgresConfig";
+import LocalPostgresConfig from "../util/LocalPostgresConfig";
 import AbstractHandler from "./AbstractHandler";
 import { exec } from "child_process";
 
@@ -14,7 +14,7 @@ export class LocalDevHandler extends AbstractHandler {
 
   protected async getDatabase() {
     if (this.dbConfig == undefined) {
-      this.dbConfig = new PostgresConfig(
+      this.dbConfig = new LocalPostgresConfig(
         process.env.DB_NAME!,
         process.env.DB_HOST!,
         +process.env.DB_PORT!,

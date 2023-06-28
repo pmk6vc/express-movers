@@ -121,3 +121,12 @@ resource "google_project_iam_member" "secret_accessor" {
   role    = "roles/secretmanager.secretAccessor"
   member  = "serviceAccount:${google_service_account.service_account.email}"
 }
+
+/**
+* Assign the role required to manage Cloud SQL resources
+*/
+resource "google_project_iam_member" "cloud_sql_admin" {
+  project = var.gcp_project_id
+  role = "roles/cloudsql.admin"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}

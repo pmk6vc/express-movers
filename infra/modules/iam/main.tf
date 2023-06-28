@@ -114,11 +114,17 @@ resource "google_project_iam_member" "service_account_user" {
 }
 
 /**
-* Assign the role required to manage secrets
+* Assign the roles required to manage secrets
 */
 resource "google_project_iam_member" "secret_accessor" {
   project = var.gcp_project_id
   role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}
+
+resource "google_project_iam_member" "secret_version_manager" {
+  project = var.gcp_project_id
+  role    = "roles/secretmanager.secretVersionManager"
   member  = "serviceAccount:${google_service_account.service_account.email}"
 }
 

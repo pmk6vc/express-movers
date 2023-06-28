@@ -9,13 +9,17 @@ resource "google_sql_database_instance" "db" {
   region = var.cloud_sql_region
 
   # TODO: Figure out how to limit access to app and local dev
-  # TODO: Add password validation policy
+  # TODO: Improve password validation policy
   settings {
     tier = "db-f1-micro"
     activation_policy = "ALWAYS"
     disk_size = 10
     disk_autoresize_limit = 25
     disk_type = "PD_HDD"
+    password_validation_policy {
+      enable_password_policy = true
+      min_length = 10
+    }
   }
 }
 

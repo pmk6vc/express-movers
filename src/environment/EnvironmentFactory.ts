@@ -5,7 +5,7 @@ import AbstractHandler from "./handlers/AbstractHandler";
 import ISecretManager from "./util/ISecretManager";
 
 export default class EnvironmentFactory {
-  private configMap: Map<string, AbstractHandler>
+  private configMap: Map<string, AbstractHandler>;
   constructor(secretManager: ISecretManager) {
     this.configMap = new Map<string, AbstractHandler>([
       ["local-dev", new LocalDevHandler()],

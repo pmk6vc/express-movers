@@ -1,4 +1,3 @@
-import { DatabaseConfig, ServerConfig } from "./IEnvironment";
 import PostgresConfig from "../util/PostgresConfig";
 import AbstractHandler from "./AbstractHandler";
 import ISecretManager from "../util/ISecretManager";
@@ -19,7 +18,7 @@ export class ProductionHandler extends AbstractHandler {
 
   constructor(secretManager: ISecretManager) {
     super();
-    this.secretManager = secretManager
+    this.secretManager = secretManager;
   }
 
   protected async getServer() {
@@ -57,17 +56,17 @@ export class ProductionHandler extends AbstractHandler {
           cloudConfig.gcpProjectId,
           cloudConfig.dbPasswordSecret,
           cloudConfig.dbPasswordSecretVersion
-        )
-      ])
+        ),
+      ]);
       this.dbConfig = new PostgresConfig(
         cloudConfig.dbName,
         cloudConfig.dbIp,
         cloudConfig.dbPort,
         username,
         password
-      )
+      );
     }
-    return this.dbConfig
+    return this.dbConfig;
   }
 
   runMigration(): void {

@@ -26,11 +26,10 @@ export class LocalDevHandler extends AbstractHandler {
   }
 
   async runMigration() {
-    const env = await this.getEnvironment()
+    const env = await this.getEnvironment();
     process.env.DATABASE_URL = env.database.url;
     exec(`npx prisma migrate dev --name local-dev`, {
       env: process.env,
     });
-    delete process.env.DATABASE_URL;
   }
 }

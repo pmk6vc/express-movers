@@ -18,7 +18,7 @@ resource "google_sql_database_instance" "db" {
     disk_type = "PD_HDD"
     password_validation_policy {
       enable_password_policy = true
-      min_length = 10
+      min_length = 6
     }
   }
 }

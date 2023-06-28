@@ -1,0 +1,17 @@
+# Artifacts
+dist
+node_modules
+
+# IDE
+.idea
+
+# Terraform managed by terraform fmt
+infra
+
+# Prisma
+prisma
+
+# Misc
+.env
+README.md
+Dockerfile

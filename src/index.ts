@@ -1,7 +1,19 @@
 import app from "./app";
-import environment from "./config/ConfigFactory";
+import EnvironmentResolver from "./environment/EnvironmentResolver";
 
-app.listen(environment.server.serverPort, () => {
-	console.log(`App starting on port ${environment.server.serverPort}`);
-	console.log(environment)
-});
+const main = async () => {
+  console.log("Fetching environment");
+  const handler = EnvironmentResolver.getEnvironmentHandler();
+  const environment = await EnvironmentResolver.getEnvironment();
+
+  console.log("Running prisma DB migrations");
+  await handler.runMigration();
+
+  console.log(`Starting app on port ${environment.server.serverPort}`);
+  app.listen(environment.server.serverPort, () => {
+    console.log("App successfully started!");
+    console.log(environment);
+  });
+};
+
+main();

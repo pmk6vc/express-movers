@@ -136,6 +136,14 @@ jobs:
           env_vars: |
             NODE_ENV=production
             NODE_CONFIG_ENV=production
+            GCP_PROJECT_ID=${{ vars.GCP_PROJECT_ID }}
+            DB_IP=0.0.0.0
+            DB_PORT=5432
+            DB_NAME=postgres
+            DB_USERNAME_SECRET=${{ vars.DB_USERNAME_SECRET }}
+            DB_USERNAME_SECRET_VERSION=${{ vars.DB_USERNAME_SECRET_VERSION }}
+            DB_PASSWORD_SECRET=${{ vars.DB_PASSWORD_SECRET }}
+            DB_PASSWORD_SECRET_VERSION=${{ vars.DB_PASSWORD_SECRET_VERSION }}
         env:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 

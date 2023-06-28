@@ -25,10 +25,9 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@google-cloud/secret-manager": "^4.2.2",
     "@prisma/client": "^4.14.1",
-    "@types/config": "^3.3.0",
     "@types/pg": "^8.6.6",
-    "config": "^3.3.9",
     "express": "^4.18.2",
     "pg": "^8.11.0"
   }

@@ -5,7 +5,7 @@ export class ProductionHandler extends AbstractHandler {
   async runMigration() {
     const env = await this.getEnvironment();
     process.env.DATABASE_URL = env.database.getConnectionString();
-    exec(`npx prisma migrate deploy`, {
+    await exec(`npx prisma migrate deploy`, {
       env: process.env,
     });
   }

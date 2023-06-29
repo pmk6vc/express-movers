@@ -76,7 +76,7 @@ jobs:
         id: fetch-db-secrets
         uses: google-github-actions/get-secretmanager-secrets@v1
         with:
-          secrets: |
+          secrets: |-
             dbusername: ${{ vars.GCP_PROJECT_ID }}/${{ vars.DB_USERNAME_SECRET }}/${{ vars.DB_USERNAME_SECRET_VERSION }}
             dbpassword: ${{ vars.GCP_PROJECT_ID }}/${{ vars.DB_PASSWORD_SECRET }}/${{ vars.DB_PASSWORD_SECRET_VERSION }}
 

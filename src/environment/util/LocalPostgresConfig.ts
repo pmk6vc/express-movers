@@ -1,6 +1,6 @@
 import { DatabaseConfig } from "../handlers/IEnvironment";
 
-export default class PostgresConfig implements DatabaseConfig {
+export default class LocalPostgresConfig implements DatabaseConfig {
   database: string;
   host: string;
   port: number;

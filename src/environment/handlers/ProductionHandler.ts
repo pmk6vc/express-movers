@@ -1,12 +1,11 @@
-import PostgresConfig from "../util/PostgresConfig";
 import AbstractHandler from "./AbstractHandler";
 import ISecretManager from "../util/ISecretManager";
+import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
 
 interface CloudConfig {
   gcpProjectId: string;
-  dbIp: string;
-  dbPort: number;
   dbName: string;
+  dbInstanceName: string;
   dbUsernameSecret: string;
   dbUsernameSecretVersion: number;
   dbPasswordSecret: string;
@@ -31,9 +30,8 @@ export class ProductionHandler extends AbstractHandler {
     if (this.cloudConfig == null) {
       this.cloudConfig = {
         gcpProjectId: process.env.GCP_PROJECT_ID!,
-        dbIp: process.env.DB_IP!,
-        dbPort: +process.env.DP_PORT!,
         dbName: process.env.DB_NAME!,
+        dbInstanceName: process.env.DB_INSTANCE_NAME!,
         dbUsernameSecret: process.env.DB_USERNAME_SECRET!,
         dbUsernameSecretVersion: +process.env.DB_USERNAME_SECRET_VERSION!,
         dbPasswordSecret: process.env.DB_PASSWORD_SECRET!,
@@ -58,12 +56,11 @@ export class ProductionHandler extends AbstractHandler {
           cloudConfig.dbPasswordSecretVersion
         ),
       ]);
-      this.dbConfig = new PostgresConfig(
+      this.dbConfig = new CloudSqlPostgresConfig(
         cloudConfig.dbName,
-        cloudConfig.dbIp,
-        cloudConfig.dbPort,
         username,
-        password
+        password,
+        cloudConfig.dbInstanceName
       );
     }
     return this.dbConfig;

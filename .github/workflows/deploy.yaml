@@ -79,12 +79,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Get registry image name
-        id: image_name
-        run: echo "IMAGE_NAME=${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}" >> $GITHUB_OUTPUT
-        env:
-          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
-
       - name: Authenticate to Google Cloud
         id: gcp_auth
         uses: google-github-actions/auth@v1
@@ -93,10 +87,23 @@ jobs:
           workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
+      # TODO: Perform DB migrations
+      # Extract secrets and build DB URL
+      # Run production migration command with DB URL in env var
+      # Update application logic in production handler to do nothing and log message
+
+      # Deploy service
+      # TODO: Get access to DB in Cloud Run working correctly
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v1.1.0
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      - name: Get registry image name
+        id: image_name
+        run: echo "IMAGE_NAME=${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}" >> $GITHUB_OUTPUT
+        env:
+          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
       - name: Delete images in registry
         run: |

@@ -1,6 +1,7 @@
 import AbstractHandler from "./AbstractHandler";
 import ISecretManager from "../util/ISecretManager";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
+import { exec } from "child_process";
 
 interface CloudConfig {
   gcpProjectId: string;
@@ -66,7 +67,11 @@ export class ProductionHandler extends AbstractHandler {
     return this.dbConfig;
   }
 
-  runMigration(): void {
-    // TODO
+  async runMigration() {
+    const env = await this.getEnvironment();
+    process.env.DATABASE_URL = env.database.url;
+    exec(`npx prisma migrate deploy`, {
+      env: process.env,
+    });
   }
 }

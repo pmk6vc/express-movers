@@ -87,7 +87,7 @@ jobs:
       - name: Build DB URL
         id: db-url
         run: |
-          url="postgresql://${{ steps.fetch-db-secrets.outputs.dbusername }}:${{ steps.fetch-db-secrets.outputs.dbpassword }}@localhost/postgres?host=/cloudsql/zugzwang-381922:us-central1:postgres-production-45a83db2"
+          url="postgresql://prathameshk:postgres-production-password@localhost/postgres?host=/cloudsql/zugzwang-381922:us-central1:postgres-production-45a83db2"
           echo $url
           echo "dburl=$url" >> "$GITHUB_OUTPUT"
 

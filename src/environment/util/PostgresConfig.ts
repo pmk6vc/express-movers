@@ -2,12 +2,12 @@ import { DatabaseConfig } from "../handlers/IEnvironment";
 import { Pool } from "pg";
 
 export default class PostgresConfig implements DatabaseConfig {
-  private readonly username: string;
-  private readonly password: string;
-  private readonly host: string;
-  private readonly port: number;
-  private readonly database: string;
-  private databasePool?: Pool;
+  protected readonly username: string;
+  protected readonly password: string;
+  protected readonly host: string;
+  protected readonly port: number;
+  protected readonly database: string;
+  protected databasePool?: Pool;
 
   constructor(
     username: string,

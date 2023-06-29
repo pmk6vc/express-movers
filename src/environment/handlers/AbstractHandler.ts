@@ -2,9 +2,9 @@ import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
 import PostgresConfig from "../util/PostgresConfig";
 
 export default abstract class AbstractHandler {
-  private serverConfig?: ServerConfig;
-  private databaseConfig?: DatabaseConfig;
-  private environment?: Environment;
+  protected serverConfig?: ServerConfig;
+  protected databaseConfig?: DatabaseConfig;
+  protected environment?: Environment;
 
   abstract runMigration(): void;
 

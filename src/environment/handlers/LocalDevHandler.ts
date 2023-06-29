@@ -5,7 +5,7 @@ export class LocalDevHandler extends AbstractHandler {
   async runMigration() {
     const env = await this.getEnvironment();
     process.env.DATABASE_URL = env.database.getConnectionString();
-    await exec(`npx prisma migrate dev --name local-dev`, {
+    await exec(`prisma migrate dev --name local-dev`, {
       env: process.env,
     });
   }

@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url = "" // Injected at runtime by application
+  url = env("DATABASE_URL") // Set via CI/CD or at runtime
 }
 
 generator client {

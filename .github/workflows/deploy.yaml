@@ -169,6 +169,7 @@ jobs:
             DB_NAME=postgres
             DB_HOST=/cloudsql/zugzwang-381922:us-central1:postgres-production-45a83db2
             DB_PORT=5432
+            DATABASE_URL=postgresql://prathameshk:postgres-production-password@localhost/postgres?host=/cloudsql/zugzwang-381922:us-central1:postgres-production-45a83db2
         # TODO: Use DB_INSTANCE_NAME
         env:
           IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}

@@ -155,7 +155,7 @@ jobs:
             DB_PASSWORD_SECRET_VERSION=${{ vars.DB_PASSWORD_SECRET_VERSION }}
         env:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
-          DB_CONNECTION_NAME: ${{ needs.terraform.outputs.DB_CONNECTION_NAME }}
+          DB_INSTANCE_NAME: ${{ needs.terraform.outputs.DB_INSTANCE_NAME }}
 
       - name: Show URL
         run: echo ${{ steps.deploy.outputs.url }}

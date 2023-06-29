@@ -80,6 +80,9 @@ jobs:
             dbusername:${{ vars.GCP_PROJECT_ID }}/${{ vars.DB_USERNAME_SECRET }}/${{ vars.DB_USERNAME_SECRET_VERSION }}
             dbpassword:${{ vars.GCP_PROJECT_ID }}/${{ vars.DB_PASSWORD_SECRET }}/${{ vars.DB_PASSWORD_SECRET_VERSION }}
 
+      - name: Hello
+        run: echo "hello world"
+
       - name: Build DB URL
         id: db-url
         run: |

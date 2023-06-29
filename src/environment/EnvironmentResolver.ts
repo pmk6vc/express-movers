@@ -1,13 +1,9 @@
-import SecretManager from "./util/SecretManager";
 import EnvironmentFactory from "./EnvironmentFactory";
 import AbstractHandler from "./handlers/AbstractHandler";
 import { Environment } from "./handlers/IEnvironment";
 
 export default class EnvironmentResolver {
-  private static secretManager = new SecretManager();
-  private static environmentFactory = new EnvironmentFactory(
-    this.secretManager
-  );
+  private static environmentFactory = new EnvironmentFactory();
   private static environmentHandler?: AbstractHandler;
   private static environment?: Environment;
 

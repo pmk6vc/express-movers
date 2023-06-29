@@ -87,7 +87,7 @@ jobs:
         id: db-url
         run: |
           url=postgresql://${{ steps.fetch-db-secrets.outputs.dbusername }}:${{ steps.fetch-db-secrets.outputs.dbpassword }}@localhost:5432/postgres?host=/cloudsql/${{ env.DB_INSTANCE_NAME }}
-#          echo "::add-mask::url"
+          echo "::add-mask::url"
           echo "dburl=url" >> "$GITHUB_OUTPUT"
         env:
           DB_INSTANCE_NAME: ${{ needs.terraform.outputs.DB_INSTANCE_NAME }}

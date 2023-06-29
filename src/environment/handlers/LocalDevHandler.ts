@@ -26,6 +26,7 @@ export class LocalDevHandler extends AbstractHandler {
   }
 
   async runMigration() {
+    // TODO: Delete credentials from environment after migrations are run
     const env = await this.getEnvironment();
     process.env.DATABASE_URL = env.database.url;
     exec(`npx prisma migrate dev --name local-dev`, {

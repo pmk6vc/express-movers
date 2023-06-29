@@ -87,7 +87,8 @@ jobs:
       - name: Build DB URL
         id: db-url
         run: |
-          url=postgresql://${{ steps.fetch-db-secrets.outputs.dbusername }}:${{ steps.fetch-db-secrets.outputs.dbpassword }}@localhost:5432/postgres?host=/cloudsql/${{ env.DB_INSTANCE_NAME }}
+          url="postgresql://${{ steps.fetch-db-secrets.outputs.dbusername }}:${{ steps.fetch-db-secrets.outputs.dbpassword }}@localhost:5432/postgres?host=/cloudsql/${{ env.DB_INSTANCE_NAME }}"
+          echo $url
           echo "dburl=$url" >> "$GITHUB_OUTPUT"
         env:
           DB_INSTANCE_NAME: ${{ needs.terraform.outputs.DB_INSTANCE_NAME }}

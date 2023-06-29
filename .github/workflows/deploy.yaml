@@ -72,6 +72,8 @@ jobs:
     needs: terraform
     runs-on: ubuntu-latest
     environment: PRODUCTION
+    outputs:
+      REGISTRY_IMAGE_NAME: ${{ steps.image_name.outputs.IMAGE_NAME }}
     permissions:
       contents: read
       id-token: write
@@ -143,7 +145,7 @@ jobs:
             ${{ env.IMAGE }}:latest
           push: true
         env:
-          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
+          IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
 
       # Authenticated service by default - will need to make public for the first deployment
       - name: Deploy
@@ -170,7 +172,7 @@ jobs:
             DB_HOST=/cloudsql/${{ env.DB_INSTANCE_NAME }}
             DB_PORT=5432
         env:
-          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
+          IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
           DB_INSTANCE_NAME: ${{ needs.terraform.outputs.DB_INSTANCE_NAME }}
 
       - name: Show URL

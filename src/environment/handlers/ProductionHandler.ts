@@ -20,11 +20,11 @@ export class ProductionHandler extends AbstractHandler {
     // const env = await this.getEnvironment();
     // process.env.DATABASE_URL = env.database.getConnectionString();
     // console.log(`Running migrate command with this DATABASE_URL: ${process.env.DATABASE_URL}`);
-    // await exec(`prisma migrate deploy`, {
+    // await exec(`npx prisma migrate deploy`, {
     //   env: process.env,
     // });
 
-    console.log("Using hard-coded values in migration instead for now")
-    await exec('prisma migrate deploy')
+    // console.log("Using hard-coded values in migration instead for now")
+    await exec('npx prisma migrate deploy')
   }
 }

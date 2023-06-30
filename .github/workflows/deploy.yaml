@@ -2,7 +2,7 @@ name: Deploy main branch to production env
 
 on:
   push:
-    branches: [pg-pools]
+    branches: [main]
 
 env:
   TF_WORKSPACE_NAME: production
@@ -161,16 +161,14 @@ jobs:
             --memory=512Mi
             --cpu=1
             --port=${{ env.SERVICE_PORT }}
-            --add-cloudsql-instances=zugzwang-381922:us-central1:postgres-production-45a83db2
+            --add-cloudsql-instances=${{ env.DB_INSTANCE_NAME }}
             --update-secrets=DB_USERNAME=${{ vars.DB_USERNAME_SECRET }}:${{ vars.DB_USERNAME_SECRET_VERSION }},DB_PASSWORD=${{ vars.DB_PASSWORD_SECRET }}:${{ vars.DB_PASSWORD_SECRET_VERSION }}
           env_vars: |
             NODE_ENV=production
             NODE_CONFIG_ENV=production
             DB_NAME=postgres
-            DB_HOST=/cloudsql/zugzwang-381922:us-central1:postgres-production-45a83db2
+            DB_HOST=/cloudsql/${{ env.DB_INSTANCE_NAME }}
             DB_PORT=5432
-            DATABASE_URL=postgresql://prathameshk:postgres-production-password@localhost/postgres?host=/cloudsql/zugzwang-381922:us-central1:postgres-production-45a83db2
-        # TODO: Use DB_INSTANCE_NAME
         env:
           IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
           DB_INSTANCE_NAME: ${{ needs.terraform.outputs.DB_INSTANCE_NAME }}

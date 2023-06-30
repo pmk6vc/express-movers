@@ -1,26 +1,44 @@
 import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
+import PostgresConfig from "../util/PostgresConfig";
 
 export default abstract class AbstractHandler {
   protected serverConfig?: ServerConfig;
-  protected dbConfig?: DatabaseConfig;
-  private environment?: Environment;
-  constructor() {
-    this.environment = undefined;
+  protected databaseConfig?: DatabaseConfig;
+  protected environment?: Environment;
+
+  abstract runMigration(): void;
+
+  protected async getServerConfig() {
+    if (this.serverConfig == undefined) {
+      this.serverConfig = {
+        serverPort: +process.env.PORT!,
+      };
+    }
+    return this.serverConfig;
   }
 
-  protected abstract getServer(): Promise<ServerConfig>;
-  protected abstract getDatabase(): Promise<DatabaseConfig>;
-  abstract runMigration(): void;
+  protected async getDatabaseConfig() {
+    if (this.databaseConfig == undefined) {
+      this.databaseConfig = new PostgresConfig(
+        process.env.DB_USERNAME!,
+        process.env.DB_PASSWORD!,
+        process.env.DB_HOST!,
+        +process.env.DB_PORT!,
+        process.env.DB_NAME!
+      );
+    }
+    return this.databaseConfig;
+  }
 
   async getEnvironment() {
     if (this.environment == undefined) {
-      const [serverConfig, databaseConfig] = await Promise.all([
-        this.getServer(),
-        this.getDatabase(),
+      const [serverConfig, databasePool] = await Promise.all([
+        this.getServerConfig(),
+        this.getDatabaseConfig(),
       ]);
       this.environment = {
         server: serverConfig,
-        database: databaseConfig,
+        database: databasePool,
       };
     }
     return this.environment;

@@ -1,28 +1,9 @@
-import { DatabaseConfig } from "../handlers/IEnvironment";
+import PostgresConfig from "./PostgresConfig";
 
-export default class CloudSqlPostgresConfig implements DatabaseConfig {
-  database: string;
-  host = "localhost"
-  port = 5432;
-  username: string;
-  password: string;
-  instanceName: string;
-  url: string;
+export default class CloudSqlPostgresConfig extends PostgresConfig {
 
-  constructor(
-    database: string,
-    username: string,
-    password: string,
-    instanceName: string
-  ) {
-    this.database = database;
-    this.username = username;
-    this.password = password;
-    this.instanceName = instanceName;
-    this.url = this.buildUrl();
+  getConnectionString(): string {
+    return `postgresql://${this.username}:${this.password}@localhost/${this.database}?host=${this.host}`;
   }
 
-  buildUrl(): string {
-    return `postgresql://${this.username}:${this.password}@${this.host}:${this.port}/${this.database}?host=/cloudsql/${this.instanceName}`;
-  }
 }

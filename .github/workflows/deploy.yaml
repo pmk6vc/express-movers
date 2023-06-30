@@ -109,7 +109,7 @@ jobs:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
   deploy:
-    needs: clean-registry
+    needs: [terraform, clean-registry]
     runs-on: ubuntu-latest
     environment: PRODUCTION
     permissions:

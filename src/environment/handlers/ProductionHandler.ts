@@ -25,6 +25,6 @@ export class ProductionHandler extends AbstractHandler {
     // });
 
     // console.log("Using hard-coded values in migration instead for now")
-    await exec('npx prisma migrate deploy')
+    await exec(`prisma migrate deploy`)
   }
 }

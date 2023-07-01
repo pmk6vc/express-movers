@@ -10,11 +10,11 @@ FROM node:18-alpine
 WORKDIR /app
 COPY --from=builder ./app/dist ./dist
 COPY package.json .
+COPY prisma ./prisma
 RUN npm install --production
 
 # Generate Prisma client for DB migrations
-COPY prisma ./prisma
-RUN npx prisma generate
+#RUN npx prisma generate
 
 # Set PORT and expose for service
 ARG SERVICE_PORT

@@ -12,10 +12,6 @@ COPY --from=builder ./app/dist ./dist
 COPY package.json .
 RUN npm install --production
 
-# Generate Prisma client for DB migrations
-COPY prisma ./prisma
-RUN npx prisma generate
-
 # Set PORT and expose for service
 ARG SERVICE_PORT
 ENV PORT=$SERVICE_PORT

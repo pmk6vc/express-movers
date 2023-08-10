@@ -5,8 +5,8 @@ export interface ServerConfig {
 }
 
 export interface DatabaseConfig {
-  getDatabasePool(): Pool
-  getConnectionString(): string
+  getDatabasePool(): Pool;
+  getConnectionString(): string;
 }
 
 export interface Environment {

@@ -31,6 +31,7 @@ services:
         condition: service_healthy
     environment:
       - NODE_ENV=development
+      - NODE_CONFIG_ENV=local-docker-compose
       - DB_NAME=${POSTGRES_DB}
       - DB_HOST=postgres-db
       - DB_PORT=${POSTGRES_PORT}

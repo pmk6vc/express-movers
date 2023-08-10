@@ -14,8 +14,5 @@ router
       rows: result.rows,
     });
   })
-  .get("/baba", (req, res) => {
-    res.send("Hello, Milind!")
-  })
 
 export default router;

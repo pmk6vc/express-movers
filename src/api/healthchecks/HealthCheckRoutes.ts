@@ -1,4 +1,4 @@
-import express from "express";
+import express, { request } from "express";
 
 const router = express.Router();
 
@@ -13,6 +13,9 @@ router
       rowCount: result.rowCount,
       rows: result.rows,
     });
-  });
+  })
+  .get("/baba", (req, res) => {
+    res.send("Hello, Milind!")
+  })
 
 export default router;

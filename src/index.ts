@@ -5,7 +5,6 @@ const main = async () => {
   console.log("Fetching environment");
   const handler = EnvironmentResolver.getEnvironmentHandler();
   const environment = await EnvironmentResolver.getEnvironment();
-  console.log(environment);
 
   console.log("Running migrations");
   await handler.runMigration();
@@ -13,7 +12,6 @@ const main = async () => {
   console.log(`Starting app on port ${environment.server.serverPort}`);
   app.listen(environment.server.serverPort, () => {
     console.log("App successfully started!");
-    console.log(environment);
   });
 };
 

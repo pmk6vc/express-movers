@@ -8,19 +8,21 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "prettier": "prettier --write ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@jest/globals": "^29.6.2",
     "@types/express": "^4.17.17",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
     "prettier": "^2.8.8",
+    "ts-jest": "^29.1.1",
     "typescript": "^5.0.4"
   },
   "dependencies": {

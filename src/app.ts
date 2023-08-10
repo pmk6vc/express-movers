@@ -1,22 +1,19 @@
 import express from "express";
 import EnvironmentResolver from "./environment/EnvironmentResolver";
+import healthcheckRouter from "./api/healthchecks/HealthCheckRoutes";
 
 // Spin up app
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Hello, world!");
+// Pass environment details to each request via middleware
+app.use(function (req, res, next) {
+  const envPromise = EnvironmentResolver.getEnvironment();
+  res.locals.env = envPromise;
+  res.locals.pool = envPromise.then((e) => e?.database.getDatabasePool());
+  next();
 });
 
-app.get("/pgCatalogTableCount", async (req, res) => {
-  // TODO: Figure out how to configure things like isolation levels, transactions, clients, etc
-  const environment = await EnvironmentResolver.getEnvironment();
-  const pool = environment.database.getDatabasePool();
-  const result = await pool.query("SELECT COUNT(*) FROM pg_catalog.pg_tables");
-  res.send({
-    rowCount: result.rowCount,
-    rows: result.rows,
-  });
-});
+// Attach routers
+app.use("/_health", healthcheckRouter);
 
 export default app;

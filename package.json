@@ -24,6 +24,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@testcontainers/postgresql": "^10.1.0",
     "@types/pg": "^8.6.6",
     "express": "^4.18.2",
     "node-pg-migrate": "^6.2.2",

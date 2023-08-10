@@ -1,5 +1,4 @@
 import AbstractHandler from "./AbstractHandler";
-import { exec } from "child_process";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
 
 export class ProductionHandler extends AbstractHandler {
@@ -17,14 +16,7 @@ export class ProductionHandler extends AbstractHandler {
     return this.databaseConfig;
   }
   async runMigration() {
-    // const env = await this.getEnvironment();
-    // process.env.DATABASE_URL = env.database.getConnectionString();
-    // console.log(`Running migrate command with this DATABASE_URL: ${process.env.DATABASE_URL}`);
-    // await exec(`npx prisma migrate deploy`, {
-    //   env: process.env,
-    // });
-
-    // console.log("Using hard-coded values in migration instead for now")
-    await exec('npx prisma migrate deploy')
+    const env = await this.getEnvironment();
+    console.log("You've reached the production handler migration!")
   }
 }

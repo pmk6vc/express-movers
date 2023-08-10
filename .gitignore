@@ -11,6 +11,3 @@ node_modules
 infra/.terraform
 infra/.terraform.lock.hcl
 infra/inputs.tfvars
-
-# Prisma
-prisma/migrations

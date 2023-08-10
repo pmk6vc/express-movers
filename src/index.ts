@@ -5,8 +5,9 @@ const main = async () => {
   console.log("Fetching environment");
   const handler = EnvironmentResolver.getEnvironmentHandler();
   const environment = await EnvironmentResolver.getEnvironment();
+  console.log(environment);
 
-  console.log("Running prisma DB migrations");
+  console.log("Running migrations");
   await handler.runMigration();
 
   console.log(`Starting app on port ${environment.server.serverPort}`);

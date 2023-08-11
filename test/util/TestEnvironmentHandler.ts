@@ -33,7 +33,7 @@ export class TestEnvironmentHandler extends AbstractHandler {
     const env = await this.getEnvironment();
     console.log("You've reached the test handler migration!");
     await run({
-      migrationsTable: "pgmigrationstest",
+      migrationsTable: "pgmigrations",
       dir: "migrations",
       direction: "up",
       databaseUrl: env.database.getConnectionString(),

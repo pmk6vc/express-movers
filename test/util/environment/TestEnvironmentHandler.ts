@@ -1,6 +1,6 @@
-import AbstractHandler from "../../src/environment/handlers/AbstractHandler";
+import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
-import PostgresConfig from "../../src/environment/util/PostgresConfig";
+import PostgresConfig from "../../../src/environment/util/PostgresConfig";
 import run from "node-pg-migrate";
 
 export class TestEnvironmentHandler extends AbstractHandler {

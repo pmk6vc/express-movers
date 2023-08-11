@@ -2,22 +2,9 @@ import { describe, expect, it } from "@jest/globals";
 import request from "supertest";
 import app from "../../../src/app";
 import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
-import TestEnvironmentResolver from "../../util/TestEnvironmentResolver";
-import { TestEnvironmentHandler } from "../../util/TestEnvironmentHandler";
-
-jest.mock("../../../src/environment/EnvironmentResolver", () => {
-  return {
-    // Use arrow function to allow jest to perform lazy loading of TestEnvironmentResolver
-    getEnvironmentHandler: () => TestEnvironmentResolver.getEnvironmentHandler(),
-    getEnvironment: () => TestEnvironmentResolver.getEnvironment()
-  }
-});
+import { TestEnvironmentHandler } from "../../util/environment/TestEnvironmentHandler";
 
 describe("should test health check routes", () => {
-  beforeAll(async () => {
-    await EnvironmentResolver.getEnvironmentHandler().runMigration();
-  });
-
   it("returns mocked environment handler", () => {
     expect(EnvironmentResolver.getEnvironmentHandler()).toBeInstanceOf(TestEnvironmentHandler)
   })

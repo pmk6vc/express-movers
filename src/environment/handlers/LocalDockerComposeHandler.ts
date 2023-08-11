@@ -17,7 +17,7 @@ export class LocalDockerComposeHandler extends AbstractHandler {
     await run({
       migrationsTable: "pgmigrations",
       dir: "/app/migrations",
-      direction: "up",
+      direction: "down",
       databaseUrl: env.database.getConnectionString(),
     });
   }

@@ -5,5 +5,8 @@
 dist
 node_modules
 
+# Testing
+test
+
 # Misc
 README.md

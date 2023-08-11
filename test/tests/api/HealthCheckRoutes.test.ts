@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 import request from "supertest";
-import app from "../../src/app";
-import EnvironmentResolver from "../../src/environment/EnvironmentResolver";
+import app from "../../../src/app";
+import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 
 describe("should test health check routes", () => {
   beforeAll(async () => {

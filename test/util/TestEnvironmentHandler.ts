@@ -9,7 +9,7 @@ export class TestEnvironmentHandler extends AbstractHandler {
   override async getServerConfig() {
     if (this.serverConfig == undefined) {
       this.serverConfig = {
-        serverPort: 1,
+        serverPort: 5496,
       };
     }
     return this.serverConfig;

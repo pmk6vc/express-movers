@@ -2,7 +2,7 @@
   "name": "express-movers",
   "version": "1.0.0",
   "description": "Marketplace for movers",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "prebuild": "npx eslint .",
     "build": "tsc",

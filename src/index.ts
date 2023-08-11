@@ -7,7 +7,7 @@ const main = async () => {
   const environment = await EnvironmentResolver.getEnvironment();
 
   console.log("Running migrations");
-  await handler.runMigration();
+  await handler.runUpMigrations();
 
   console.log(`Starting app on port ${environment.server.serverPort}`);
   app.listen(environment.server.serverPort, () => {

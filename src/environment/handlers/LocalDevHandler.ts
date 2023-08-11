@@ -25,13 +25,22 @@ export class LocalDevHandler extends AbstractHandler {
     }
     return this.databaseConfig;
   }
-  async runMigration() {
+  async runUpMigrations() {
     const env = await this.getEnvironment();
-    console.log("You've reached the local dev handler migration!");
     await run({
       migrationsTable: "pgmigrations",
       dir: "migrations",
       direction: "up",
+      databaseUrl: env.database.getConnectionString(),
+    });
+  }
+
+  async runDownMigrations() {
+    const env = await this.getEnvironment();
+    await run({
+      migrationsTable: "pgmigrations",
+      dir: "migrations",
+      direction: "down",
       databaseUrl: env.database.getConnectionString(),
     });
   }

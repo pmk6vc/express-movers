@@ -6,7 +6,8 @@ export default abstract class AbstractHandler {
   protected databaseConfig?: DatabaseConfig;
   protected environment?: Environment;
 
-  abstract runMigration(): Promise<void>;
+  abstract runUpMigrations(): Promise<void>;
+  abstract runDownMigrations(): Promise<void>;
 
   protected async getServerConfig() {
     if (this.serverConfig == undefined) {

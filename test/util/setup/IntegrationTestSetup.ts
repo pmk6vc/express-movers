@@ -11,6 +11,10 @@ jest.mock("../../../src/environment/EnvironmentResolver", () => {
 });
 
 // Run migrations in test lifecycle
-beforeAll(async () => {
-  await EnvironmentResolver.getEnvironmentHandler().runMigration();
+beforeEach(async () => {
+  await EnvironmentResolver.getEnvironmentHandler().runUpMigrations();
 });
+
+afterEach(async() => {
+  await EnvironmentResolver.getEnvironmentHandler().runDownMigrations()
+})

@@ -6,3 +6,10 @@ dist
 infra
 migrations
 node_modules
+.dockerignore
+.eslintignore
+.gitignore
+.prettierignore
+docker-compose.yaml
+Dockerfile
+README.md

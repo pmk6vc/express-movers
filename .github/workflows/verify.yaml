@@ -69,5 +69,8 @@ jobs:
         with:
           node-version: 18.17.1 # Based on version found in Dockerfile
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Run test suite
         run: npm run test:ci

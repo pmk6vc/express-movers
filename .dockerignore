@@ -1,6 +1,7 @@
 .env
 .git
 .github
+.husky
 .idea
 dist
 test

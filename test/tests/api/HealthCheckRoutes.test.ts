@@ -5,6 +5,10 @@ import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import { TestEnvironmentHandler } from "../../util/environment/TestEnvironmentHandler";
 
 describe("should get mocked environment", () => {
+  beforeEach(async () => {
+    await EnvironmentResolver.getEnvironmentHandler().getEnvironment();
+  });
+
   it("returns mocked environment and handler", async () => {
     const handler = EnvironmentResolver.getEnvironmentHandler();
     const environment = await EnvironmentResolver.getEnvironment();

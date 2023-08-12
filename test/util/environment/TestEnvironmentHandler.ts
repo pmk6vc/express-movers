@@ -36,7 +36,7 @@ export class TestEnvironmentHandler extends AbstractHandler {
       dir: "migrations",
       direction: "up",
       databaseUrl: env.database.getConnectionString(),
-      verbose: false
+      verbose: false,
     });
   }
 
@@ -47,6 +47,7 @@ export class TestEnvironmentHandler extends AbstractHandler {
       dir: "migrations",
       direction: "down",
       databaseUrl: env.database.getConnectionString(),
+      verbose: false,
     });
   }
 }

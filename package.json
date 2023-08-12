@@ -13,6 +13,10 @@
     "test:ci": "jest --ci --verbose --no-cache --detectOpenHandles",
     "prettier:fix": "prettier --write ."
   },
+  "pre-commit": [
+    "prettier:fix",
+    "test"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -26,6 +30,7 @@
     "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
     "nodemon": "^3.0.1",
+    "pre-commit": "^1.2.2",
     "prettier": "^2.8.8",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",

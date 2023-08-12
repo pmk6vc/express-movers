@@ -14,4 +14,3 @@ Marketplace for movers
 
 - Update test suite to cover middleware and actual body of response
 - Prettify
-- Nodemon

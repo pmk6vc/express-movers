@@ -43,3 +43,8 @@ module "cloud_sql" {
   db_username      = module.secrets.db_username
   db_password      = module.secrets.db_password
 }
+
+module "identity_platform" {
+  source         = "./modules/identity_platform"
+  gcp_project_id = var.gcp_project_id
+}

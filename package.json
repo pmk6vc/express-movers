@@ -13,9 +13,7 @@
     "test:ci": "jest --ci --verbose --no-cache --detectOpenHandles",
     "prettier:fix": "prettier --write ."
   },
-  "pre-commit": [
-    "prettier:fix"
-  ],
+  "pre-commit": [ "prettier:fix" ],
   "keywords": [],
   "author": "",
   "license": "ISC",

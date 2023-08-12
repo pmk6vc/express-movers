@@ -1,5 +1,8 @@
 import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
-import { PostgreSqlContainer, StartedPostgreSqlContainer } from "@testcontainers/postgresql";
+import {
+  PostgreSqlContainer,
+  StartedPostgreSqlContainer,
+} from "@testcontainers/postgresql";
 import PostgresConfig from "../../../src/environment/util/PostgresConfig";
 import run from "node-pg-migrate";
 

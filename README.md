@@ -8,4 +8,3 @@ Marketplace for movers
   - Figure out how to assign query results to custom types
 - Set up authenticated routes with roles and permissions
 - Set up logging
-- Add default 404 route if no other match

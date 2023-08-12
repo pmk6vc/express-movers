@@ -1,10 +1,6 @@
-# IDE
+# Artifacts
 .idea
-
-# Build artifacts
 dist
-
-# Packages
 node_modules
 
 # Terraform

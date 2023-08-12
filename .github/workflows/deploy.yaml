@@ -29,7 +29,6 @@ jobs:
         run: npm run test:ci
 
   terraform:
-    needs: test
     runs-on: ubuntu-latest
     environment: PRODUCTION
     outputs:
@@ -127,7 +126,7 @@ jobs:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
   deploy:
-    needs: [terraform, clean-registry]
+    needs: [test, terraform, clean-registry]
     runs-on: ubuntu-latest
     environment: PRODUCTION
     permissions:

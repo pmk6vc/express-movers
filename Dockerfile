@@ -12,8 +12,9 @@ COPY --from=builder ./app/dist ./dist
 COPY package.json .
 RUN npm install --production
 
-# Copy migrations
+# Copy non-source code dirs
 COPY migrations ./migrations
+COPY public ./public
 
 # Set PORT and expose for service
 ARG SERVICE_PORT

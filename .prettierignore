@@ -1,17 +1,14 @@
-# Artifacts
-dist
-node_modules
-
-# IDE
-.idea
-
-# Terraform managed by terraform fmt
-infra
-
-# Prisma
-prisma
-
-# Misc
 .env
-README.md
+.git
+.github
+.idea
+dist
+infra
+migrations
+node_modules
+.dockerignore
+.eslintignore
+.gitignore
+docker-compose.yaml
 Dockerfile
+README.md

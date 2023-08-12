@@ -8,7 +8,7 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node .",
-    "test": "jest --verbose --detectOpenHandles",
+    "test": "jest --detectOpenHandles",
     "test:ci": "jest --ci --verbose --no-cache --detectOpenHandles",
     "prettier": "prettier --write ."
   },

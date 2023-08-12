@@ -1,5 +1,5 @@
 import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
-import { PostgreSqlContainer } from "@testcontainers/postgresql";
+import { PostgreSqlContainer, StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import PostgresConfig from "../../../src/environment/util/PostgresConfig";
 import run from "node-pg-migrate";
 
@@ -16,8 +16,8 @@ export class TestEnvironmentHandler extends AbstractHandler {
   }
 
   protected override async getDatabaseConfig() {
-    const startedContainer = await this.testDatabaseContainer.start();
     if (this.databaseConfig == undefined) {
+      const startedContainer = await this.testDatabaseContainer.start();
       this.databaseConfig = new PostgresConfig(
         startedContainer.getUsername(),
         startedContainer.getPassword(),

@@ -5,7 +5,6 @@ Marketplace for movers
 # TODO
 - Secure DB by using private IPs
 - Set up authenticated routes with roles and permissions
-- Set up integration test suite and make passing tests a prerequisite of deploying to prod
 - Figure out how to assign query results to custom types
 - Set up logging
 - Consider document database instead of relational before going too deep

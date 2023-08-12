@@ -1,12 +1,12 @@
 .env
 .git
 .github
-.husky
 .idea
 dist
 infra
 migrations
 node_modules
+public
 .dockerignore
 .eslintignore
 .gitignore

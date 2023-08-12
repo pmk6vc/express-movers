@@ -14,7 +14,7 @@
     "prettier:fix": "prettier --write ."
   },
   "pre-commit": [
-    "npm run prettier:fix"
+    "prettier:fix"
   ],
   "keywords": [],
   "author": "",

@@ -136,3 +136,12 @@ resource "google_project_iam_member" "cloud_sql_admin" {
   role = "roles/cloudsql.admin"
   member  = "serviceAccount:${google_service_account.service_account.email}"
 }
+
+/**
+* Assign the role required to manage Identity Platform resources
+*/
+resource "google_project_iam_member" "identity_platform_admin" {
+  project = var.gcp_project_id
+  role = "roles/identityplatform.admin"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}

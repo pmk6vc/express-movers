@@ -11,8 +11,9 @@
     "start:dev": "nodemon src/index.ts",
     "test": "jest --detectOpenHandles",
     "test:ci": "jest --ci --verbose --no-cache --detectOpenHandles",
+    "prettier": "prettier -c .",
     "prettier:fix": "prettier --write .",
-    "precommit": "npm run prettier:fix",
+    "precommit": "npm run prettier",
     "prepare": "husky install"
   },
   "keywords": [],

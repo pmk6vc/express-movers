@@ -1,13 +1,13 @@
-# IDE
+.env
+.git
+.github
 .idea
-
-# Generated dirs
 dist
-node_modules
-
-# Testing
 test
+.gitignore
+.prettierignore
+.prettierrc
+docker-compose.yaml
 jest.config.ts
-
-# Misc
+nodemon.json
 README.md

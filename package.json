@@ -11,9 +11,11 @@
     "start:dev": "nodemon src/index.ts",
     "test": "jest --detectOpenHandles",
     "test:ci": "jest --ci --verbose --no-cache --detectOpenHandles",
-    "prettier:fix": "prettier --write ."
+    "prettier": "prettier --write ."
   },
-  "pre-commit": [ "prettier:fix" ],
+  "pre-commit": [
+    "prettier"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",

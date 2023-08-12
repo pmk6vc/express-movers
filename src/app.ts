@@ -23,6 +23,7 @@ app.use("/_health", healthcheckRouter);
 // Serve custom 404 response if no preceding path was hit
 // Note that public assets like HTML can link to other public assets like CSS because they are all exposed in API
 // TODO: Should an API layer be concerned with serving static HTML assets? If so, should it also be responsible for styling?
+// TODO: Add test coverage for this wildcard if you decide to keep
 app.get("*", (req, res) => {
   res.status(404);
   res.sendFile("html/NotFound.html", { root: "./public" });

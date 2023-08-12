@@ -9,7 +9,7 @@
     "prestart": "npm run build",
     "start": "node .",
     "test": "jest --verbose --detectOpenHandles",
-    "test:ci": "jest --ci --verbose --no-cache",
+    "test:ci": "jest --ci --verbose --no-cache --detectOpenHandles",
     "prettier": "prettier --write ."
   },
   "keywords": [],

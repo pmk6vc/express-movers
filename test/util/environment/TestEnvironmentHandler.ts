@@ -36,6 +36,7 @@ export class TestEnvironmentHandler extends AbstractHandler {
       dir: "migrations",
       direction: "up",
       databaseUrl: env.database.getConnectionString(),
+      verbose: false
     });
   }
 

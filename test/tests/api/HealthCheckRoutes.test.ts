@@ -13,8 +13,14 @@ describe("should test health check routes", () => {
   });
 
   it("returns expected response for default health check endpoint", async () => {
-    const res = await request(app).get("/_health");
-    expect(res.statusCode).toBe(200);
+    // const res = await request(app).get("/_health");
+    // expect(res.statusCode).toBe(200);
+    const res = await request(app)
+      .get("/_health")
+      .expect(200)
+      .expect("Content-Type", "text/html; charset=utf-8");
+    expect(res.body).toEqual({});
+    expect(res.text).toBe("Hello, world!");
   });
 
   it("returns expected row count for migrations", async () => {

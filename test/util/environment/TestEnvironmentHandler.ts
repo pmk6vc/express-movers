@@ -35,10 +35,16 @@ export class TestEnvironmentHandler extends AbstractHandler {
   async runUpMigrations() {
     const env = await this.getEnvironment();
     await run({
-      migrationsTable: "pgmigrations",
       dir: "migrations",
-      direction: "up",
       databaseUrl: env.database.getConnectionString(),
+      migrationsTable: "pgmigrations",
+      direction: "up",
+      logger: {
+        debug: (msg) => {},
+        info: (msg) => {},
+        warn: (msg) => {},
+        error: (msg) => {},
+      },
       verbose: false,
     });
   }
@@ -46,10 +52,16 @@ export class TestEnvironmentHandler extends AbstractHandler {
   async runDownMigrations() {
     const env = await this.getEnvironment();
     await run({
-      migrationsTable: "pgmigrations",
       dir: "migrations",
-      direction: "down",
       databaseUrl: env.database.getConnectionString(),
+      migrationsTable: "pgmigrations",
+      direction: "down",
+      logger: {
+        debug: (msg) => {},
+        info: (msg) => {},
+        warn: (msg) => {},
+        error: (msg) => {},
+      },
       verbose: false,
     });
   }

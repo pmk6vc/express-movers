@@ -5,5 +5,9 @@
 dist
 node_modules
 
+# Testing
+test
+jest.config.ts
+
 # Misc
 README.md

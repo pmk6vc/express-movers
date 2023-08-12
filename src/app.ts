@@ -6,6 +6,7 @@ import healthcheckRouter from "./api/healthchecks/HealthCheckRoutes";
 const app = express();
 
 // Pass environment details to each request via middleware
+// TODO: Add test coverage for this
 app.use(function (req, res, next) {
   const envPromise = EnvironmentResolver.getEnvironment();
   res.locals.env = envPromise;

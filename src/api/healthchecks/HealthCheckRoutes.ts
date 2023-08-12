@@ -13,6 +13,6 @@ router
       rowCount: result.rowCount,
       rows: result.rows,
     });
-  })
+  });
 
 export default router;

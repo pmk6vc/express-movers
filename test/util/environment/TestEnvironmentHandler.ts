@@ -1,30 +1,37 @@
-import AbstractHandler from "./AbstractHandler";
-import { PostgreSqlContainer } from "@testcontainers/postgresql";
-import PostgresConfig from "../util/PostgresConfig";
+import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
+import {
+  PostgreSqlContainer,
+  StartedPostgreSqlContainer,
+} from "@testcontainers/postgresql";
+import PostgresConfig from "../../../src/environment/util/PostgresConfig";
 import run from "node-pg-migrate";
 
-export class LocalDevHandler extends AbstractHandler {
-  protected override async getServerConfig() {
+export class TestEnvironmentHandler extends AbstractHandler {
+  testDatabaseContainer = new PostgreSqlContainer();
+
+  override async getServerConfig() {
     if (this.serverConfig == undefined) {
       this.serverConfig = {
-        serverPort: 5495,
+        serverPort: 5496,
       };
     }
     return this.serverConfig;
   }
+
   protected override async getDatabaseConfig() {
     if (this.databaseConfig == undefined) {
-      const container = await new PostgreSqlContainer().start();
+      const startedContainer = await this.testDatabaseContainer.start();
       this.databaseConfig = new PostgresConfig(
-        container.getUsername(),
-        container.getPassword(),
-        container.getHost(),
-        container.getPort(),
-        container.getDatabase()
+        startedContainer.getUsername(),
+        startedContainer.getPassword(),
+        startedContainer.getHost(),
+        startedContainer.getPort(),
+        startedContainer.getDatabase()
       );
     }
     return this.databaseConfig;
   }
+
   async runUpMigrations() {
     const env = await this.getEnvironment();
     await run({
@@ -32,6 +39,7 @@ export class LocalDevHandler extends AbstractHandler {
       dir: "migrations",
       direction: "up",
       databaseUrl: env.database.getConnectionString(),
+      verbose: false,
     });
   }
 
@@ -42,6 +50,7 @@ export class LocalDevHandler extends AbstractHandler {
       dir: "migrations",
       direction: "down",
       databaseUrl: env.database.getConnectionString(),
+      verbose: false,
     });
   }
 }

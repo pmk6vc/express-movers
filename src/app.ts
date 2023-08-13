@@ -1,6 +1,7 @@
 import express from "express";
 import EnvironmentResolver from "./environment/EnvironmentResolver";
 import healthcheckRouter from "./api/HealthCheckRoutes";
+import authRouter from "./api/AuthRoutes";
 
 // Spin up app
 const app = express();
@@ -19,6 +20,7 @@ app.use(function (req, res, next) {
 
 // Attach routers in order of evaluation
 app.use("/_health", healthcheckRouter);
+app.use("/auth", authRouter);
 
 // Serve custom 404 response if no preceding path was hit
 // Note that public assets like HTML can link to other public assets like CSS because they are all exposed in API

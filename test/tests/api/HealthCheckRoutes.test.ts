@@ -1,9 +1,17 @@
 import { describe, expect, it } from "@jest/globals";
 import request from "supertest";
-import app from "../../../src/app";
+import { buildApp } from "../../../src/app";
 import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
+import { Express } from "express";
 
 describe("should test health check routes", () => {
+  let app: Express;
+
+  beforeAll(async () => {
+    const env = await EnvironmentResolver.getEnvironment();
+    app = buildApp(env);
+  });
+
   beforeEach(async () => {
     await EnvironmentResolver.getEnvironmentHandler().runUpMigrations();
   });

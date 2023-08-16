@@ -1,34 +1,26 @@
 import express from "express";
-import EnvironmentResolver from "./environment/EnvironmentResolver";
-import healthcheckRouter from "./api/HealthCheckRoutes";
+import healthCheckRouter from "./api/HealthCheckRoutes";
 import authRouter from "./api/AuthRoutes";
+import { Environment } from "./environment/handlers/IEnvironment";
 
-// Spin up app
 const app = express();
+export const buildApp = (env: Environment) => {
+  // Expose static public assets in API
+  app.use(express.static("public"));
 
-// Expose static public assets in API
-// TODO: Is this a common practice?
-app.use(express.static("public"));
+  // Attach routers in order of evaluation
+  app.use("/_health", healthCheckRouter(env));
+  app.use("/auth", authRouter(env));
 
-// Pass environment details to each request via middleware
-app.use(function (req, res, next) {
-  const envPromise = EnvironmentResolver.getEnvironment();
-  res.locals.env = envPromise;
-  res.locals.pool = envPromise.then((e) => e?.database.getDatabasePool());
-  next();
-});
+  // Serve custom 404 response if no preceding path was hit
+  // Note that public assets like HTML can link to other public assets like CSS because they are all exposed in API
+  // TODO: Add test coverage for this wildcard
+  app.get("*", (req, res) => {
+    res.status(404);
+    res.sendFile("html/NotFound.html", { root: "./public" });
+  });
 
-// Attach routers in order of evaluation
-app.use("/_health", healthcheckRouter);
-app.use("/auth", authRouter);
-
-// Serve custom 404 response if no preceding path was hit
-// Note that public assets like HTML can link to other public assets like CSS because they are all exposed in API
-// TODO: Should an API layer be concerned with serving static HTML assets? If so, should it also be responsible for styling?
-// TODO: Add test coverage for this wildcard if you decide to keep
-app.get("*", (req, res) => {
-  res.status(404);
-  res.sendFile("html/NotFound.html", { root: "./public" });
-});
+  return app;
+};
 
 export default app;

@@ -5,14 +5,6 @@ import { Environment } from "../environment/handlers/IEnvironment";
 
 const router = express.Router();
 
-// TODO: I think you can just remove the firebase config before app initialization in production
-// TODO: Delete key in GCP
-const firebaseConfig = {
-  credential: admin.credential.cert("/Users/pmkulkarni/Downloads/key.json"),
-};
-admin.initializeApp(firebaseConfig);
-// admin.initializeApp();
-
 const authRouter = (env: Environment) => {
   return router
     .get("/list", async (req, res) => {

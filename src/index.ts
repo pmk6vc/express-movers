@@ -2,6 +2,7 @@ import { buildApp } from "./app";
 import EnvironmentResolver from "./environment/EnvironmentResolver";
 import { Environment } from "./environment/handlers/IEnvironment";
 import { Server } from "http";
+import * as admin from "firebase-admin";
 
 const main = async () => {
   console.log("Fetching environment");
@@ -13,6 +14,15 @@ const main = async () => {
 
   console.log("Configuring Express app");
   const app = buildApp(environment);
+
+  console.log("Initializing Firebase admin");
+  // TODO: I think you can just remove the firebase config before app initialization in production
+  // TODO: Delete key in GCP
+  // const firebaseConfig = {
+  //   credential: admin.credential.cert("/Users/pmkulkarni/Downloads/key.json"),
+  // };
+  // admin.initializeApp(firebaseConfig);
+  admin.initializeApp();
 
   console.log(`Starting app on port ${environment.server.serverPort}`);
   const server = app.listen(environment.server.serverPort, () => {

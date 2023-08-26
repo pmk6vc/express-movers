@@ -1,7 +1,8 @@
-import app from "./app";
+import { buildApp } from "./app";
 import EnvironmentResolver from "./environment/EnvironmentResolver";
 import { Environment } from "./environment/handlers/IEnvironment";
 import { Server } from "http";
+import * as admin from "firebase-admin";
 
 const main = async () => {
   console.log("Fetching environment");
@@ -10,6 +11,12 @@ const main = async () => {
 
   console.log("Running migrations");
   await handler.runUpMigrations();
+
+  console.log("Configuring Express app");
+  const app = buildApp(environment);
+
+  console.log("Initializing Firebase admin");
+  admin.initializeApp();
 
   console.log(`Starting app on port ${environment.server.serverPort}`);
   const server = app.listen(environment.server.serverPort, () => {

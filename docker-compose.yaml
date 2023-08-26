@@ -17,6 +17,16 @@ services:
       timeout: 5s
       retries: 5
 
+  firebase-emulator:
+    build:
+      context: .
+      dockerfile: FirebaseEmulators.dockerfile
+      args:
+        - GCP_TEST_PROJECT_ID=$GCP_TEST_PROJECT_ID
+    ports:
+      - "9099:9099"
+      - "4000:4000"
+
   app:
     image: express-movers-docker:latest
     build:
@@ -29,6 +39,8 @@ services:
     depends_on:
       postgres-db:
         condition: service_healthy
+      firebase-emulator:
+        condition: service_started
     environment:
       - NODE_ENV=development
       - NODE_CONFIG_ENV=local-docker-compose
@@ -37,3 +49,5 @@ services:
       - DB_PORT=${POSTGRES_PORT}
       - DB_USERNAME=${POSTGRES_USER}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - GOOGLE_CLOUD_PROJECT=${GCP_TEST_PROJECT_ID}
+      - FIREBASE_AUTH_EMULATOR_HOST=firebase-emulator:9099

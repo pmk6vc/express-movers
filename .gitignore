@@ -7,3 +7,7 @@ node_modules
 infra/.terraform
 infra/.terraform.lock.hcl
 infra/inputs.tfvars
+
+# Firebase testing
+firebase-debug.log
+ui-debug.log

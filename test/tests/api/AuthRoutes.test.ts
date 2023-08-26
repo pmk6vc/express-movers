@@ -7,9 +7,9 @@ import {
   expect,
   it,
 } from "@jest/globals";
-import request from "supertest";
-import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import { Express } from "express";
+import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
+import request from "supertest";
 import {
   setupIntegrationTest,
   tearDownIntegrationTest,
@@ -17,7 +17,7 @@ import {
 import { app } from "firebase-admin";
 import App = app.App;
 
-describe("should test health check routes", () => {
+describe("should check auth routes", () => {
   let firebaseAdminApp: App;
   let expressApp: Express;
   let userIds: string[];
@@ -30,6 +30,7 @@ describe("should test health check routes", () => {
   });
 
   beforeEach(async () => {
+    jest.resetModules();
     await EnvironmentResolver.getEnvironmentHandler().runUpMigrations();
   });
 
@@ -41,18 +42,12 @@ describe("should test health check routes", () => {
     await tearDownIntegrationTest(firebaseAdminApp, userIds);
   });
 
-  const ROUTE_PREFIX = "/_health";
+  const ROUTE_PREFIX = "/auth";
 
-  it("returns expected response for default health check endpoint", async () => {
+  it("returns a list of users", async () => {
     const res = await request(expressApp)
-      .get(ROUTE_PREFIX)
-      .expect(200)
-      .expect("Content-Type", "text/html; charset=utf-8");
-    expect(res.body).toEqual({});
-    expect(res.text).toBe("Hello, world!");
-  });
-
-  it("returns expected row count for migrations", async () => {
-    await request(expressApp).get(`${ROUTE_PREFIX}/migrations`).expect(200);
+      .get(`${ROUTE_PREFIX}/list`)
+      .expect(200);
+    console.log(res.body);
   });
 });

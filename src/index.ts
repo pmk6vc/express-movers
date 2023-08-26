@@ -16,11 +16,6 @@ const main = async () => {
   const app = buildApp(environment);
 
   console.log("Initializing Firebase admin");
-  // TODO: Delete key in GCP
-  // const firebaseConfig = {
-  //   credential: admin.credential.cert("/Users/pmkulkarni/Downloads/key.json"),
-  // };
-  // admin.initializeApp(firebaseConfig);
   admin.initializeApp();
 
   console.log(`Starting app on port ${environment.server.serverPort}`);

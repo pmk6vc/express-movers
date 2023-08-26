@@ -32,8 +32,8 @@ describe("should check auth routes", () => {
     await EnvironmentResolver.getEnvironmentHandler().runDownMigrations();
   });
 
-  afterAll(() => {
-    tearDownIntegrationTest(firebaseAdminApp, userIds);
+  afterAll(async () => {
+    await tearDownIntegrationTest(firebaseAdminApp, userIds);
     process.env = ENV;
   });
 

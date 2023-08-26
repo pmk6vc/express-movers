@@ -108,5 +108,18 @@ describe("should check user routes", () => {
     expect(res.text).toBe("Unauthorized access");
   });
 
-  it("returns user data for request with valid bearer token", async () => {});
+  it("returns user data for request with valid bearer token", async () => {
+    const userId = testUsers[0].userRecord.uid;
+    const userCredentials = testUsers[0].userCredentials;
+    const bearerToken = await getIdTokenWithEmailPassword(
+      userCredentials.email,
+      userCredentials.password
+    );
+    const res = await request(expressApp)
+      .get(`${ROUTE_PREFIX}/${userId}`)
+      .set("Authorization", `Bearer ${bearerToken}`)
+      .expect(200);
+    expect(res.body.uid).toBe(userId);
+    expect(res.body.email).toBe(userCredentials.email);
+  });
 });

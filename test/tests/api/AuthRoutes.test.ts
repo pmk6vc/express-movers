@@ -1,4 +1,12 @@
-import { beforeEach, describe, expect, it } from "@jest/globals";
+import {
+  beforeAll,
+  beforeEach,
+  afterEach,
+  afterAll,
+  describe,
+  expect,
+  it,
+} from "@jest/globals";
 import { Express } from "express";
 import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import request from "supertest";
@@ -13,7 +21,6 @@ describe("should check auth routes", () => {
   let firebaseAdminApp: App;
   let expressApp: Express;
   let userIds: string[];
-  const ENV = process.env;
 
   beforeAll(async () => {
     const setup = await setupIntegrationTest();
@@ -24,7 +31,6 @@ describe("should check auth routes", () => {
 
   beforeEach(async () => {
     jest.resetModules();
-    process.env = { ...ENV };
     await EnvironmentResolver.getEnvironmentHandler().runUpMigrations();
   });
 
@@ -34,7 +40,6 @@ describe("should check auth routes", () => {
 
   afterAll(async () => {
     await tearDownIntegrationTest(firebaseAdminApp, userIds);
-    process.env = ENV;
   });
 
   const ROUTE_PREFIX = "/auth";

@@ -1,15 +1,32 @@
-import { describe, expect, it } from "@jest/globals";
+import {
+  beforeAll,
+  beforeEach,
+  afterEach,
+  afterAll,
+  describe,
+  expect,
+  it,
+} from "@jest/globals";
 import request from "supertest";
 import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import { Express } from "express";
-import { setupIntegrationTest } from "../../util/IntegrationTestsUtil";
+import {
+  setupIntegrationTest,
+  tearDownIntegrationTest,
+} from "../../util/IntegrationTestsUtil";
+import { app } from "firebase-admin";
+import App = app.App;
 
 describe("should test health check routes", () => {
+  let firebaseAdminApp: App;
   let expressApp: Express;
+  let userIds: string[];
 
   beforeAll(async () => {
     const setup = await setupIntegrationTest();
+    firebaseAdminApp = setup.firebaseAdminApp;
     expressApp = setup.expressApp;
+    userIds = setup.userIds;
   });
 
   beforeEach(async () => {
@@ -18,6 +35,10 @@ describe("should test health check routes", () => {
 
   afterEach(async () => {
     await EnvironmentResolver.getEnvironmentHandler().runDownMigrations();
+  });
+
+  afterAll(async () => {
+    await tearDownIntegrationTest(firebaseAdminApp, userIds);
   });
 
   const ROUTE_PREFIX = "/_health";

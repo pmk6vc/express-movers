@@ -1,31 +1,26 @@
 import { beforeEach, describe, expect, it } from "@jest/globals";
 import { Express } from "express";
 import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
-import { buildApp } from "../../../src/app";
 import request from "supertest";
 import { getAuth } from "firebase-admin/auth";
-import * as admin from "firebase-admin";
+import {
+  setupIntegrationTest,
+  tearDownIntegrationTest,
+} from "../../util/IntegrationTestsUtil";
+import { app } from "firebase-admin";
+import App = app.App;
 
-// To test signed in user, see: https://www.reddit.com/r/Firebase/comments/qmsr9h/writeup_on_testing_cloud_functions_with_the/
 describe("should check auth routes", () => {
-  let app: Express;
-  let uid: string;
+  let firebaseAdminApp: App;
+  let expressApp: Express;
+  let userIds: string[];
   const ENV = process.env;
 
   beforeAll(async () => {
-    admin.initializeApp();
-    const env = await EnvironmentResolver.getEnvironment();
-    app = buildApp(env);
-    const user = await getAuth().createUser({
-      email: "user@example.com",
-      emailVerified: false,
-      phoneNumber: "+11234567890",
-      password: "secretPassword",
-      displayName: "John Doe",
-      photoURL: "http://www.example.com/12345678/photo.png",
-      disabled: false,
-    });
-    uid = user.uid;
+    const setup = await setupIntegrationTest();
+    firebaseAdminApp = setup.firebaseAdminApp;
+    expressApp = setup.expressApp;
+    userIds = setup.userIds;
   });
 
   beforeEach(async () => {
@@ -39,14 +34,16 @@ describe("should check auth routes", () => {
   });
 
   afterAll(() => {
-    getAuth().deleteUser(uid);
+    tearDownIntegrationTest(firebaseAdminApp, userIds);
     process.env = ENV;
   });
 
   const ROUTE_PREFIX = "/auth";
 
   it("returns a list of users", async () => {
-    const res = await request(app).get(`${ROUTE_PREFIX}/list`).expect(200);
+    const res = await request(expressApp)
+      .get(`${ROUTE_PREFIX}/list`)
+      .expect(200);
     console.log(res.body);
   });
 });

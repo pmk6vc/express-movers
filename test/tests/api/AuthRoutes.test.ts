@@ -5,21 +5,21 @@ import { buildApp } from "../../../src/app";
 import request from "supertest";
 import { getAuth } from "firebase-admin/auth";
 import * as admin from "firebase-admin";
+import { GCP_TEST_PROJECT_ID } from "../../util/TestConstants";
 
-// TODO: Requires emulator to be running at this IP address and GCP project
-// TODO: firebase emulators:start --only auth --project test
 // To test signed in user, see: https://www.reddit.com/r/Firebase/comments/qmsr9h/writeup_on_testing_cloud_functions_with_the/
-process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
-admin.initializeApp({
-  projectId: "test",
-});
-
 describe("should check auth routes", () => {
   let app: Express;
   let uid: string;
   const ENV = process.env;
 
   beforeAll(async () => {
+    // TODO: Requires emulator to be running at this IP address and GCP project
+    process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
+    admin.initializeApp({
+      projectId: GCP_TEST_PROJECT_ID,
+    });
+
     const env = await EnvironmentResolver.getEnvironment();
     app = buildApp(env);
     const user = await getAuth().createUser({
@@ -45,8 +45,8 @@ describe("should check auth routes", () => {
   });
 
   afterAll(() => {
-    process.env = ENV;
     getAuth().deleteUser(uid);
+    process.env = ENV;
   });
 
   const ROUTE_PREFIX = "/auth";

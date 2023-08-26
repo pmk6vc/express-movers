@@ -16,17 +16,18 @@ import {
 } from "../../util/IntegrationTestsUtil";
 import { app } from "firebase-admin";
 import App = app.App;
+import { ITestUser } from "../../util/ITestUser";
 
 describe("should test health check routes", () => {
   let firebaseAdminApp: App;
   let expressApp: Express;
-  let userIds: string[];
+  let testUsers: ITestUser[];
 
   beforeAll(async () => {
     const setup = await setupIntegrationTest();
     firebaseAdminApp = setup.firebaseAdminApp;
     expressApp = setup.expressApp;
-    userIds = setup.userIds;
+    testUsers = setup.testUsers;
   });
 
   beforeEach(async () => {
@@ -38,7 +39,7 @@ describe("should test health check routes", () => {
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, userIds);
+    await tearDownIntegrationTest(firebaseAdminApp, testUsers);
   });
 
   const ROUTE_PREFIX = "/_health";

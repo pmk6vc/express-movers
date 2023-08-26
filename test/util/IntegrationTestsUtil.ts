@@ -4,34 +4,53 @@ import { buildApp } from "../../src/app";
 import { getAuth } from "firebase-admin/auth";
 import { app } from "firebase-admin";
 import App = app.App;
+import { ITestUser } from "./ITestUser";
+import {
+  DEFAULT_TEST_USER,
+  FIREBASE_AUTH_EMULATOR_HOST,
+  TEST_GCP_PROJECT_ID,
+} from "./TestConstants";
 
-async function setupDefaultUsers(firebaseAdminApp: App) {
-  const user = await getAuth(firebaseAdminApp).createUser({
-    email: "user@example.com",
-    emailVerified: false,
-    phoneNumber: "+11234567890",
-    password: "secretPassword",
-    displayName: "John Doe",
-    photoURL: "http://www.example.com/12345678/photo.png",
-    disabled: false,
+async function setupDefaultUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
+  const userRecord = await getAuth(firebaseAdminApp).createUser(
+    DEFAULT_TEST_USER
+  );
+  return [
+    {
+      userCredentials: {
+        email: DEFAULT_TEST_USER.email,
+        password: DEFAULT_TEST_USER.password,
+      },
+      userRecord: userRecord,
+    },
+  ];
+}
+
+function connectToFirebaseEmulator() {
+  process.env.FIREBASE_AUTH_EMULATOR_HOST = FIREBASE_AUTH_EMULATOR_HOST;
+  return admin.initializeApp({
+    projectId: TEST_GCP_PROJECT_ID,
   });
-  return [user.uid];
 }
 
 export async function setupIntegrationTest(
-  setupUsers: (firebaseAdminApp: App) => Promise<string[]> = setupDefaultUsers
+  setupUsers: (
+    firebaseAdminApp: App
+  ) => Promise<ITestUser[]> = setupDefaultUsers
 ) {
-  const firebaseAdminApp = admin.initializeApp();
+  const firebaseAdminApp = connectToFirebaseEmulator();
   const env = await EnvironmentResolver.getEnvironment();
   const expressApp = buildApp(env);
 
-  const userIds = await setupUsers(firebaseAdminApp);
-  return { firebaseAdminApp, expressApp, userIds };
+  const testUsers = await setupUsers(firebaseAdminApp);
+  return { firebaseAdminApp, expressApp, testUsers };
 }
 
 export async function tearDownIntegrationTest(
   firebaseAdminApp: App,
-  userIds: string[]
+  testUsers: ITestUser[]
 ) {
-  return await getAuth(firebaseAdminApp).deleteUsers(userIds);
+  return await getAuth(firebaseAdminApp).deleteUsers(
+    testUsers.map((u) => u.userRecord.uid)
+  );
 }

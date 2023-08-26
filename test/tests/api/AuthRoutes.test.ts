@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from "@jest/globals";
 import { Express } from "express";
 import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import request from "supertest";
-import { getAuth } from "firebase-admin/auth";
 import {
   setupIntegrationTest,
   tearDownIntegrationTest,

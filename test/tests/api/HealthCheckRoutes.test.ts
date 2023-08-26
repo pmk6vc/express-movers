@@ -1,15 +1,15 @@
 import { describe, expect, it } from "@jest/globals";
 import request from "supertest";
-import { buildApp } from "../../../src/app";
 import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import { Express } from "express";
+import { setupIntegrationTest } from "../../util/IntegrationTestsUtil";
 
 describe("should test health check routes", () => {
-  let app: Express;
+  let expressApp: Express;
 
   beforeAll(async () => {
-    const env = await EnvironmentResolver.getEnvironment();
-    app = buildApp(env);
+    const setup = await setupIntegrationTest();
+    expressApp = setup.expressApp;
   });
 
   beforeEach(async () => {
@@ -23,7 +23,7 @@ describe("should test health check routes", () => {
   const ROUTE_PREFIX = "/_health";
 
   it("returns expected response for default health check endpoint", async () => {
-    const res = await request(app)
+    const res = await request(expressApp)
       .get(ROUTE_PREFIX)
       .expect(200)
       .expect("Content-Type", "text/html; charset=utf-8");
@@ -32,7 +32,7 @@ describe("should test health check routes", () => {
   });
 
   it("returns expected row count for migrations", async () => {
-    const res = await request(app).get(`${ROUTE_PREFIX}/migrations`);
+    const res = await request(expressApp).get(`${ROUTE_PREFIX}/migrations`);
     expect(res.statusCode).toBe(200);
   });
 });

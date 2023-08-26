@@ -32,7 +32,6 @@ describe("should test health check routes", () => {
   });
 
   it("returns expected row count for migrations", async () => {
-    const res = await request(expressApp).get(`${ROUTE_PREFIX}/migrations`);
-    expect(res.statusCode).toBe(200);
+    await request(expressApp).get(`${ROUTE_PREFIX}/migrations`).expect(200);
   });
 });

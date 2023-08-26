@@ -1,4 +1,8 @@
 import axios from "axios";
+import {
+  FIREBASE_AUTH_EMULATOR_HOST,
+  FIREBASE_TEST_API_KEY,
+} from "./TestConstants";
 
 export async function getIdTokenWithEmailPassword(
   email: string,
@@ -6,7 +10,7 @@ export async function getIdTokenWithEmailPassword(
 ) {
   const res = await axios({
     method: "POST",
-    url: "http://localhost:9099/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=test-api-key",
+    url: `http://${FIREBASE_AUTH_EMULATOR_HOST}/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_TEST_API_KEY}`,
     data: {
       email: email,
       password: password,

@@ -17,6 +17,7 @@ import request from "supertest";
 import { getAuth } from "firebase-admin/auth";
 import { ITestUser } from "../../util/ITestUser";
 import { getIdTokenWithEmailPassword } from "../../util/FirebaseEmulatorsUtil";
+import { FIRST_TEST_USER, SECOND_TEST_USER } from "../../util/TestConstants";
 
 describe("should check user routes", () => {
   let firebaseAdminApp: App;
@@ -24,31 +25,25 @@ describe("should check user routes", () => {
   let testUsers: ITestUser[];
 
   async function setupUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
-    const firstEmail = "first@user.com";
-    const firstPassword = "firstUser";
-    const firstUserRecord = await getAuth(firebaseAdminApp).createUser({
-      email: firstEmail,
-      password: firstPassword,
-    });
+    const firstUserRecord = await getAuth(firebaseAdminApp).createUser(
+      FIRST_TEST_USER
+    );
     const firstUser = {
       userRecord: firstUserRecord,
       userCredentials: {
-        email: firstEmail,
-        password: firstPassword,
+        email: FIRST_TEST_USER.email,
+        password: FIRST_TEST_USER.password,
       },
     };
 
-    const secondEmail = "second@user.com";
-    const secondPassword = "secondUser";
-    const secondUserRecord = await getAuth(firebaseAdminApp).createUser({
-      email: secondEmail,
-      password: secondPassword,
-    });
+    const secondUserRecord = await getAuth(firebaseAdminApp).createUser(
+      SECOND_TEST_USER
+    );
     const secondUser = {
       userRecord: secondUserRecord,
       userCredentials: {
-        email: secondEmail,
-        password: secondPassword,
+        email: SECOND_TEST_USER.email,
+        password: SECOND_TEST_USER.password,
       },
     };
     return [firstUser, secondUser];

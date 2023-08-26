@@ -5,24 +5,21 @@ import { getAuth } from "firebase-admin/auth";
 import { app } from "firebase-admin";
 import App = app.App;
 import { ITestUser } from "./ITestUser";
+import {
+  DEFAULT_TEST_USER,
+  FIREBASE_AUTH_EMULATOR_HOST,
+  TEST_GCP_PROJECT_ID,
+} from "./TestConstants";
 
 async function setupDefaultUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
-  const email = "user@example.com";
-  const password = "secretPassword";
-  const userRecord = await getAuth(firebaseAdminApp).createUser({
-    email: email,
-    emailVerified: false,
-    phoneNumber: "+11234567890",
-    password: password,
-    displayName: "John Doe",
-    photoURL: "http://www.example.com/12345678/photo.png",
-    disabled: false,
-  });
+  const userRecord = await getAuth(firebaseAdminApp).createUser(
+    DEFAULT_TEST_USER
+  );
   return [
     {
       userCredentials: {
-        email: email,
-        password: password,
+        email: DEFAULT_TEST_USER.email,
+        password: DEFAULT_TEST_USER.password,
       },
       userRecord: userRecord,
     },
@@ -30,9 +27,9 @@ async function setupDefaultUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
 }
 
 function connectToFirebaseEmulator() {
-  process.env.FIREBASE_AUTH_EMULATOR_HOST = "0.0.0.0:9099";
+  process.env.FIREBASE_AUTH_EMULATOR_HOST = FIREBASE_AUTH_EMULATOR_HOST;
   return admin.initializeApp({
-    projectId: "gcp-test-project-id",
+    projectId: TEST_GCP_PROJECT_ID,
   });
 }
 

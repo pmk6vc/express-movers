@@ -16,7 +16,6 @@ const main = async () => {
   const app = buildApp(environment);
 
   console.log("Initializing Firebase admin");
-  // TODO: I think you can just remove the firebase config before app initialization in production
   // TODO: Delete key in GCP
   // const firebaseConfig = {
   //   credential: admin.credential.cert("/Users/pmkulkarni/Downloads/key.json"),

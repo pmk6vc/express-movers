@@ -8,7 +8,7 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node .",
-    "start:dev": "nodemon src/index.ts",
+    "start:dev": "firebase emulators:exec --project gcp-test-project-id --only auth --ui \"nodemon src/index.ts\"",
     "test": "firebase emulators:exec --project gcp-test-project-id --only auth \"jest --detectOpenHandles\"",
     "test:ci": "firebase emulators:exec --project gcp-test-project-id --only auth \"jest --ci --verbose --no-cache --detectOpenHandles\"",
     "prettier:check": "prettier -c .",

@@ -31,7 +31,6 @@ describe("should check auth routes", () => {
   });
 
   beforeEach(async () => {
-    jest.resetModules();
     await EnvironmentResolver.getEnvironmentHandler().runUpMigrations();
   });
 
@@ -49,6 +48,5 @@ describe("should check auth routes", () => {
     const res = await request(expressApp)
       .get(`${ROUTE_PREFIX}/list`)
       .expect(200);
-    console.log(res.body);
   });
 });

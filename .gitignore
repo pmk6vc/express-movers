@@ -8,6 +8,7 @@ infra/.terraform
 infra/.terraform.lock.hcl
 infra/inputs.tfvars
 
-# Firebase testing
+# Testing
+coverage
 firebase-debug.log
 ui-debug.log

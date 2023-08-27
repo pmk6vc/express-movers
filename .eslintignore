@@ -2,6 +2,7 @@
 .git
 .github
 .idea
+coverage
 dist
 infra
 migrations

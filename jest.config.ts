@@ -3,8 +3,10 @@ import type { Config } from "jest";
 const config: Config = {
   preset: "ts-jest",
   testEnvironment: "node",
-  setupFilesAfterEnv: ["<rootDir>/test/util/environment/EnvironmentMock.ts"],
+  setupFilesAfterEnv: ["<rootDir>/test/util/TestSetup.ts"],
   testTimeout: 30000,
+  collectCoverage: true,
+  collectCoverageFrom: ["src/api/**"],
 };
 
 export default config;

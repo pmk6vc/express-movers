@@ -57,7 +57,6 @@ describe("should check user routes", () => {
   });
 
   beforeEach(async () => {
-    jest.resetModules();
     await EnvironmentResolver.getEnvironmentHandler().runUpMigrations();
   });
 
@@ -114,7 +113,9 @@ describe("should check user routes", () => {
       .get(`${ROUTE_PREFIX}/${userId}`)
       .set("Authorization", `Bearer ${bearerToken}`)
       .expect(200);
-    expect(res.body.uid).toBe(userId);
-    expect(res.body.email).toBe(userCredentials.email);
+    expect(res.body).toMatchObject({
+      uid: userId,
+      email: userCredentials.email,
+    });
   });
 });

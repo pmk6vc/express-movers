@@ -75,7 +75,7 @@ describe("should check user routes", () => {
     const res = await request(expressApp)
       .get(`${ROUTE_PREFIX}/${userId}`)
       .expect(401);
-    expect(res.text).toBe("No bearer token found");
+    expect(res.text).toBe("Unauthenticated request");
   });
 
   it("blocks request with invalid bearer token", async () => {
@@ -85,7 +85,7 @@ describe("should check user routes", () => {
       .get(`${ROUTE_PREFIX}/${userId}`)
       .set("Authorization", `Bearer ${invalidToken}`)
       .expect(401);
-    expect(res.text).toBe("Invalid bearer token");
+    expect(res.text).toBe("Unauthenticated request");
   });
 
   it("blocks request with bearer token for another user", async () => {
@@ -99,7 +99,7 @@ describe("should check user routes", () => {
       .get(`${ROUTE_PREFIX}/${firstUserId}`)
       .set("Authorization", `Bearer ${secondUserToken}`)
       .expect(403);
-    expect(res.text).toBe("Unauthorized access");
+    expect(res.text).toBe("Unauthorized request");
   });
 
   it("returns user data for request with valid bearer token", async () => {

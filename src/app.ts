@@ -3,11 +3,15 @@ import healthCheckRouter from "./api/HealthCheckRoutes";
 import authRouter from "./api/AuthRoutes";
 import { Environment } from "./environment/handlers/IEnvironment";
 import userRouter from "./api/UserRoutes";
+import authenticateUser from "./middleware/AuthenticateUser";
 
 const app = express();
 export const buildApp = (env: Environment) => {
   // Expose static public assets in API
   app.use(express.static("public"));
+
+  // Use middlewares in order of evaluation
+  app.use(authenticateUser);
 
   // Attach routers in order of evaluation
   app.use("/_health", healthCheckRouter(env));

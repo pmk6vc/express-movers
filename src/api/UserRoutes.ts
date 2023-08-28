@@ -1,36 +1,21 @@
 import express from "express";
 import { Environment } from "../environment/handlers/IEnvironment";
-import * as admin from "firebase-admin";
-import { getAuth } from "firebase-admin/auth";
+import { USER_PROPERTY } from "../middleware/AuthenticateUser";
 
 const router = express.Router();
 
 const userRouter = (env: Environment) => {
   return router.get("/:userId", async (req, res) => {
-    // Fetch authenticated user
-    // TODO: Move this to middleware
-    if (req.headers.authorization == undefined) {
-      res.status(401).send("No bearer token found");
+    const authenticatedUserRecord = res.locals[USER_PROPERTY];
+    if (authenticatedUserRecord == undefined) {
+      res.status(401).send("Unauthenticated request");
       return;
     }
-    const token = req.headers.authorization.split(" ")[1];
-    let decodedToken;
-    try {
-      decodedToken = await admin.auth().verifyIdToken(token);
-    } catch (e) {
-      res.status(401).send("Invalid bearer token");
+    if (req.params.userId != authenticatedUserRecord.uid) {
+      res.status(403).send("Unauthorized request");
       return;
     }
-
-    // Confirm token user ID matches requested user ID
-    if (req.params.userId != decodedToken.uid) {
-      res.status(403).send("Unauthorized access");
-      return;
-    }
-
-    // Fetch user data
-    const userRecord = await getAuth().getUser(decodedToken.uid);
-    res.status(200).send(userRecord.toJSON());
+    res.status(200).send(authenticatedUserRecord);
   });
 };
 

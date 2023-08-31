@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar } from "drizzle-orm/pg-core";
+import { uuid, varchar } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { exampleSchema } from "./ExampleSchema";
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   FIREBASE_AUTH_EMULATOR_HOST,
   FIREBASE_TEST_API_KEY,
-} from "./TestConstants";
+} from "../TestConstants";
 import axiosRetry from "axios-retry";
 
 const authEmulatorClient = axios.create({

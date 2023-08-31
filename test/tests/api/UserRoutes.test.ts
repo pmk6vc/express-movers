@@ -9,15 +9,16 @@ import { Express } from "express";
 import {
   setupIntegrationTest,
   tearDownIntegrationTest,
-} from "../../util/IntegrationTestsUtil";
+} from "../../util/integration/IntegrationTestsUtil";
 import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import { app } from "firebase-admin";
 import App = app.App;
 import request from "supertest";
 import { getAuth } from "firebase-admin/auth";
-import { ITestUser } from "../../util/ITestUser";
-import { getIdTokenWithEmailPassword } from "../../util/FirebaseEmulatorsUtil";
-import { FIRST_TEST_USER, SECOND_TEST_USER } from "../../util/TestConstants";
+import { ITestUser } from "../../util/integration/ITestUser";
+import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
+import { FIRST_TEST_USER, SECOND_TEST_USER, TABLES_TO_TRUNCATE } from "../../util/TestConstants";
+import { truncateTables } from "../../util/DatabaseUtil";
 
 describe("should check user routes", () => {
   let firebaseAdminApp: App;
@@ -57,11 +58,12 @@ describe("should check user routes", () => {
   });
 
   beforeEach(async () => {
-    await EnvironmentResolver.getEnvironmentHandler().runUpMigrations();
+    await EnvironmentResolver.getEnvironmentHandler().runMigrations();
   });
 
   afterEach(async () => {
-    await EnvironmentResolver.getEnvironmentHandler().runDownMigrations();
+    const env = await EnvironmentResolver.getEnvironment()
+    await truncateTables(env, TABLES_TO_TRUNCATE)
   });
 
   afterAll(async () => {

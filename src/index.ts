@@ -10,7 +10,7 @@ const main = async () => {
   const environment = await EnvironmentResolver.getEnvironment();
 
   console.log("Running migrations");
-  await handler.runUpMigrations();
+  await handler.runMigrations();
 
   console.log("Configuring Express app");
   const app = buildApp(environment);

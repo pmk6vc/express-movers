@@ -1,24 +1,15 @@
 import AbstractHandler from "./AbstractHandler";
-import run from "node-pg-migrate";
+import { Client } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres"
+import { migrate } from "drizzle-orm/node-postgres/migrator"
 
 export class LocalDockerComposeHandler extends AbstractHandler {
-  async runUpMigrations() {
+  async runMigrations() {
     const env = await this.getEnvironment();
-    await run({
-      migrationsTable: "pgmigrations",
-      dir: "/app/migrations",
-      direction: "up",
-      databaseUrl: env.database.getConnectionString(),
-    });
-  }
-
-  async runDownMigrations() {
-    const env = await this.getEnvironment();
-    await run({
-      migrationsTable: "pgmigrations",
-      dir: "/app/migrations",
-      direction: "down",
-      databaseUrl: env.database.getConnectionString(),
-    });
+    const client = new Client({
+      connectionString: env.database.getConnectionString()
+    })
+    await client.connect()
+    await migrate(drizzle(client), { migrationsFolder: "/app/migrations" })
   }
 }

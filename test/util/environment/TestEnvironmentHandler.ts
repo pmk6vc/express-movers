@@ -5,6 +5,7 @@ import {
 } from "@testcontainers/postgresql";
 import PostgresConfig from "../../../src/environment/util/PostgresConfig";
 import run from "node-pg-migrate";
+import { executeMigrations } from "../../../src/util/MigrationUtil";
 
 export class TestEnvironmentHandler extends AbstractHandler {
   testDatabaseContainer = new PostgreSqlContainer();
@@ -32,37 +33,8 @@ export class TestEnvironmentHandler extends AbstractHandler {
     return this.databaseConfig;
   }
 
-  async runUpMigrations() {
+  async runMigrations() {
     const env = await this.getEnvironment();
-    await run({
-      dir: "migrations",
-      databaseUrl: env.database.getConnectionString(),
-      migrationsTable: "pgmigrations",
-      direction: "up",
-      logger: {
-        debug: (msg) => {},
-        info: (msg) => {},
-        warn: (msg) => {},
-        error: (msg) => {},
-      },
-      verbose: false,
-    });
-  }
-
-  async runDownMigrations() {
-    const env = await this.getEnvironment();
-    await run({
-      dir: "migrations",
-      databaseUrl: env.database.getConnectionString(),
-      migrationsTable: "pgmigrations",
-      direction: "down",
-      logger: {
-        debug: (msg) => {},
-        info: (msg) => {},
-        warn: (msg) => {},
-        error: (msg) => {},
-      },
-      verbose: false,
-    });
+    await executeMigrations(env, "migrations")
   }
 }

@@ -1,6 +1,7 @@
 import AbstractHandler from "./AbstractHandler";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
 import run from "node-pg-migrate";
+import { executeMigrations } from "../../util/MigrationUtil";
 
 export class ProductionHandler extends AbstractHandler {
   protected async getDatabaseConfig() {
@@ -15,23 +16,8 @@ export class ProductionHandler extends AbstractHandler {
     }
     return this.databaseConfig;
   }
-  async runUpMigrations() {
+  async runMigrations() {
     const env = await this.getEnvironment();
-    await run({
-      migrationsTable: "pgmigrations",
-      dir: "/app/migrations",
-      direction: "up",
-      databaseUrl: env.database.getConnectionString(),
-    });
-  }
-
-  async runDownMigrations() {
-    const env = await this.getEnvironment();
-    await run({
-      migrationsTable: "pgmigrations",
-      dir: "/app/migrations",
-      direction: "down",
-      databaseUrl: env.database.getConnectionString(),
-    });
+    await executeMigrations(env, "/app/migrations")
   }
 }

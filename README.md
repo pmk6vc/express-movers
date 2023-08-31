@@ -3,6 +3,7 @@
 Marketplace for movers
 
 # TODO
+- Use Singleton pattern properly
 - Secure DB by using private IPs
 - Figure out how to assign query results to custom types
 - Set up claims configuration in auth router

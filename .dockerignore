@@ -4,6 +4,7 @@
 .idea
 coverage
 dist
+migrations/meta
 test
 .gitignore
 .prettierignore

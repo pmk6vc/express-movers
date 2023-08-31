@@ -5,13 +5,16 @@ import { Environment } from "../environment/handlers/IEnvironment";
 
 export async function getMigrationClient(env: Environment) {
   const client = new Client({
-    connectionString: env.database.getConnectionString()
-  })
-  await client.connect()
-  return client
+    connectionString: env.database.getConnectionString(),
+  });
+  await client.connect();
+  return client;
 }
 
-export async function executeMigrations(env: Environment, migrationsFolderPath: string) {
-  const client = await getMigrationClient(env)
-  await migrate(drizzle(client), { migrationsFolder: migrationsFolderPath })
+export async function executeMigrations(
+  env: Environment,
+  migrationsFolderPath: string
+) {
+  const client = await getMigrationClient(env);
+  await migrate(drizzle(client), { migrationsFolder: migrationsFolderPath });
 }

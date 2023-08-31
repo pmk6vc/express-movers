@@ -25,7 +25,4 @@ export const SECOND_TEST_USER = {
   password: "secondUser",
 };
 
-export const TABLES_TO_TRUNCATE = [
-  userTableDef,
-  postTableDef
-]
+export const TABLES_TO_TRUNCATE = [userTableDef, postTableDef];

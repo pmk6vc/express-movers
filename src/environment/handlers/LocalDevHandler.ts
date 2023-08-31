@@ -28,6 +28,6 @@ export class LocalDevHandler extends AbstractHandler {
   }
   async runMigrations() {
     const env = await this.getEnvironment();
-    await executeMigrations(env, "migrations")
+    await executeMigrations(env, "migrations");
   }
 }

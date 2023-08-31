@@ -18,6 +18,6 @@ export class ProductionHandler extends AbstractHandler {
   }
   async runMigrations() {
     const env = await this.getEnvironment();
-    await executeMigrations(env, "/app/migrations")
+    await executeMigrations(env, "/app/migrations");
   }
 }

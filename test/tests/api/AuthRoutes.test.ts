@@ -37,8 +37,8 @@ describe("should check auth routes", () => {
   });
 
   afterEach(async () => {
-    const env = await EnvironmentResolver.getEnvironment()
-    await truncateTables(env, TABLES_TO_TRUNCATE)
+    const env = await EnvironmentResolver.getEnvironment();
+    await truncateTables(env, TABLES_TO_TRUNCATE);
   });
 
   afterAll(async () => {

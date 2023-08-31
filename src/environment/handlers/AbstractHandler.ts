@@ -3,7 +3,7 @@ import PostgresConfig from "../util/PostgresConfig";
 import { Client } from "pg";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { drizzle } from "drizzle-orm/node-postgres/index";
-import { executeMigrations } from "../../util/MigrationUtil";
+import { executeMigrations } from "../../util/DatabaseUtil";
 
 export default abstract class AbstractHandler {
   protected serverConfig?: ServerConfig;

@@ -1,7 +1,6 @@
 import AbstractHandler from "./AbstractHandler";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
-import run from "node-pg-migrate";
-import { executeMigrations } from "../../util/MigrationUtil";
+import { executeMigrations } from "../../util/DatabaseUtil";
 
 export class ProductionHandler extends AbstractHandler {
   protected async getDatabaseConfig() {

@@ -49,7 +49,6 @@
     "drizzle-orm": "^0.28.5",
     "express": "^4.18.2",
     "firebase-admin": "^11.10.1",
-    "node-pg-migrate": "^6.2.2",
     "pg": "^8.11.0"
   }
 }

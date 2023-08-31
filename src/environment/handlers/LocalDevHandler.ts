@@ -1,8 +1,7 @@
 import AbstractHandler from "./AbstractHandler";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import PostgresConfig from "../util/PostgresConfig";
-import run from "node-pg-migrate";
-import { executeMigrations } from "../../util/MigrationUtil";
+import { executeMigrations } from "../../util/DatabaseUtil";
 
 export class LocalDevHandler extends AbstractHandler {
   protected override async getServerConfig() {

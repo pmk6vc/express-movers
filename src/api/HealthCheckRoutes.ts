@@ -1,5 +1,7 @@
 import express from "express";
 import { Environment } from "../environment/handlers/IEnvironment";
+import { getDrizzleClientFromEnv } from "../util/DatabaseUtil";
+import { userTableDef } from "../model/example/User";
 
 const router = express.Router();
 
@@ -8,13 +10,10 @@ const healthCheckRouter = (env: Environment) => {
     .get("/", (req, res) => {
       res.send("Hello, world!");
     })
-    .get("/migrations", async (req, res) => {
-      const pool = env.database.getDatabasePool();
-      const result = await pool.query("SELECT COUNT(*) FROM pgmigrations");
-      res.send({
-        rowCount: result.rowCount,
-        rows: result.rows,
-      });
+    .get("/users", async (req, res) => {
+      const db = await getDrizzleClientFromEnv(env);
+      const allUsers = await db.select().from(userTableDef);
+      res.send(allUsers);
     });
 };
 

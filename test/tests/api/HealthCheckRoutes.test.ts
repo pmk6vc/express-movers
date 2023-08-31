@@ -17,7 +17,7 @@ import {
 import { app } from "firebase-admin";
 import App = app.App;
 import { ITestUser } from "../../util/integration/ITestUser";
-import { truncateTables } from "../../util/DatabaseUtil";
+import { truncateTables } from "../../util/TestDatabaseUtil";
 import { TABLES_TO_TRUNCATE } from "../../util/TestConstants";
 
 describe("should test health check routes", () => {
@@ -38,6 +38,7 @@ describe("should test health check routes", () => {
 
   afterEach(async () => {
     const env = await EnvironmentResolver.getEnvironment();
+    // TODO: Need to confirm that this is actually running!
     await truncateTables(env, TABLES_TO_TRUNCATE);
   });
 
@@ -56,7 +57,7 @@ describe("should test health check routes", () => {
     expect(res.text).toBe("Hello, world!");
   });
 
-  it("returns expected row count for migrations", async () => {
-    await request(expressApp).get(`${ROUTE_PREFIX}/migrations`).expect(200);
+  it("returns expected row count for users", async () => {
+    await request(expressApp).get(`${ROUTE_PREFIX}/users`).expect(200);
   });
 });

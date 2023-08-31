@@ -17,7 +17,7 @@ import {
 import { app } from "firebase-admin";
 import App = app.App;
 import { ITestUser } from "../../util/integration/ITestUser";
-import { truncateTables } from "../../util/DatabaseUtil";
+import { truncateTables } from "../../util/TestDatabaseUtil";
 import { TABLES_TO_TRUNCATE } from "../../util/TestConstants";
 
 describe("should check auth routes", () => {

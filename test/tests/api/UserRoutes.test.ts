@@ -22,7 +22,7 @@ import {
   SECOND_TEST_USER,
   TABLES_TO_TRUNCATE,
 } from "../../util/TestConstants";
-import { truncateTables } from "../../util/DatabaseUtil";
+import { truncateTables } from "../../util/TestDatabaseUtil";
 
 describe("should check user routes", () => {
   let firebaseAdminApp: App;

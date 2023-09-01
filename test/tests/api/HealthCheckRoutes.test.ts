@@ -56,7 +56,7 @@ describe("should test health check routes", () => {
     expect(res.text).toBe("Hello, world!");
   });
 
-  it("returns expected row count for users", async () => {
-    await request(expressApp).get(`${ROUTE_PREFIX}/users`).expect(200);
+  it("returns expected response for dummy users", async () => {
+    await request(expressApp).get(`${ROUTE_PREFIX}/dummyUsers`).expect(200);
   });
 });

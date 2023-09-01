@@ -11,6 +11,7 @@ export const buildApp = (dbClient: DatabaseClient) => {
   app.use(express.static("public"));
 
   // Use middlewares in order of evaluation
+  app.use(express.json());
   app.use(authenticateUser);
 
   // Attach routers in order of evaluation

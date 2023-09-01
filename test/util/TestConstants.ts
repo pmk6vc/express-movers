@@ -1,6 +1,6 @@
 // Firebase emulator details
-import { postTableDef } from "../../src/db/model/example/Post";
-import { userTableDef } from "../../src/db/model/example/User";
+import { dummyPostTableDef } from "../../src/db/model/example/DummyPost";
+import { dummyUserTableDef } from "../../src/db/model/example/DummyUser";
 
 export const TEST_GCP_PROJECT_ID = "gcp-test-project-id";
 export const FIREBASE_AUTH_EMULATOR_HOST = "0.0.0.0:9099";
@@ -25,4 +25,4 @@ export const SECOND_TEST_USER = {
   password: "secondUser",
 };
 
-export const TABLES_TO_TRUNCATE = [userTableDef, postTableDef];
+export const TABLES_TO_TRUNCATE = [dummyUserTableDef, dummyPostTableDef];

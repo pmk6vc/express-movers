@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "86f9ca65-7a47-4189-9b0c-84bc36fedcdb",
+  "id": "a286af76-3944-4451-907c-ee0bfad86178",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "post": {
-      "name": "post",
+    "dummy_post": {
+      "name": "dummy_post",
       "schema": "example",
       "columns": {
         "id": {
@@ -24,10 +24,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "post_user_id_user_id_fk": {
-          "name": "post_user_id_user_id_fk",
-          "tableFrom": "post",
-          "tableTo": "user",
+        "dummy_post_user_id_dummy_user_id_fk": {
+          "name": "dummy_post_user_id_dummy_user_id_fk",
+          "tableFrom": "dummy_post",
+          "tableTo": "dummy_user",
           "columnsFrom": [
             "user_id"
           ],
@@ -41,8 +41,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "user": {
-      "name": "user",
+    "dummy_user": {
+      "name": "dummy_user",
       "schema": "example",
       "columns": {
         "id": {
@@ -75,8 +75,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "user_email_unique": {
-          "name": "user_email_unique",
+        "dummy_user_email_unique": {
+          "name": "dummy_user_email_unique",
           "nullsNotDistinct": false,
           "columns": [
             "email"

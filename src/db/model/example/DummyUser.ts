@@ -2,9 +2,8 @@ import { sql } from "drizzle-orm";
 import { uuid, varchar } from "drizzle-orm/pg-core";
 import { exampleSchema } from "./ExampleSchema";
 
-// TODO: Try creating another table with the same name in a different schema
-const USER_TABLE = "user";
-export const userTableDef = exampleSchema.table(USER_TABLE, {
+const DUMMY_USER_TABLE = "dummy_user";
+export const dummyUserTableDef = exampleSchema.table(DUMMY_USER_TABLE, {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
     .primaryKey(),
@@ -13,5 +12,5 @@ export const userTableDef = exampleSchema.table(USER_TABLE, {
   email: varchar("email", { length: 256 }).unique(),
 });
 
-export type User = typeof userTableDef.$inferSelect;
-export type NewUser = typeof userTableDef.$inferInsert;
+export type DummyUser = typeof dummyUserTableDef.$inferSelect;
+export type NewDummyUser = typeof dummyUserTableDef.$inferInsert;

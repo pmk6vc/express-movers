@@ -1,9 +1,9 @@
 import axios from "axios";
+import axiosRetry from "axios-retry";
 import {
   FIREBASE_AUTH_EMULATOR_HOST,
   FIREBASE_TEST_API_KEY,
-} from "./TestConstants";
-import axiosRetry from "axios-retry";
+} from "../TestConstants";
 
 const authEmulatorClient = axios.create({
   baseURL: `http://${FIREBASE_AUTH_EMULATOR_HOST}/identitytoolkit.googleapis.com`,

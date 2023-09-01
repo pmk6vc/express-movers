@@ -1,5 +1,5 @@
-import { DatabaseConfig } from "../handlers/IEnvironment";
 import { Pool } from "pg";
+import { DatabaseConfig } from "../handlers/IEnvironment";
 
 export default class PostgresConfig implements DatabaseConfig {
   protected readonly username: string;

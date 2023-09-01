@@ -1,7 +1,7 @@
-import { LocalDockerComposeHandler } from "./handlers/LocalDockerComposeHandler";
-import { ProductionHandler } from "./handlers/ProductionHandler";
 import AbstractHandler from "./handlers/AbstractHandler";
 import { LocalDevHandler } from "./handlers/LocalDevHandler";
+import { LocalDockerComposeHandler } from "./handlers/LocalDockerComposeHandler";
+import { ProductionHandler } from "./handlers/ProductionHandler";
 
 export default class EnvironmentFactory {
   private configMap: Map<string, AbstractHandler>;

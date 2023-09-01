@@ -1,15 +1,16 @@
 import * as admin from "firebase-admin";
-import EnvironmentResolver from "../../src/environment/EnvironmentResolver";
-import { buildApp } from "../../src/app";
-import { getAuth } from "firebase-admin/auth";
 import { app } from "firebase-admin";
-import App = app.App;
-import { ITestUser } from "./ITestUser";
+import { getAuth } from "firebase-admin/auth";
+import { buildApp } from "../../../src/app";
+import DatabaseClient from "../../../src/db/DatabaseClient";
+import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import {
   DEFAULT_TEST_USER,
   FIREBASE_AUTH_EMULATOR_HOST,
   TEST_GCP_PROJECT_ID,
-} from "./TestConstants";
+} from "../TestConstants";
+import { ITestUser } from "./ITestUser";
+import App = app.App;
 
 async function setupDefaultUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
   const userRecord = await getAuth(firebaseAdminApp).createUser(
@@ -40,17 +41,18 @@ export async function setupIntegrationTest(
 ) {
   const firebaseAdminApp = connectToFirebaseEmulator();
   const env = await EnvironmentResolver.getEnvironment();
-  const expressApp = buildApp(env);
+  const dbClient = await DatabaseClient.getInstance(env);
+  const expressApp = buildApp(dbClient);
 
   const testUsers = await setupUsers(firebaseAdminApp);
-  return { firebaseAdminApp, expressApp, testUsers };
+  return { firebaseAdminApp, dbClient, expressApp, testUsers };
 }
 
 export async function tearDownIntegrationTest(
   firebaseAdminApp: App,
   testUsers: ITestUser[]
 ) {
-  return await getAuth(firebaseAdminApp).deleteUsers(
+  await getAuth(firebaseAdminApp).deleteUsers(
     testUsers.map((u) => u.userRecord.uid)
   );
 }

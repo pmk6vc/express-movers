@@ -1,7 +1,6 @@
-import AbstractHandler from "./AbstractHandler";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import PostgresConfig from "../util/PostgresConfig";
-import run from "node-pg-migrate";
+import AbstractHandler from "./AbstractHandler";
 
 export class LocalDevHandler extends AbstractHandler {
   protected override async getServerConfig() {
@@ -24,24 +23,5 @@ export class LocalDevHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
-  }
-  async runUpMigrations() {
-    const env = await this.getEnvironment();
-    await run({
-      migrationsTable: "pgmigrations",
-      dir: "migrations",
-      direction: "up",
-      databaseUrl: env.database.getConnectionString(),
-    });
-  }
-
-  async runDownMigrations() {
-    const env = await this.getEnvironment();
-    await run({
-      migrationsTable: "pgmigrations",
-      dir: "migrations",
-      direction: "down",
-      databaseUrl: env.database.getConnectionString(),
-    });
   }
 }

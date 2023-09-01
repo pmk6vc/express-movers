@@ -6,21 +6,22 @@ import {
   describe,
 } from "@jest/globals";
 import { Express } from "express";
+import { app } from "firebase-admin";
+import { getAuth } from "firebase-admin/auth";
+import request from "supertest";
+import DatabaseClient from "../../../src/db/DatabaseClient";
+import { FIRST_TEST_USER, SECOND_TEST_USER } from "../../util/TestConstants";
+import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
+import { ITestUser } from "../../util/integration/ITestUser";
 import {
   setupIntegrationTest,
   tearDownIntegrationTest,
-} from "../../util/IntegrationTestsUtil";
-import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
-import { app } from "firebase-admin";
+} from "../../util/integration/IntegrationTestsUtil";
 import App = app.App;
-import request from "supertest";
-import { getAuth } from "firebase-admin/auth";
-import { ITestUser } from "../../util/ITestUser";
-import { getIdTokenWithEmailPassword } from "../../util/FirebaseEmulatorsUtil";
-import { FIRST_TEST_USER, SECOND_TEST_USER } from "../../util/TestConstants";
 
 describe("should check user routes", () => {
   let firebaseAdminApp: App;
+  let dbClient: DatabaseClient;
   let expressApp: Express;
   let testUsers: ITestUser[];
 
@@ -52,20 +53,22 @@ describe("should check user routes", () => {
   beforeAll(async () => {
     const setup = await setupIntegrationTest(setupUsers);
     firebaseAdminApp = setup.firebaseAdminApp;
+    dbClient = setup.dbClient;
     expressApp = setup.expressApp;
     testUsers = setup.testUsers;
   });
 
   beforeEach(async () => {
-    await EnvironmentResolver.getEnvironmentHandler().runUpMigrations();
+    await dbClient.runMigrations();
   });
 
   afterEach(async () => {
-    await EnvironmentResolver.getEnvironmentHandler().runDownMigrations();
+    // TODO: Truncate all tables
   });
 
   afterAll(async () => {
     await tearDownIntegrationTest(firebaseAdminApp, testUsers);
+    await dbClient.close();
   });
 
   const ROUTE_PREFIX = "/users";

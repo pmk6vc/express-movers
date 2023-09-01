@@ -1,5 +1,5 @@
-import AbstractHandler from "./AbstractHandler";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
+import AbstractHandler from "./AbstractHandler";
 
 export class ProductionHandler extends AbstractHandler {
   protected async getDatabaseConfig() {

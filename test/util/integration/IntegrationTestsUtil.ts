@@ -1,16 +1,16 @@
 import * as admin from "firebase-admin";
-import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
-import { buildApp } from "../../../src/app";
-import { getAuth } from "firebase-admin/auth";
 import { app } from "firebase-admin";
-import App = app.App;
-import { ITestUser } from "./ITestUser";
+import { getAuth } from "firebase-admin/auth";
+import { buildApp } from "../../../src/app";
+import DatabaseClient from "../../../src/db/DatabaseClient";
+import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import {
   DEFAULT_TEST_USER,
   FIREBASE_AUTH_EMULATOR_HOST,
   TEST_GCP_PROJECT_ID,
 } from "../TestConstants";
-import DatabaseClient from "../../../src/db/DatabaseClient";
+import { ITestUser } from "./ITestUser";
+import App = app.App;
 
 async function setupDefaultUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
   const userRecord = await getAuth(firebaseAdminApp).createUser(

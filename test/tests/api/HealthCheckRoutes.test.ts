@@ -1,22 +1,22 @@
 import {
+  afterAll,
+  afterEach,
   beforeAll,
   beforeEach,
-  afterEach,
-  afterAll,
   describe,
   expect,
   it,
 } from "@jest/globals";
-import request from "supertest";
 import { Express } from "express";
+import { app } from "firebase-admin";
+import request from "supertest";
+import DatabaseClient from "../../../src/db/DatabaseClient";
+import { ITestUser } from "../../util/integration/ITestUser";
 import {
   setupIntegrationTest,
   tearDownIntegrationTest,
 } from "../../util/integration/IntegrationTestsUtil";
-import { app } from "firebase-admin";
 import App = app.App;
-import { ITestUser } from "../../util/integration/ITestUser";
-import DatabaseClient from "../../../src/db/DatabaseClient";
 
 describe("should test health check routes", () => {
   let firebaseAdminApp: App;

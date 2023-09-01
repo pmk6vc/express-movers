@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as admin from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 

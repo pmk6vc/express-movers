@@ -1,8 +1,7 @@
-import { Environment } from "../environment/handlers/IEnvironment";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { Pool } from "pg";
+import { Environment } from "../environment/handlers/IEnvironment";
 
 export default class DatabaseClient {
   private static instance: DatabaseClient;

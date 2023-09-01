@@ -1,10 +1,8 @@
-import { buildApp } from "./app";
-import EnvironmentResolver from "./environment/EnvironmentResolver";
-import { Environment } from "./environment/handlers/IEnvironment";
-import { Server } from "http";
 import * as admin from "firebase-admin";
+import { Server } from "http";
+import { buildApp } from "./app";
 import DatabaseClient from "./db/DatabaseClient";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
+import EnvironmentResolver from "./environment/EnvironmentResolver";
 
 const main = async () => {
   console.log("Fetching environment");
@@ -17,7 +15,7 @@ const main = async () => {
   await db.runMigrations();
 
   console.log("Configuring Express app");
-  const app = buildApp(environment);
+  const app = buildApp(db);
 
   console.log("Initializing Firebase admin");
   admin.initializeApp();

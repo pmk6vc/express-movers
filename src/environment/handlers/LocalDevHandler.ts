@@ -1,6 +1,6 @@
-import AbstractHandler from "./AbstractHandler";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import PostgresConfig from "../util/PostgresConfig";
+import AbstractHandler from "./AbstractHandler";
 
 export class LocalDevHandler extends AbstractHandler {
   protected override async getServerConfig() {

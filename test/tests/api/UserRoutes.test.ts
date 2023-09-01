@@ -6,24 +6,18 @@ import {
   describe,
 } from "@jest/globals";
 import { Express } from "express";
+import { app } from "firebase-admin";
+import { getAuth } from "firebase-admin/auth";
+import request from "supertest";
+import DatabaseClient from "../../../src/db/DatabaseClient";
+import { FIRST_TEST_USER, SECOND_TEST_USER } from "../../util/TestConstants";
+import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
+import { ITestUser } from "../../util/integration/ITestUser";
 import {
   setupIntegrationTest,
   tearDownIntegrationTest,
 } from "../../util/integration/IntegrationTestsUtil";
-import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
-import { app } from "firebase-admin";
 import App = app.App;
-import request from "supertest";
-import { getAuth } from "firebase-admin/auth";
-import { ITestUser } from "../../util/integration/ITestUser";
-import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
-import {
-  FIRST_TEST_USER,
-  SECOND_TEST_USER,
-  TABLES_TO_TRUNCATE,
-} from "../../util/TestConstants";
-import { truncateTables } from "../../util/TestDatabaseUtil";
-import DatabaseClient from "../../../src/db/DatabaseClient";
 
 describe("should check user routes", () => {
   let firebaseAdminApp: App;

@@ -1,5 +1,5 @@
-import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
+import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
 import PostgresConfig from "../../../src/environment/util/PostgresConfig";
 
 export class TestEnvironmentHandler extends AbstractHandler {

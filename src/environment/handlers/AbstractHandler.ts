@@ -1,5 +1,5 @@
-import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
 import PostgresConfig from "../util/PostgresConfig";
+import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
 
 export default abstract class AbstractHandler {
   protected serverConfig?: ServerConfig;

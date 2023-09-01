@@ -1,7 +1,8 @@
-import { uuid, varchar } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { uuid, varchar } from "drizzle-orm/pg-core";
 import { exampleSchema } from "./ExampleSchema";
 
+// TODO: Try creating another table with the same name in a different schema
 const USER_TABLE = "user";
 export const userTableDef = exampleSchema.table(USER_TABLE, {
   id: uuid("id")

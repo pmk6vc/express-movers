@@ -1,4 +1,4 @@
-import TestEnvironmentResolver from "./environment/TestEnvironmentResolver";
+import TestEnvironmentResolver from "./TestEnvironmentResolver";
 
 // Resolve to test environment in all tests
 jest.mock("../../src/environment/EnvironmentResolver", () => {

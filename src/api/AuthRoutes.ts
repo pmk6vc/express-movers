@@ -1,10 +1,11 @@
 import express from "express";
-import { getAuth } from "firebase-admin/auth";
 import * as admin from "firebase-admin";
+import { getAuth } from "firebase-admin/auth";
+import DatabaseClient from "../db/DatabaseClient";
 
 const router = express.Router();
 
-const authRouter = () => {
+const authRouter = (dbClient: DatabaseClient) => {
   return router
     .get("/list", async (req, res) => {
       const usersResult = await getAuth().listUsers(10);

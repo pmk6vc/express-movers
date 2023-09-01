@@ -1,7 +1,6 @@
 import AbstractHandler from "./AbstractHandler";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import PostgresConfig from "../util/PostgresConfig";
-import { executeMigrations } from "../../util/DatabaseUtil";
 
 export class LocalDevHandler extends AbstractHandler {
   protected override async getServerConfig() {
@@ -24,9 +23,5 @@ export class LocalDevHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
-  }
-  async runMigrations() {
-    const env = await this.getEnvironment();
-    await executeMigrations(env, "migrations");
   }
 }

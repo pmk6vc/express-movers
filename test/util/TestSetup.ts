@@ -1,6 +1,4 @@
 import TestEnvironmentResolver from "./environment/TestEnvironmentResolver";
-import { afterAll } from "@jest/globals";
-import EnvironmentResolver from "../../src/environment/EnvironmentResolver";
 
 // Resolve to test environment in all tests
 jest.mock("../../src/environment/EnvironmentResolver", () => {
@@ -11,10 +9,4 @@ jest.mock("../../src/environment/EnvironmentResolver", () => {
       TestEnvironmentResolver.getEnvironmentHandler(),
     getEnvironment: () => TestEnvironmentResolver.getEnvironment(),
   };
-});
-
-// Tear down database pool after all tests to allow Jest to exit cleanly
-afterAll(async () => {
-  const env = await EnvironmentResolver.getEnvironment();
-  await env.database.getDatabasePool().end();
 });

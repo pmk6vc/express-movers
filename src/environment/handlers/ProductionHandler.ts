@@ -1,6 +1,5 @@
 import AbstractHandler from "./AbstractHandler";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
-import { executeMigrations } from "../../util/DatabaseUtil";
 
 export class ProductionHandler extends AbstractHandler {
   protected async getDatabaseConfig() {
@@ -14,9 +13,5 @@ export class ProductionHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
-  }
-  async runMigrations() {
-    const env = await this.getEnvironment();
-    await executeMigrations(env, "/app/migrations");
   }
 }

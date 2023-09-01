@@ -8,7 +8,6 @@ import {
   it,
 } from "@jest/globals";
 import request from "supertest";
-import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
 import { Express } from "express";
 import {
   setupIntegrationTest,
@@ -17,33 +16,33 @@ import {
 import { app } from "firebase-admin";
 import App = app.App;
 import { ITestUser } from "../../util/integration/ITestUser";
-import { truncateTables } from "../../util/TestDatabaseUtil";
-import { TABLES_TO_TRUNCATE } from "../../util/TestConstants";
+import DatabaseClient from "../../../src/db/DatabaseClient";
 
 describe("should test health check routes", () => {
   let firebaseAdminApp: App;
+  let dbClient: DatabaseClient;
   let expressApp: Express;
   let testUsers: ITestUser[];
 
   beforeAll(async () => {
     const setup = await setupIntegrationTest();
     firebaseAdminApp = setup.firebaseAdminApp;
+    dbClient = setup.dbClient;
     expressApp = setup.expressApp;
     testUsers = setup.testUsers;
   });
 
   beforeEach(async () => {
-    await EnvironmentResolver.getEnvironmentHandler().runMigrations();
+    await dbClient.runMigrations();
   });
 
   afterEach(async () => {
-    const env = await EnvironmentResolver.getEnvironment();
-    // TODO: Need to confirm that this is actually running!
-    await truncateTables(env, TABLES_TO_TRUNCATE);
+    // TODO: Truncate all tables
   });
 
   afterAll(async () => {
     await tearDownIntegrationTest(firebaseAdminApp, testUsers);
+    await dbClient.close();
   });
 
   const ROUTE_PREFIX = "/_health";

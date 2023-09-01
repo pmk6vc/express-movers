@@ -10,6 +10,7 @@ import {
   FIREBASE_AUTH_EMULATOR_HOST,
   TEST_GCP_PROJECT_ID,
 } from "../TestConstants";
+import DatabaseClient from "../../../src/db/DatabaseClient";
 
 async function setupDefaultUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
   const userRecord = await getAuth(firebaseAdminApp).createUser(
@@ -40,17 +41,18 @@ export async function setupIntegrationTest(
 ) {
   const firebaseAdminApp = connectToFirebaseEmulator();
   const env = await EnvironmentResolver.getEnvironment();
-  const expressApp = buildApp(env);
+  const dbClient = await DatabaseClient.getInstance(env);
+  const expressApp = buildApp(dbClient);
 
   const testUsers = await setupUsers(firebaseAdminApp);
-  return { firebaseAdminApp, expressApp, testUsers };
+  return { firebaseAdminApp, dbClient, expressApp, testUsers };
 }
 
 export async function tearDownIntegrationTest(
   firebaseAdminApp: App,
   testUsers: ITestUser[]
 ) {
-  return await getAuth(firebaseAdminApp).deleteUsers(
+  await getAuth(firebaseAdminApp).deleteUsers(
     testUsers.map((u) => u.userRecord.uid)
   );
 }

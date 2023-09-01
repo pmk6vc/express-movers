@@ -1,10 +1,9 @@
 import express from "express";
-import { Environment } from "../environment/handlers/IEnvironment";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
 
 const router = express.Router();
 
-const userRouter = (env: Environment) => {
+const userRouter = () => {
   return router.get("/:userId", async (req, res) => {
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
     if (authenticatedUserRecord == undefined) {

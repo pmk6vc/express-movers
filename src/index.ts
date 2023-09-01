@@ -3,14 +3,18 @@ import EnvironmentResolver from "./environment/EnvironmentResolver";
 import { Environment } from "./environment/handlers/IEnvironment";
 import { Server } from "http";
 import * as admin from "firebase-admin";
+import DatabaseClient from "./db/DatabaseClient";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 
 const main = async () => {
   console.log("Fetching environment");
-  const handler = EnvironmentResolver.getEnvironmentHandler();
   const environment = await EnvironmentResolver.getEnvironment();
 
+  console.log("Fetching DB client from environment");
+  const db = await DatabaseClient.getInstance(environment);
+
   console.log("Running migrations");
-  await handler.runMigrations();
+  await db.runMigrations();
 
   console.log("Configuring Express app");
   const app = buildApp(environment);
@@ -24,19 +28,19 @@ const main = async () => {
   });
 
   process.on("SIGTERM", () => {
-    shutDown(server, environment);
+    shutDown(server, db);
   });
   process.on("SIGINT", () => {
-    shutDown(server, environment);
+    shutDown(server, db);
   });
 };
 
-const shutDown = async (server: Server, env: Environment) => {
+const shutDown = async (server: Server, db: DatabaseClient) => {
   console.log("Received shutdown signal");
   console.log("Shutting down server...");
   server.close();
   console.log("Closing database pool...");
-  await env.database.getDatabasePool().end();
+  await db.close();
   console.log("Exiting process...");
   process.exit(0);
 };

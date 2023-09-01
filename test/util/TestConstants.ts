@@ -1,6 +1,6 @@
 // Firebase emulator details
-import { userTableDef } from "../../src/model/example/User";
-import { postTableDef } from "../../src/model/example/Post";
+import { userTableDef } from "../../src/db/model/example/User";
+import { postTableDef } from "../../src/db/model/example/Post";
 
 export const TEST_GCP_PROJECT_ID = "gcp-test-project-id";
 export const FIREBASE_AUTH_EMULATOR_HOST = "0.0.0.0:9099";

@@ -1,11 +1,10 @@
 import express from "express";
 import { getAuth } from "firebase-admin/auth";
 import * as admin from "firebase-admin";
-import { Environment } from "../environment/handlers/IEnvironment";
 
 const router = express.Router();
 
-const authRouter = (env: Environment) => {
+const authRouter = () => {
   return router
     .get("/list", async (req, res) => {
       const usersResult = await getAuth().listUsers(10);

@@ -23,9 +23,11 @@ import {
   TABLES_TO_TRUNCATE,
 } from "../../util/TestConstants";
 import { truncateTables } from "../../util/TestDatabaseUtil";
+import DatabaseClient from "../../../src/db/DatabaseClient";
 
 describe("should check user routes", () => {
   let firebaseAdminApp: App;
+  let dbClient: DatabaseClient;
   let expressApp: Express;
   let testUsers: ITestUser[];
 
@@ -57,21 +59,22 @@ describe("should check user routes", () => {
   beforeAll(async () => {
     const setup = await setupIntegrationTest(setupUsers);
     firebaseAdminApp = setup.firebaseAdminApp;
+    dbClient = setup.dbClient;
     expressApp = setup.expressApp;
     testUsers = setup.testUsers;
   });
 
   beforeEach(async () => {
-    await EnvironmentResolver.getEnvironmentHandler().runMigrations();
+    await dbClient.runMigrations();
   });
 
   afterEach(async () => {
-    const env = await EnvironmentResolver.getEnvironment();
-    await truncateTables(env, TABLES_TO_TRUNCATE);
+    // TODO: Truncate all tables
   });
 
   afterAll(async () => {
     await tearDownIntegrationTest(firebaseAdminApp, testUsers);
+    await dbClient.close();
   });
 
   const ROUTE_PREFIX = "/users";

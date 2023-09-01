@@ -1,7 +1,6 @@
 import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import PostgresConfig from "../../../src/environment/util/PostgresConfig";
-import { executeMigrations } from "../../../src/util/DatabaseUtil";
 
 export class TestEnvironmentHandler extends AbstractHandler {
   testDatabaseContainer = new PostgreSqlContainer();
@@ -27,10 +26,5 @@ export class TestEnvironmentHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
-  }
-
-  async runMigrations() {
-    const env = await this.getEnvironment();
-    await executeMigrations(env, "migrations");
   }
 }

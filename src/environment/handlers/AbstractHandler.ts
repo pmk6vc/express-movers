@@ -7,7 +7,7 @@ export default abstract class AbstractHandler {
   protected environment?: Environment;
 
   protected async getServerConfig() {
-    if (this.serverConfig == undefined) {
+    if (!this.serverConfig) {
       this.serverConfig = {
         serverPort: +process.env.PORT!,
       };
@@ -16,7 +16,7 @@ export default abstract class AbstractHandler {
   }
 
   protected async getDatabaseConfig() {
-    if (this.databaseConfig == undefined) {
+    if (!this.databaseConfig) {
       this.databaseConfig = new PostgresConfig(
         process.env.DB_USERNAME!,
         process.env.DB_PASSWORD!,
@@ -29,7 +29,7 @@ export default abstract class AbstractHandler {
   }
 
   async getEnvironment() {
-    if (this.environment == undefined) {
+    if (!this.environment) {
       const [serverConfig, databasePool] = await Promise.all([
         this.getServerConfig(),
         this.getDatabaseConfig(),

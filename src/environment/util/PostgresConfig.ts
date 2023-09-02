@@ -24,7 +24,7 @@ export default class PostgresConfig implements DatabaseConfig {
   }
 
   getDatabasePool() {
-    if (this.databasePool == undefined) {
+    if (!this.databasePool) {
       this.databasePool = new Pool({
         user: this.username,
         host: this.host,

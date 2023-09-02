@@ -8,9 +8,9 @@ export default class EnvironmentFactory {
     string,
     AbstractHandler
   >([
-    ["local-dev", new LocalDevHandler()],
-    ["local-docker-compose", new LocalDockerComposeHandler()],
-    ["production", new ProductionHandler()],
+    ["local-dev", LocalDevHandler.getInstance()],
+    ["local-docker-compose", LocalDockerComposeHandler.getInstance()],
+    ["production", ProductionHandler.getInstance()],
   ]);
 
   static getHandler(): AbstractHandler {

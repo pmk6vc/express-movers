@@ -7,7 +7,7 @@ const router = express.Router();
 const userRouter = (dbClient: DatabaseClient) => {
   return router.get("/:userId", async (req, res) => {
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
-    if (authenticatedUserRecord == undefined) {
+    if (!authenticatedUserRecord) {
       res.status(401).send("Unauthenticated request");
       return;
     }

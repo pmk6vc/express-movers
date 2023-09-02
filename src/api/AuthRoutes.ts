@@ -13,7 +13,7 @@ const authRouter = (dbClient: DatabaseClient) => {
       res.send(userRecords);
     })
     .get("/validate", async (req, res) => {
-      if (req.headers.authorization == undefined) {
+      if (!req.headers.authorization) {
         res.status(400).send("No bearer token found");
         return;
       }

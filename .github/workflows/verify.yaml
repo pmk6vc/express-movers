@@ -22,7 +22,7 @@ jobs:
       # Use keyless authentication to authenticate remaining actions
       # This obviously assumes that the service account, IAM roles, and OIDC pools / providers have already been created prior to running pipeline
       - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v1.1.1
         with:
           token_format: access_token
           workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider

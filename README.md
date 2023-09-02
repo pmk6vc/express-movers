@@ -3,7 +3,6 @@
 Marketplace for movers
 
 # TODO
-- Use Singleton pattern properly
 - Truncate tables in test
 - Deprecate health check routes and dummy data
 - Tackle any remaining TODOs

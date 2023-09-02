@@ -3,10 +3,16 @@ import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
 import PostgresConfig from "../../../src/environment/util/PostgresConfig";
 
 export class TestEnvironmentHandler extends AbstractHandler {
-  testDatabaseContainer = new PostgreSqlContainer();
+  private static instance: TestEnvironmentHandler;
+  private testDatabaseContainer: PostgreSqlContainer;
+
+  private constructor() {
+    super();
+    this.testDatabaseContainer = new PostgreSqlContainer();
+  }
 
   override async getServerConfig() {
-    if (this.serverConfig == undefined) {
+    if (!this.serverConfig) {
       this.serverConfig = {
         serverPort: 5496,
       };
@@ -15,7 +21,7 @@ export class TestEnvironmentHandler extends AbstractHandler {
   }
 
   protected override async getDatabaseConfig() {
-    if (this.databaseConfig == undefined) {
+    if (!this.databaseConfig) {
       const startedContainer = await this.testDatabaseContainer.start();
       this.databaseConfig = new PostgresConfig(
         startedContainer.getUsername(),
@@ -26,5 +32,12 @@ export class TestEnvironmentHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
+  }
+
+  static getInstance() {
+    if (!TestEnvironmentHandler.instance) {
+      TestEnvironmentHandler.instance = new TestEnvironmentHandler();
+    }
+    return TestEnvironmentHandler.instance;
   }
 }

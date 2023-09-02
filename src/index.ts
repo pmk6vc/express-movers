@@ -2,14 +2,14 @@ import * as admin from "firebase-admin";
 import { Server } from "http";
 import { buildApp } from "./app";
 import DatabaseClient from "./db/DatabaseClient";
-import EnvironmentResolver from "./environment/EnvironmentResolver";
+import EnvironmentFactory from "./environment/EnvironmentFactory";
 
 const main = async () => {
   console.log("Fetching environment");
-  const environment = await EnvironmentResolver.getEnvironment();
+  const environment = await EnvironmentFactory.getHandler().getEnvironment();
 
   console.log("Fetching DB client from environment");
-  const db = await DatabaseClient.getInstance(environment);
+  const db = DatabaseClient.getInstance(environment);
 
   console.log("Running migrations");
   await db.runMigrations();

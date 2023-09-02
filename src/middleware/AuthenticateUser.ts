@@ -7,7 +7,7 @@ export const USER_PROPERTY = "user";
 async function fetchUserRecordFromBearerString(
   bearerString: string | undefined
 ) {
-  if (bearerString == undefined) {
+  if (!bearerString) {
     return;
   }
   let decodedToken;

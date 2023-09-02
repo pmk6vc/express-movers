@@ -29,8 +29,8 @@ jobs:
         run: npm run test:ci
 
   terraform:
+    # Note - can specify environment key and inject env-specific values if necessary later
     runs-on: ubuntu-latest
-    environment: PRODUCTION
     outputs:
       ARTIFACT_REPO_NAME: ${{ steps.repo.outputs.artifact_repo }}
       DB_INSTANCE_NAME: ${{ steps.db.outputs.db_instance }}
@@ -86,9 +86,9 @@ jobs:
         run: echo "db_instance=$(terraform output db_connection_name | tr -d '"')" >> "$GITHUB_OUTPUT"
 
   clean-registry:
+    # Note - can specify environment key and inject env-specific values if necessary later
     needs: terraform
     runs-on: ubuntu-latest
-    environment: PRODUCTION
     outputs:
       REGISTRY_IMAGE_NAME: ${{ steps.image_name.outputs.IMAGE_NAME }}
     permissions:
@@ -126,9 +126,9 @@ jobs:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
   deploy:
+    # Note - can specify environment key and inject env-specific values if necessary later
     needs: [test, terraform, clean-registry]
     runs-on: ubuntu-latest
-    environment: PRODUCTION
     permissions:
       contents: read
       id-token: write

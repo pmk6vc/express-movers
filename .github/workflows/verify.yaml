@@ -25,7 +25,7 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           token_format: access_token
-          workload_identity_provider: //iam.googleapis.com/projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
       - name: Set up Terraform

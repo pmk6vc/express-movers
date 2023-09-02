@@ -3,7 +3,7 @@ import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 import { buildApp } from "../../../src/app";
 import DatabaseClient from "../../../src/db/DatabaseClient";
-import EnvironmentResolver from "../../../src/environment/EnvironmentResolver";
+import EnvironmentFactory from "../../../src/environment/EnvironmentFactory";
 import {
   DEFAULT_TEST_USER,
   FIREBASE_AUTH_EMULATOR_HOST,
@@ -40,8 +40,8 @@ export async function setupIntegrationTest(
   ) => Promise<ITestUser[]> = setupDefaultUsers
 ) {
   const firebaseAdminApp = connectToFirebaseEmulator();
-  const env = await EnvironmentResolver.getEnvironment();
-  const dbClient = await DatabaseClient.getInstance(env);
+  const env = await EnvironmentFactory.getHandler().getEnvironment();
+  const dbClient = DatabaseClient.getInstance(env);
   const expressApp = buildApp(dbClient);
 
   const testUsers = await setupUsers(firebaseAdminApp);

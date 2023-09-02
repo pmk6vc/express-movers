@@ -4,7 +4,7 @@ const config: Config = {
   preset: "ts-jest",
   testEnvironment: "node",
   setupFilesAfterEnv: [
-    "<rootDir>/test/util/environment/EnvironmentResolverMock.ts",
+    "<rootDir>/test/util/environment/EnvironmentHandlerMock.ts",
   ],
   testTimeout: 30000,
   collectCoverage: true,

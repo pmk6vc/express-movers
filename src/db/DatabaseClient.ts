@@ -23,7 +23,7 @@ export default class DatabaseClient {
     await this.pool.end();
   }
 
-  static async getInstance(env: Environment) {
+  static getInstance(env: Environment) {
     if (!DatabaseClient.instance) {
       const pool = env.database.getDatabasePool();
       DatabaseClient.instance = new DatabaseClient(pool);

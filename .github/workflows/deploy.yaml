@@ -29,8 +29,8 @@ jobs:
         run: npm run test:ci
 
   terraform:
+    # Note - can specify environment key and inject env-specific values if necessary later
     runs-on: ubuntu-latest
-    environment: PRODUCTION
     outputs:
       ARTIFACT_REPO_NAME: ${{ steps.repo.outputs.artifact_repo }}
       DB_INSTANCE_NAME: ${{ steps.db.outputs.db_instance }}

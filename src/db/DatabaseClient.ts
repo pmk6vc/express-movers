@@ -2,7 +2,15 @@ import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
 import { Environment } from "../environment/handlers/IEnvironment";
-import { roleEnum, rolesTableDef } from "./model/auth/Roles";
+import {
+  MovingBusinessEmployeePermissionsEnum,
+  MovingBusinessPermissionsEnum,
+  MovingCustomerPermissionsEnum,
+  MovingJobPermissionsEnum,
+  permissionsTableDef,
+} from "./model/auth/Permissions";
+import { rolesPgEnum, rolesTableDef } from "./model/auth/Roles";
+import { getStringEnumsValues } from "./util/DatabaseHelperFunctions";
 
 export default class DatabaseClient {
   private static instance: DatabaseClient;
@@ -15,7 +23,7 @@ export default class DatabaseClient {
   }
 
   private async seedRoles() {
-    const valuesToInsert = roleEnum.enumValues.map((r) => {
+    const valuesToInsert = rolesPgEnum.enumValues.map((r) => {
       return {
         role: r,
       };
@@ -26,8 +34,25 @@ export default class DatabaseClient {
       .onConflictDoNothing();
   }
 
+  private async seedPermissions() {
+    const valuesToInsert = getStringEnumsValues([
+      MovingCustomerPermissionsEnum,
+      MovingBusinessEmployeePermissionsEnum,
+      MovingBusinessPermissionsEnum,
+      MovingJobPermissionsEnum,
+    ]).map((p) => {
+      return {
+        permission: p,
+      };
+    });
+    await this.pgPoolClient
+      .insert(permissionsTableDef)
+      .values(valuesToInsert)
+      .onConflictDoNothing();
+  }
+
   private async seedTables() {
-    await this.seedRoles();
+    await Promise.all([this.seedRoles(), this.seedPermissions()]);
   }
 
   async runMigrations() {

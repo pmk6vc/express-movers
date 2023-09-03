@@ -11,6 +11,7 @@
     "start:dev": "firebase emulators:exec --project gcp-test-project-id --ui \"nodemon src/index.ts\"",
     "test": "firebase emulators:exec --project gcp-test-project-id \"jest --detectOpenHandles\"",
     "test:ci": "firebase emulators:exec --project gcp-test-project-id \"jest --ci --verbose --no-cache\"",
+    "emulators:start": "firebase emulators:start --project gcp-test-project-id",
     "prettier:check": "prettier -c .",
     "prettier:fix": "prettier --write .",
     "migrations:generate": "drizzle-kit generate:pg",

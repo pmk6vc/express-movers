@@ -11,6 +11,8 @@ import { Express } from "express";
 import { app } from "firebase-admin";
 import request from "supertest";
 import DatabaseClient from "../../../src/db/DatabaseClient";
+import { TABLES_TO_TRUNCATE } from "../../util/TestConstants";
+import { truncateTables } from "../../util/TestDatabaseUtil";
 import { ITestUser } from "../../util/integration/ITestUser";
 import {
   setupIntegrationTest,
@@ -37,7 +39,7 @@ describe("should test health check routes", () => {
   });
 
   afterEach(async () => {
-    // TODO: Truncate all tables
+    await truncateTables(dbClient, TABLES_TO_TRUNCATE);
   });
 
   afterAll(async () => {

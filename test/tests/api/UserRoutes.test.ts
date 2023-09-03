@@ -10,7 +10,12 @@ import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 import request from "supertest";
 import DatabaseClient from "../../../src/db/DatabaseClient";
-import { FIRST_TEST_USER, SECOND_TEST_USER } from "../../util/TestConstants";
+import {
+  FIRST_TEST_USER,
+  SECOND_TEST_USER,
+  TABLES_TO_TRUNCATE,
+} from "../../util/TestConstants";
+import { truncateTables } from "../../util/TestDatabaseUtil";
 import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
 import { ITestUser } from "../../util/integration/ITestUser";
 import {
@@ -63,7 +68,7 @@ describe("should check user routes", () => {
   });
 
   afterEach(async () => {
-    // TODO: Truncate all tables
+    await truncateTables(dbClient, TABLES_TO_TRUNCATE);
   });
 
   afterAll(async () => {

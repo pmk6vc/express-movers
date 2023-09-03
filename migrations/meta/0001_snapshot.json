@@ -1,11 +1,42 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "d8597a77-e237-4b3c-b820-300a105a7ba0",
+  "id": "03707bd5-70a7-4b83-82e6-3e41658a769c",
   "prevId": "a286af76-3944-4451-907c-ee0bfad86178",
   "tables": {
-    "role": {
-      "name": "role",
+    "permissions": {
+      "name": "permissions",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "permission": {
+          "name": "permission",
+          "type": "permission",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "permissions_permission_unique": {
+          "name": "permissions_permission_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "permission"
+          ]
+        }
+      }
+    },
+    "roles": {
+      "name": "roles",
       "schema": "auth",
       "columns": {
         "id": {
@@ -26,8 +57,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "role_role_unique": {
-          "name": "role_role_unique",
+        "roles_role_unique": {
+          "name": "roles_role_unique",
           "nullsNotDistinct": false,
           "columns": [
             "role"
@@ -117,6 +148,29 @@
     }
   },
   "enums": {
+    "permission": {
+      "name": "permission",
+      "values": {
+        "create:customer": "create:customer",
+        "read:customer": "read:customer",
+        "update:customer": "update:customer",
+        "delete:customer": "delete:customer",
+        "create:employee": "create:employee",
+        "read:employee": "read:employee",
+        "update:employee": "update:employee",
+        "delete:employee": "delete:employee",
+        "create:business": "create:business",
+        "read:business": "read:business",
+        "update:business": "update:business",
+        "delete:business": "delete:business",
+        "create:job": "create:job",
+        "read:job": "read:job",
+        "update:job": "update:job",
+        "delete:job": "delete:job",
+        "accept:job": "accept:job",
+        "reject:job": "reject:job"
+      }
+    },
     "role": {
       "name": "role",
       "values": {

@@ -2,7 +2,7 @@ import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
 import { Environment } from "../environment/handlers/IEnvironment";
-import { roleEnum, roleTableDef } from "./model/auth/Role";
+import { roleEnum, rolesTableDef } from "./model/auth/Roles";
 
 export default class DatabaseClient {
   private static instance: DatabaseClient;
@@ -21,9 +21,9 @@ export default class DatabaseClient {
       };
     });
     await this.pgPoolClient
-      .insert(roleTableDef)
+      .insert(rolesTableDef)
       .values(valuesToInsert)
-      .onConflictDoNothing({ target: roleTableDef.role });
+      .onConflictDoNothing();
   }
 
   private async seedTables() {

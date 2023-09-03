@@ -8,6 +8,13 @@
       "when": 1693541114751,
       "tag": "0000_sharp_hannibal_king",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1693763487804,
+      "tag": "0001_open_ultimates",
+      "breakpoints": true
     }
   ]
 }

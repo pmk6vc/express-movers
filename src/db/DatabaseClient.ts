@@ -3,14 +3,10 @@ import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
 import { Environment } from "../environment/handlers/IEnvironment";
 import {
-  MovingBusinessEmployeePermissionsEnum,
-  MovingBusinessPermissionsEnum,
-  MovingCustomerPermissionsEnum,
-  MovingJobPermissionsEnum,
+  permissionsPgEnum,
   permissionsTableDef,
 } from "./model/auth/Permissions";
 import { rolesPgEnum, rolesTableDef } from "./model/auth/Roles";
-import { getStringEnumsValues } from "./util/DatabaseHelperFunctions";
 
 export default class DatabaseClient {
   private static instance: DatabaseClient;
@@ -35,12 +31,7 @@ export default class DatabaseClient {
   }
 
   private async seedPermissions() {
-    const valuesToInsert = getStringEnumsValues([
-      MovingCustomerPermissionsEnum,
-      MovingBusinessEmployeePermissionsEnum,
-      MovingBusinessPermissionsEnum,
-      MovingJobPermissionsEnum,
-    ]).map((p) => {
+    const valuesToInsert = permissionsPgEnum.enumValues.map((p) => {
       return {
         permission: p,
       };
@@ -51,6 +42,7 @@ export default class DatabaseClient {
       .onConflictDoNothing();
   }
 
+  // TODO: Need to thoroughly test seeding database tables - values, conflicts, enum integrity
   private async seedTables() {
     await Promise.all([this.seedRoles(), this.seedPermissions()]);
   }

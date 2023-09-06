@@ -12,15 +12,8 @@
     {
       "idx": 1,
       "version": "5",
-      "when": 1693786849076,
-      "tag": "0001_minor_lionheart",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1693954270255,
-      "tag": "0002_jazzy_whiplash",
+      "when": 1693961060048,
+      "tag": "0001_misty_azazel",
       "breakpoints": true
     }
   ]

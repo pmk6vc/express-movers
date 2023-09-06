@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "5cd9b0d7-f6dd-487e-8324-b8644714ed22",
+  "id": "1de45da0-a02d-462c-b6ff-f59459565e94",
   "prevId": "a286af76-3944-4451-907c-ee0bfad86178",
   "tables": {
     "permissions": {
@@ -95,8 +95,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
         },
         "roles_permissions_permission_id_permissions_id_fk": {
           "name": "roles_permissions_permission_id_permissions_id_fk",
@@ -108,8 +108,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {

@@ -67,7 +67,8 @@ export default class DatabaseClient {
     });
     await this.pgPoolClient
       .insert(rolesPermissionsTableDef)
-      .values(valuesToInsert);
+      .values(valuesToInsert)
+      .onConflictDoNothing();
   }
 
   // TODO: Need to thoroughly test seeding database tables - values, conflicts, enum integrity

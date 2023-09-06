@@ -76,8 +76,8 @@ export const rolesPermissionsMap = new Map([
       MovingBidPermissionsEnum.READ_BID,
       MovingBidPermissionsEnum.UPDATE_BID,
       MovingBidPermissionsEnum.DELETE_BID,
-      MovingBidPermissionsEnum.UPDATE_BID,
-      MovingBidPermissionsEnum.DELETE_BID,
+      MovingBidPermissionsEnum.ACCEPT_BID,
+      MovingBidPermissionsEnum.REJECT_BID,
     ],
   ],
 ]);
@@ -86,10 +86,16 @@ export const rolesPermissionsTableDef = authSchema.table(
   ROLES_PERMISSIONS_TABLE,
   {
     roleId: uuid("role_id")
-      .references(() => rolesTableDef.id)
+      .references(() => rolesTableDef.id, {
+        onUpdate: "cascade",
+        onDelete: "restrict",
+      })
       .notNull(),
     permissionId: uuid("permission_id")
-      .references(() => permissionsTableDef.id)
+      .references(() => permissionsTableDef.id, {
+        onUpdate: "cascade",
+        onDelete: "restrict",
+      })
       .notNull(),
   },
   (table) => {
@@ -100,3 +106,4 @@ export const rolesPermissionsTableDef = authSchema.table(
 );
 
 export type RolePermission = typeof rolesPermissionsTableDef.$inferSelect;
+export type NewRolePermission = typeof rolesPermissionsTableDef.$inferInsert;

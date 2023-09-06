@@ -12,8 +12,15 @@
     {
       "idx": 1,
       "version": "5",
-      "when": 1693783665393,
-      "tag": "0001_sturdy_thundra",
+      "when": 1693786849076,
+      "tag": "0001_minor_lionheart",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1693954270255,
+      "tag": "0002_jazzy_whiplash",
       "breakpoints": true
     }
   ]

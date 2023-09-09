@@ -1,7 +1,7 @@
 import express from "express";
 import authRouter from "./api/AuthRoutes";
 import healthCheckRouter from "./api/HealthCheckRoutes";
-import userRouter from "./api/UserRoutes";
+import UserRouter from "./api/UserRouter";
 import DatabaseClient from "./db/DatabaseClient";
 import authenticateUser from "./middleware/AuthenticateUser";
 
@@ -18,7 +18,7 @@ export const buildApp = (dbClient: DatabaseClient) => {
   // TODO: Consider adding some structure here on the arguments and return types
   app.use("/_health", healthCheckRouter(dbClient));
   app.use("/auth", authRouter(dbClient));
-  app.use("/users", userRouter(dbClient));
+  app.use("/users", UserRouter.getRouter(dbClient));
 
   // Serve custom 404 response if no preceding path was hit
   // Note that public assets like HTML can link to other public assets like CSS because they are all exposed in API

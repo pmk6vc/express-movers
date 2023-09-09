@@ -1,15 +1,16 @@
 import { eq } from "drizzle-orm";
-import express from "express";
+import { Request, Response, Router } from "express";
 import DatabaseClient from "../db/DatabaseClient";
 import { RolesEnum } from "../db/model/auth/Roles";
 import { NewUser, userTableDef } from "../db/model/entity/User";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
+import AbstractRouter from "./AbstractRouter";
 
-const router = express.Router();
+export default class UserRouter extends AbstractRouter {
+  private static instance: UserRouter;
 
-const userRouter = (dbClient: DatabaseClient) => {
-  return router
-    .post("/newCustomer", async (req, res) => {
+  private createNewCustomer(dbClient: DatabaseClient) {
+    return async (req: Request, res: Response) => {
       // Confirm that request is authenticated
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
       if (!authenticatedUserRecord) {
@@ -34,8 +35,11 @@ const userRouter = (dbClient: DatabaseClient) => {
       return res
         .status(201)
         .send(`New customer ${authenticatedUserRecord.uid} created`);
-    })
-    .get("/:userId", async (req, res) => {
+    };
+  }
+
+  private getCustomer(dbClient: DatabaseClient) {
+    return async (req: Request, res: Response) => {
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
       if (!authenticatedUserRecord) {
         res.status(401).send("Unauthenticated request");
@@ -46,7 +50,19 @@ const userRouter = (dbClient: DatabaseClient) => {
         return;
       }
       res.status(200).send(authenticatedUserRecord);
-    });
-};
+    };
+  }
 
-export default userRouter;
+  protected buildRouter(dbClient: DatabaseClient): Router {
+    return this.router
+      .post("/newCustomer", this.createNewCustomer(dbClient))
+      .get("/:userId", this.getCustomer(dbClient));
+  }
+
+  static getRouter(dbClient: DatabaseClient): Router {
+    if (!UserRouter.instance) {
+      UserRouter.instance = new UserRouter(dbClient);
+    }
+    return UserRouter.instance.getRouter();
+  }
+}

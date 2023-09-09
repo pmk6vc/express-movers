@@ -1,12 +1,12 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "8a1c7c18-3143-48d7-9fe4-99ca4f92b636",
+  "id": "6b2f18e1-929b-40fa-abd9-437ee631b98f",
   "prevId": "1de45da0-a02d-462c-b6ff-f59459565e94",
   "tables": {
     "permissions": {
       "name": "permissions",
-      "schema": "auth",
+      "schema": "entity",
       "columns": {
         "id": {
           "name": "id",
@@ -37,7 +37,7 @@
     },
     "roles": {
       "name": "roles",
-      "schema": "auth",
+      "schema": "entity",
       "columns": {
         "id": {
           "name": "id",
@@ -68,7 +68,7 @@
     },
     "roles_permissions": {
       "name": "roles_permissions",
-      "schema": "auth",
+      "schema": "entity",
       "columns": {
         "role_id": {
           "name": "role_id",
@@ -121,98 +121,6 @@
           ]
         }
       },
-      "uniqueConstraints": {}
-    },
-    "organization": {
-      "name": "organization",
-      "schema": "entity",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(128)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "persisted_at": {
-          "name": "persisted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now() at time zone 'utc'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "user": {
-      "name": "user",
-      "schema": "entity",
-      "columns": {
-        "uid": {
-          "name": "uid",
-          "type": "varchar(128)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "role_id": {
-          "name": "role_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "organization_id": {
-          "name": "organization_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "persisted_at": {
-          "name": "persisted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now() at time zone 'utc'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "user_role_id_roles_id_fk": {
-          "name": "user_role_id_roles_id_fk",
-          "tableFrom": "user",
-          "tableTo": "roles",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "cascade"
-        },
-        "user_organization_id_organization_id_fk": {
-          "name": "user_organization_id_organization_id_fk",
-          "tableFrom": "user",
-          "tableTo": "organization",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "dummy_post": {
@@ -335,12 +243,13 @@
     }
   },
   "schemas": {
-    "auth": "auth",
     "entity": "entity",
     "example": "example"
   },
   "_meta": {
-    "schemas": {},
+    "schemas": {
+      "auth": "entity"
+    },
     "tables": {},
     "columns": {}
   }

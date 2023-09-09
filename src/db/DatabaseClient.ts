@@ -5,13 +5,13 @@ import { Environment } from "../environment/handlers/IEnvironment";
 import {
   permissionsPgEnum,
   permissionsTableDef,
-} from "./model/auth/Permissions";
-import { rolesPgEnum, rolesTableDef } from "./model/auth/Roles";
+} from "./model/entity/Permissions";
+import { rolesPgEnum, rolesTableDef } from "./model/entity/Roles";
 import {
   NewRolePermission,
   rolesPermissionsMap,
   rolesPermissionsTableDef,
-} from "./model/auth/RolesPermissions";
+} from "./model/entity/RolesPermissions";
 
 export default class DatabaseClient {
   private static instance: DatabaseClient;

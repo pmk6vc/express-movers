@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { uuid } from "drizzle-orm/pg-core";
 import { convertStringEnumsToPgEnum } from "../../util/DatabaseHelperFunctions";
-import { authSchema } from "./AuthSchema";
+import { entitySchema } from "./EntitySchema";
 
 const PERMISSIONS_TABLE = "permissions";
 
@@ -46,7 +46,7 @@ export const permissionsPgEnum = convertStringEnumsToPgEnum("permission", [
   MovingBidPermissionsEnum,
 ]);
 
-export const permissionsTableDef = authSchema.table(PERMISSIONS_TABLE, {
+export const permissionsTableDef = entitySchema.table(PERMISSIONS_TABLE, {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
     .primaryKey(),

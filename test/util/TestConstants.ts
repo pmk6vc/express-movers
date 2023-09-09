@@ -1,7 +1,7 @@
 // Firebase emulator details
-import { permissionsTableDef } from "../../src/db/model/auth/Permissions";
-import { rolesTableDef } from "../../src/db/model/auth/Roles";
-import { rolesPermissionsTableDef } from "../../src/db/model/auth/RolesPermissions";
+import { permissionsTableDef } from "../../src/db/model/entity/Permissions";
+import { rolesTableDef } from "../../src/db/model/entity/Roles";
+import { rolesPermissionsTableDef } from "../../src/db/model/entity/RolesPermissions";
 import { dummyPostTableDef } from "../../src/db/model/example/DummyPost";
 import { dummyUserTableDef } from "../../src/db/model/example/DummyUser";
 

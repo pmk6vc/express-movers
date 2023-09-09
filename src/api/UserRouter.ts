@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { Request, Response, Router } from "express";
+import express, { Request, Response, Router } from "express";
 import DatabaseClient from "../db/DatabaseClient";
-import { RolesEnum } from "../db/model/auth/Roles";
+import { RolesEnum } from "../db/model/entity/Roles";
 import { NewUser, userTableDef } from "../db/model/entity/User";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
 import AbstractRouter from "./AbstractRouter";
@@ -54,7 +54,8 @@ export default class UserRouter extends AbstractRouter {
   }
 
   protected buildRouter(dbClient: DatabaseClient): Router {
-    return this.router
+    return express
+      .Router()
       .post("/newCustomer", this.createNewCustomer(dbClient))
       .get("/:userId", this.getCustomer(dbClient));
   }

@@ -1,12 +1,12 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "a286af76-3944-4451-907c-ee0bfad86178",
+  "id": "ea24c2a5-6368-479e-8317-72fba66993c4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "dummy_post": {
-      "name": "dummy_post",
-      "schema": "example",
+    "organization": {
+      "name": "organization",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -15,35 +15,28 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
+        "name": {
+          "name": "name",
+          "type": "varchar(128)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "persisted_at": {
+          "name": "persisted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "(now() at time zone 'utc')"
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "dummy_post_user_id_dummy_user_id_fk": {
-          "name": "dummy_post_user_id_dummy_user_id_fk",
-          "tableFrom": "dummy_post",
-          "tableTo": "dummy_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "dummy_user": {
-      "name": "dummy_user",
-      "schema": "example",
+    "permissions": {
+      "name": "permissions",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -52,43 +45,216 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "first_name": {
-          "name": "first_name",
-          "type": "varchar(256)",
+        "permission": {
+          "name": "permission",
+          "type": "permission",
           "primaryKey": false,
           "notNull": true
-        },
-        "last_name": {
-          "name": "last_name",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "dummy_user_email_unique": {
-          "name": "dummy_user_email_unique",
+        "permissions_permission_unique": {
+          "name": "permissions_permission_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "email"
+            "permission"
           ]
         }
       }
+    },
+    "roles": {
+      "name": "roles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "role": {
+          "name": "role",
+          "type": "role",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "roles_role_unique": {
+          "name": "roles_role_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "role"
+          ]
+        }
+      }
+    },
+    "roles_permissions": {
+      "name": "roles_permissions",
+      "schema": "",
+      "columns": {
+        "role_id": {
+          "name": "role_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "permission_id": {
+          "name": "permission_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "roles_permissions_role_id_roles_id_fk": {
+          "name": "roles_permissions_role_id_roles_id_fk",
+          "tableFrom": "roles_permissions",
+          "tableTo": "roles",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "roles_permissions_permission_id_permissions_id_fk": {
+          "name": "roles_permissions_permission_id_permissions_id_fk",
+          "tableFrom": "roles_permissions",
+          "tableTo": "permissions",
+          "columnsFrom": [
+            "permission_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "roles_permissions_role_id_permission_id": {
+          "name": "roles_permissions_role_id_permission_id",
+          "columns": [
+            "role_id",
+            "permission_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "uid": {
+          "name": "uid",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "persisted_at": {
+          "name": "persisted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "(now() at time zone 'utc')"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_role_id_roles_id_fk": {
+          "name": "user_role_id_roles_id_fk",
+          "tableFrom": "user",
+          "tableTo": "roles",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "user_organization_id_organization_id_fk": {
+          "name": "user_organization_id_organization_id_fk",
+          "tableFrom": "user",
+          "tableTo": "organization",
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     }
   },
-  "enums": {},
-  "schemas": {
-    "example": "example"
+  "enums": {
+    "permission": {
+      "name": "permission",
+      "values": {
+        "create:customer": "create:customer",
+        "read:customer": "read:customer",
+        "update:customer": "update:customer",
+        "delete:customer": "delete:customer",
+        "create:employee": "create:employee",
+        "read:employee": "read:employee",
+        "update:employee": "update:employee",
+        "delete:employee": "delete:employee",
+        "create:business": "create:business",
+        "read:business": "read:business",
+        "update:business": "update:business",
+        "delete:business": "delete:business",
+        "create:job": "create:job",
+        "read:job": "read:job",
+        "update:job": "update:job",
+        "delete:job": "delete:job",
+        "create:bid": "create:bid",
+        "read:bid": "read:bid",
+        "update:bid": "update:bid",
+        "delete:bid": "delete:bid",
+        "accept:bid": "accept:bid",
+        "reject:bid": "reject:bid"
+      }
+    },
+    "role": {
+      "name": "role",
+      "values": {
+        "MOVING_CUSTOMER": "MOVING_CUSTOMER",
+        "MOVING_BUSINESS_EMPLOYEE": "MOVING_BUSINESS_EMPLOYEE",
+        "MOVING_BUSINESS_ADMIN": "MOVING_BUSINESS_ADMIN",
+        "SUPER_USER": "SUPER_USER"
+      }
+    }
   },
+  "schemas": {},
   "_meta": {
     "schemas": {},
     "tables": {},

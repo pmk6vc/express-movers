@@ -1,7 +1,6 @@
 import { sql } from "drizzle-orm";
-import { uuid } from "drizzle-orm/pg-core";
+import { pgTable, uuid } from "drizzle-orm/pg-core";
 import { convertStringEnumsToPgEnum } from "../../util/DatabaseHelperFunctions";
-import { entitySchema } from "./EntitySchema";
 
 const ROLES_TABLE = "roles";
 
@@ -13,7 +12,7 @@ export enum RolesEnum {
 }
 
 export const rolesPgEnum = convertStringEnumsToPgEnum("role", [RolesEnum]);
-export const rolesTableDef = entitySchema.table(ROLES_TABLE, {
+export const rolesTableDef = pgTable(ROLES_TABLE, {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
     .primaryKey(),

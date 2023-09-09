@@ -71,7 +71,6 @@ export default class DatabaseClient {
       .onConflictDoNothing();
   }
 
-  // TODO: Need to thoroughly test seeding database tables - values, conflicts, enum integrity
   private async seedTables() {
     await Promise.all([this.seedRoles(), this.seedPermissions()]);
     await this.seedRolesPermissions();

@@ -19,5 +19,3 @@ export const rolesTableDef = authSchema.table(ROLES_TABLE, {
     .primaryKey(),
   role: rolesPgEnum("role").notNull().unique(),
 });
-
-export type Role = typeof rolesTableDef.$inferSelect;

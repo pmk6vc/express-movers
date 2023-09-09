@@ -1,5 +1,4 @@
 import express from "express";
-import authRouter from "./api/AuthRoutes";
 import healthCheckRouter from "./api/HealthCheckRoutes";
 import UserRouter from "./api/UserRouter";
 import DatabaseClient from "./db/DatabaseClient";
@@ -17,7 +16,6 @@ export const buildApp = (dbClient: DatabaseClient) => {
   // Attach routers in order of evaluation
   // TODO: Consider adding some structure here on the arguments and return types
   app.use("/_health", healthCheckRouter(dbClient));
-  app.use("/auth", authRouter(dbClient));
   app.use("/users", UserRouter.getRouter(dbClient));
 
   // Serve custom 404 response if no preceding path was hit

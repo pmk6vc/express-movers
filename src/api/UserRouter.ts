@@ -38,7 +38,7 @@ export default class UserRouter extends AbstractRouter {
     };
   }
 
-  private getCustomer(dbClient: DatabaseClient) {
+  private getCustomer() {
     return async (req: Request, res: Response) => {
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
       if (!authenticatedUserRecord) {
@@ -57,7 +57,7 @@ export default class UserRouter extends AbstractRouter {
     return express
       .Router()
       .post("/newCustomer", this.createNewCustomer(dbClient))
-      .get("/:userId", this.getCustomer(dbClient));
+      .get("/:userId", this.getCustomer());
   }
 
   static getRouter(dbClient: DatabaseClient): Router {

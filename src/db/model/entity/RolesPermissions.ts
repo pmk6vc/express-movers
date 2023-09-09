@@ -1,5 +1,5 @@
 import { primaryKey, uuid } from "drizzle-orm/pg-core";
-import { authSchema } from "./AuthSchema";
+import { entitySchema } from "./EntitySchema";
 import {
   MovingBidPermissionsEnum,
   MovingBusinessEmployeePermissionsEnum,
@@ -82,7 +82,7 @@ export const rolesPermissionsMap = new Map([
   ],
 ]);
 
-export const rolesPermissionsTableDef = authSchema.table(
+export const rolesPermissionsTableDef = entitySchema.table(
   ROLES_PERMISSIONS_TABLE,
   {
     roleId: uuid("role_id")

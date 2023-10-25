@@ -1,7 +1,7 @@
+import { permissionsTableDef } from "../../src/db/model/auth/Permissions";
+import { rolesTableDef } from "../../src/db/model/auth/Roles";
+import { rolesPermissionsTableDef } from "../../src/db/model/auth/RolesPermissions";
 import { orgTableDef } from "../../src/db/model/entity/Organization";
-import { permissionsTableDef } from "../../src/db/model/entity/Permissions";
-import { rolesTableDef } from "../../src/db/model/entity/Roles";
-import { rolesPermissionsTableDef } from "../../src/db/model/entity/RolesPermissions";
 import { userTableDef } from "../../src/db/model/entity/User";
 
 // Firebase emulator details

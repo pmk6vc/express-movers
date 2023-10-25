@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import express, { Request, Response, Router } from "express";
 import DatabaseClient from "../db/DatabaseClient";
-import { RolesEnum } from "../db/model/entity/Roles";
+import { RolesEnum } from "../db/model/auth/Roles";
 import { NewUser, userTableDef } from "../db/model/entity/User";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
 import AbstractRouter from "./AbstractRouter";

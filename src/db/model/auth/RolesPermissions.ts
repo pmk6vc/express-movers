@@ -1,4 +1,5 @@
-import { pgTable, primaryKey, uuid } from "drizzle-orm/pg-core";
+import { primaryKey, uuid } from "drizzle-orm/pg-core";
+import { authSchema } from "./AuthSchema";
 import {
   MovingBidPermissionsEnum,
   MovingBusinessEmployeePermissionsEnum,
@@ -81,7 +82,7 @@ export const rolesPermissionsMap = new Map([
   ],
 ]);
 
-export const rolesPermissionsTableDef = pgTable(
+export const rolesPermissionsTableDef = authSchema.table(
   ROLES_PERMISSIONS_TABLE,
   {
     roleId: uuid("role_id")
@@ -104,5 +105,4 @@ export const rolesPermissionsTableDef = pgTable(
   }
 );
 
-export type RolePermission = typeof rolesPermissionsTableDef.$inferSelect;
 export type NewRolePermission = typeof rolesPermissionsTableDef.$inferInsert;

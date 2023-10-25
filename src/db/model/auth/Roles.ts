@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
-import { pgTable, uuid } from "drizzle-orm/pg-core";
+import { uuid } from "drizzle-orm/pg-core";
 import { convertStringEnumsToPgEnum } from "../../util/DatabaseHelperFunctions";
+import { authSchema } from "./AuthSchema";
 
 const ROLES_TABLE = "roles";
 
@@ -12,7 +13,7 @@ export enum RolesEnum {
 }
 
 export const rolesPgEnum = convertStringEnumsToPgEnum("role", [RolesEnum]);
-export const rolesTableDef = pgTable(ROLES_TABLE, {
+export const rolesTableDef = authSchema.table(ROLES_TABLE, {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
     .primaryKey(),

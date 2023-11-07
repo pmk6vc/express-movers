@@ -1,10 +1,10 @@
-// Firebase emulator details
-import { permissionsTableDef } from "../../src/db/model/entity/Permissions";
-import { rolesTableDef } from "../../src/db/model/entity/Roles";
-import { rolesPermissionsTableDef } from "../../src/db/model/entity/RolesPermissions";
-import { dummyPostTableDef } from "../../src/db/model/example/DummyPost";
-import { dummyUserTableDef } from "../../src/db/model/example/DummyUser";
+import { permissionsTableDef } from "../../src/db/model/auth/Permissions";
+import { rolesTableDef } from "../../src/db/model/auth/Roles";
+import { rolesPermissionsTableDef } from "../../src/db/model/auth/RolesPermissions";
+import { orgTableDef } from "../../src/db/model/entity/Organization";
+import { userTableDef } from "../../src/db/model/entity/User";
 
+// Firebase emulator details
 export const TEST_GCP_PROJECT_ID = "gcp-test-project-id";
 export const FIREBASE_AUTH_EMULATOR_HOST = "0.0.0.0:9099";
 export const FIREBASE_TEST_API_KEY = "test-api-key";
@@ -29,9 +29,9 @@ export const SECOND_TEST_USER = {
 };
 
 export const TABLES_TO_TRUNCATE = [
-  dummyUserTableDef,
-  dummyPostTableDef,
   rolesTableDef,
   permissionsTableDef,
   rolesPermissionsTableDef,
+  orgTableDef,
+  userTableDef,
 ];

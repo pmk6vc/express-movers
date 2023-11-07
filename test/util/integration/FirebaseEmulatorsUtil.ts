@@ -1,5 +1,4 @@
 import axios from "axios";
-import axiosRetry from "axios-retry";
 import {
   FIREBASE_AUTH_EMULATOR_HOST,
   FIREBASE_TEST_API_KEY,
@@ -8,12 +7,13 @@ import {
 const authEmulatorClient = axios.create({
   baseURL: `http://${FIREBASE_AUTH_EMULATOR_HOST}/identitytoolkit.googleapis.com`,
 });
-axiosRetry(authEmulatorClient, {
-  retries: 3,
-  retryDelay: () => {
-    return 1000;
-  },
-});
+// TODO: Is retrying really necessary if the Firebase emulator is spun up first?
+// axiosRetry(authEmulatorClient, {
+//   retries: 3,
+//   retryDelay: () => {
+//     return 1000;
+//   },
+// });
 export async function getIdTokenWithEmailPassword(
   email: string,
   password: string

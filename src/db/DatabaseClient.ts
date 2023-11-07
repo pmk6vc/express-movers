@@ -5,13 +5,13 @@ import { Environment } from "../environment/handlers/IEnvironment";
 import {
   permissionsPgEnum,
   permissionsTableDef,
-} from "./model/entity/Permissions";
-import { rolesPgEnum, rolesTableDef } from "./model/entity/Roles";
+} from "./model/auth/Permissions";
+import { rolesPgEnum, rolesTableDef } from "./model/auth/Roles";
 import {
   NewRolePermission,
   rolesPermissionsMap,
   rolesPermissionsTableDef,
-} from "./model/entity/RolesPermissions";
+} from "./model/auth/RolesPermissions";
 
 export default class DatabaseClient {
   private static instance: DatabaseClient;
@@ -71,7 +71,6 @@ export default class DatabaseClient {
       .onConflictDoNothing();
   }
 
-  // TODO: Need to thoroughly test seeding database tables - values, conflicts, enum integrity
   private async seedTables() {
     await Promise.all([this.seedRoles(), this.seedPermissions()]);
     await this.seedRolesPermissions();

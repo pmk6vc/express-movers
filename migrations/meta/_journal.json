@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1693541114751,
-      "tag": "0000_sharp_hannibal_king",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1693961060048,
-      "tag": "0001_misty_azazel",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1694296214996,
-      "tag": "0002_cuddly_sleepwalker",
+      "when": 1699384260541,
+      "tag": "0000_shocking_namora",
       "breakpoints": true
     }
   ]

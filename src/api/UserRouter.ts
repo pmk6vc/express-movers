@@ -1,7 +1,6 @@
 import { eq } from "drizzle-orm";
 import express, { Request, Response, Router } from "express";
 import DatabaseClient from "../db/DatabaseClient";
-import { RolesEnum } from "../db/model/auth/Roles";
 import { NewUser, userTableDef } from "../db/model/entity/User";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
 import AbstractRouter from "./AbstractRouter";
@@ -9,7 +8,7 @@ import AbstractRouter from "./AbstractRouter";
 export default class UserRouter extends AbstractRouter {
   private static instance: UserRouter;
 
-  private createNewCustomer(dbClient: DatabaseClient) {
+  private createUser(dbClient: DatabaseClient) {
     return async (req: Request, res: Response) => {
       // Confirm that request is authenticated
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
@@ -26,10 +25,12 @@ export default class UserRouter extends AbstractRouter {
         res.status(409).send("User already exists!");
         return;
       }
+      // TODO: Validate incoming request structure
       // Create new customer
       const newCustomer: NewUser = {
         uid: authenticatedUserRecord.uid,
-        roleId: RolesEnum.MOVING_CUSTOMER,
+        email: req.body.email,
+        profile: req.body.profile,
       };
       await dbClient.pgPoolClient.insert(userTableDef).values(newCustomer);
       return res
@@ -38,7 +39,7 @@ export default class UserRouter extends AbstractRouter {
     };
   }
 
-  private getCustomer() {
+  private getUser() {
     return async (req: Request, res: Response) => {
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
       if (!authenticatedUserRecord) {
@@ -56,8 +57,8 @@ export default class UserRouter extends AbstractRouter {
   protected buildRouter(dbClient: DatabaseClient): Router {
     return express
       .Router()
-      .post("/newCustomer", this.createNewCustomer(dbClient))
-      .get("/:userId", this.getCustomer());
+      .post("/signUp", this.createUser(dbClient))
+      .get("/:userId", this.getUser());
   }
 
   static getRouter(dbClient: DatabaseClient): Router {

@@ -47,7 +47,11 @@ CREATE TABLE IF NOT EXISTS "entity"."organization" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "entity"."user" (
 	"uid" varchar(128) PRIMARY KEY NOT NULL,
-	"persisted_at" timestamp DEFAULT (now() at time zone 'utc') NOT NULL
+	"email" varchar(256) NOT NULL,
+	"profile" jsonb DEFAULT '{}'::jsonb NOT NULL,
+	"persisted_at" timestamp DEFAULT (now() at time zone 'utc') NOT NULL,
+	"is_disabled" boolean DEFAULT false NOT NULL,
+	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 DO $$ BEGIN

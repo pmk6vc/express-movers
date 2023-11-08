@@ -78,51 +78,53 @@ describe("should check user routes", () => {
 
   const ROUTE_PREFIX = "/users";
 
-  it("blocks request with no bearer token", async () => {
-    const userId = testUsers[0].userRecord.uid;
-    const res = await request(expressApp).get(`${ROUTE_PREFIX}/${userId}`);
-    expect(res.status).toBe(401);
-    expect(res.text).toBe("Unauthenticated request");
-  });
+  describe("should get user", () => {
+    it("blocks request with no bearer token", async () => {
+      const userId = testUsers[0].userRecord.uid;
+      const res = await request(expressApp).get(`${ROUTE_PREFIX}/${userId}`);
+      expect(res.status).toBe(401);
+      expect(res.text).toBe("Unauthenticated request");
+    });
 
-  it("blocks request with invalid bearer token", async () => {
-    const userId = testUsers[0].userRecord.uid;
-    const invalidToken = "not-a-valid-token";
-    const res = await request(expressApp)
-      .get(`${ROUTE_PREFIX}/${userId}`)
-      .set("Authorization", `Bearer ${invalidToken}`);
-    expect(res.status).toBe(401);
-    expect(res.text).toBe("Unauthenticated request");
-  });
+    it("blocks request with invalid bearer token", async () => {
+      const userId = testUsers[0].userRecord.uid;
+      const invalidToken = "not-a-valid-token";
+      const res = await request(expressApp)
+        .get(`${ROUTE_PREFIX}/${userId}`)
+        .set("Authorization", `Bearer ${invalidToken}`);
+      expect(res.status).toBe(401);
+      expect(res.text).toBe("Unauthenticated request");
+    });
 
-  it("blocks request with bearer token for another user", async () => {
-    const firstUserId = testUsers[0].userRecord.uid;
-    const secondUserCredentials = testUsers[1].userCredentials;
-    const secondUserToken = await getIdTokenWithEmailPassword(
-      secondUserCredentials.email,
-      secondUserCredentials.password
-    );
-    const res = await request(expressApp)
-      .get(`${ROUTE_PREFIX}/${firstUserId}`)
-      .set("Authorization", `Bearer ${secondUserToken}`);
-    expect(res.status).toBe(403);
-    expect(res.text).toBe("Unauthorized request");
-  });
+    it("blocks request with bearer token for another user", async () => {
+      const firstUserId = testUsers[0].userRecord.uid;
+      const secondUserCredentials = testUsers[1].userCredentials;
+      const secondUserToken = await getIdTokenWithEmailPassword(
+        secondUserCredentials.email,
+        secondUserCredentials.password
+      );
+      const res = await request(expressApp)
+        .get(`${ROUTE_PREFIX}/${firstUserId}`)
+        .set("Authorization", `Bearer ${secondUserToken}`);
+      expect(res.status).toBe(403);
+      expect(res.text).toBe("Unauthorized request");
+    });
 
-  it("returns user data for request with valid bearer token", async () => {
-    const userId = testUsers[0].userRecord.uid;
-    const userCredentials = testUsers[0].userCredentials;
-    const bearerToken = await getIdTokenWithEmailPassword(
-      userCredentials.email,
-      userCredentials.password
-    );
-    const res = await request(expressApp)
-      .get(`${ROUTE_PREFIX}/${userId}`)
-      .set("Authorization", `Bearer ${bearerToken}`);
-    expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({
-      uid: userId,
-      email: userCredentials.email,
+    it("returns user data for request with valid bearer token", async () => {
+      const userId = testUsers[0].userRecord.uid;
+      const userCredentials = testUsers[0].userCredentials;
+      const bearerToken = await getIdTokenWithEmailPassword(
+        userCredentials.email,
+        userCredentials.password
+      );
+      const res = await request(expressApp)
+        .get(`${ROUTE_PREFIX}/${userId}`)
+        .set("Authorization", `Bearer ${bearerToken}`);
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        uid: userId,
+        email: userCredentials.email,
+      });
     });
   });
 });

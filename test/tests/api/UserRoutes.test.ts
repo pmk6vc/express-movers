@@ -119,8 +119,8 @@ describe("should check user routes", () => {
     );
     const res = await request(expressApp)
       .get(`${ROUTE_PREFIX}/${userId}`)
-      .set("Authorization", `Bearer ${bearerToken}`)
-      .expect(200);
+      .set("Authorization", `Bearer ${bearerToken}`);
+    expect(res.status).toBe(200);
     expect(res.body).toMatchObject({
       uid: userId,
       email: userCredentials.email,

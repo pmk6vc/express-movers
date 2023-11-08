@@ -80,9 +80,8 @@ describe("should check user routes", () => {
 
   it("blocks request with no bearer token", async () => {
     const userId = testUsers[0].userRecord.uid;
-    const res = await request(expressApp)
-      .get(`${ROUTE_PREFIX}/${userId}`)
-      .expect(401);
+    const res = await request(expressApp).get(`${ROUTE_PREFIX}/${userId}`);
+    expect(res.status).toBe(401);
     expect(res.text).toBe("Unauthenticated request");
   });
 
@@ -91,8 +90,8 @@ describe("should check user routes", () => {
     const invalidToken = "not-a-valid-token";
     const res = await request(expressApp)
       .get(`${ROUTE_PREFIX}/${userId}`)
-      .set("Authorization", `Bearer ${invalidToken}`)
-      .expect(401);
+      .set("Authorization", `Bearer ${invalidToken}`);
+    expect(res.status).toBe(401);
     expect(res.text).toBe("Unauthenticated request");
   });
 
@@ -105,8 +104,8 @@ describe("should check user routes", () => {
     );
     const res = await request(expressApp)
       .get(`${ROUTE_PREFIX}/${firstUserId}`)
-      .set("Authorization", `Bearer ${secondUserToken}`)
-      .expect(403);
+      .set("Authorization", `Bearer ${secondUserToken}`);
+    expect(res.status).toBe(403);
     expect(res.text).toBe("Unauthorized request");
   });
 

@@ -4,11 +4,9 @@ import { entitySchema } from "./EntitySchema";
 
 const USER_TABLE = "user";
 
-// TODO: Is this necessary?
 interface UserProfile {
   firstName?: string;
   lastName?: string;
-  phoneNumber?: string;
   address?: string;
   dateOfBirth?: string;
 }

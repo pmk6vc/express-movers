@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodTypeAny } from "zod";
 
-const validateRequestDataHelper = (
+const validateData = (
   schema: ZodTypeAny,
   data: {},
   res: Response,
@@ -17,12 +17,12 @@ const validateRequestDataHelper = (
 
 export const validateRequestBody = (schema: ZodTypeAny) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    validateRequestDataHelper(schema, req.body, res, next);
+    validateData(schema, req.body, res, next);
   };
 };
 
 export const validateRequestParams = (schema: ZodTypeAny) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    validateRequestDataHelper(schema, req.params, res, next);
+    validateData(schema, req.params, res, next);
   };
 };

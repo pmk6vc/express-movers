@@ -1,4 +1,10 @@
-import {afterAll, afterEach, beforeAll, beforeEach, describe} from "@jest/globals";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+} from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
@@ -52,8 +58,8 @@ describe("authentication middleware should work", () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+  });
 
   afterAll(async () => {
     await tearDownIntegrationTest(firebaseAdminApp, testUsers);

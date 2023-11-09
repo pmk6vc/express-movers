@@ -19,7 +19,7 @@ export default class UserRouter extends AbstractRouter {
         firstName: z.string().optional(),
         lastName: z.string().optional(),
         address: z.string().optional(),
-        dateOfBirth: z.string().datetime().optional(),
+        dateOfBirth: z.coerce.date().optional(),
       }),
     })
     .strict();
@@ -43,7 +43,7 @@ export default class UserRouter extends AbstractRouter {
         .select()
         .from(userTableDef)
         .where(eq(userTableDef.uid, authenticatedUserRecord.uid));
-      if (maybeUser) {
+      if (maybeUser.length > 0) {
         res.status(409).send("User already exists");
         return;
       }
@@ -58,7 +58,7 @@ export default class UserRouter extends AbstractRouter {
       await dbClient.pgPoolClient.insert(userTableDef).values(newCustomer);
       return res
         .status(201)
-        .send(`New customer ${authenticatedUserRecord.uid} created`);
+        .send(`New user ${authenticatedUserRecord.uid} created`);
     };
   }
 

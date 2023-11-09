@@ -40,6 +40,7 @@ describe("authentication middleware should work", () => {
         email: FIRST_TEST_USER.email,
         password: FIRST_TEST_USER.password,
       },
+      profile: FIRST_TEST_USER.profile,
     };
     return [user];
   }

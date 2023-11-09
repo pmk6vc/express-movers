@@ -15,17 +15,34 @@ export const DEFAULT_TEST_USER = {
   emailVerified: false,
   phoneNumber: "+11234567890",
   password: "defaultUser",
-  displayName: "John Doe",
+  displayName: "Default User",
   photoURL: "http://www.example.com/12345678/photo.png",
   disabled: false,
+  profile: {
+    firstName: "Default",
+    lastName: "User",
+    address: "Default address",
+    dateOfBirth: new Date("1999-12-31"),
+  },
 };
 export const FIRST_TEST_USER = {
   email: "first@user.com",
   password: "firstUser",
+  profile: {
+    firstName: "Hello",
+    lastName: "World",
+    address: "The White House",
+    dateOfBirth: new Date("1970-01-01"),
+  },
 };
 export const SECOND_TEST_USER = {
   email: "second@user.com",
   password: "secondUser",
+  profile: {
+    firstName: "John",
+    lastName: "Doe",
+    address: "Waffle House",
+  },
 };
 
 export const TABLES_TO_TRUNCATE = [

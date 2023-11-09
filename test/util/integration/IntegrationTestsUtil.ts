@@ -23,6 +23,7 @@ async function setupDefaultUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
         password: DEFAULT_TEST_USER.password,
       },
       userRecord: userRecord,
+      profile: DEFAULT_TEST_USER.profile,
     },
   ];
 }

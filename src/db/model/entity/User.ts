@@ -4,12 +4,11 @@ import { entitySchema } from "./EntitySchema";
 
 const USER_TABLE = "user";
 
-interface UserProfile {
+export interface UserProfile {
   firstName?: string;
   lastName?: string;
-  phoneNumber?: string;
   address?: string;
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
 }
 
 export const userTableDef = entitySchema.table(USER_TABLE, {

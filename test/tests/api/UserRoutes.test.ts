@@ -24,7 +24,7 @@ import {
 } from "../../util/integration/IntegrationTestsUtil";
 import App = app.App;
 
-describe("should check user routes", () => {
+describe("user routes should work", () => {
   let firebaseAdminApp: App;
   let dbClient: DatabaseClient;
   let expressApp: Express;
@@ -78,15 +78,8 @@ describe("should check user routes", () => {
 
   const ROUTE_PREFIX = "/users";
 
-  describe("should get user", () => {
-    it("blocks request with no bearer token", async () => {
-      const userId = testUsers[0].userRecord.uid;
-      const res = await request(expressApp).get(`${ROUTE_PREFIX}/${userId}`);
-      expect(res.status).toBe(401);
-      expect(res.text).toBe("Unauthenticated request");
-    });
-
-    it("blocks request with invalid bearer token", async () => {
+  describe("should get authenticated user data", () => {
+    it("blocks request with no authenticated user", async () => {
       const userId = testUsers[0].userRecord.uid;
       const invalidToken = "not-a-valid-token";
       const res = await request(expressApp)

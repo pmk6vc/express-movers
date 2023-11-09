@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe } from "@jest/globals";
+import {afterAll, afterEach, beforeAll, beforeEach, describe} from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
@@ -14,7 +14,7 @@ import {
 } from "../../util/integration/IntegrationTestsUtil";
 import App = app.App;
 
-describe("should validate bearer token and authorize user when applicable", () => {
+describe("authentication middleware should work", () => {
   let firebaseAdminApp: App;
   let testUsers: ITestUser[];
   let mockRequest: Request;
@@ -50,6 +50,10 @@ describe("should validate bearer token and authorize user when applicable", () =
     } as Request;
     nextFunction = jest.fn();
   });
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
 
   afterAll(async () => {
     await tearDownIntegrationTest(firebaseAdminApp, testUsers);

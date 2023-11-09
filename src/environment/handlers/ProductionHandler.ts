@@ -1,3 +1,4 @@
+import { Logging } from "@google-cloud/logging";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
 import AbstractHandler from "./AbstractHandler";
 
@@ -19,6 +20,16 @@ export class ProductionHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
+  }
+
+  protected override async getLogger() {
+    if (!this.logger) {
+      const loggingClient = new Logging({
+        projectId: process.env.GCP_PROJECT_ID,
+      });
+      this.logger = loggingClient.log(this.logName);
+    }
+    return this.logger;
   }
 
   static getInstance() {

@@ -46,6 +46,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@google-cloud/logging": "^11.0.0",
     "@testcontainers/postgresql": "^10.1.0",
     "@types/pg": "^8.6.6",
     "drizzle-orm": "^0.28.5",

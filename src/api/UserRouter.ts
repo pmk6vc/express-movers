@@ -4,6 +4,7 @@ import { z } from "zod";
 import DatabaseClient from "../db/DatabaseClient";
 import { NewUser, userTableDef } from "../db/model/entity/User";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
+import requireAuthenticatedUser from "../middleware/RequireAuthenticatedUser";
 import {
   validateRequestBody,
   validateRequestParams,
@@ -31,14 +32,8 @@ export default class UserRouter extends AbstractRouter {
 
   private newUser(dbClient: DatabaseClient) {
     return async (req: Request, res: Response) => {
-      // Confirm that request is authenticated
-      const authenticatedUserRecord = res.locals[USER_PROPERTY];
-      if (!authenticatedUserRecord) {
-        res.status(401).send("Unauthenticated request");
-        return;
-      }
-
       // Confirm that authenticated user has not already been created
+      const authenticatedUserRecord = res.locals[USER_PROPERTY];
       const maybeUser = await dbClient.pgPoolClient
         .select()
         .from(userTableDef)
@@ -65,10 +60,6 @@ export default class UserRouter extends AbstractRouter {
   private getUser() {
     return async (req: Request, res: Response) => {
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
-      if (!authenticatedUserRecord) {
-        res.status(401).send("Unauthenticated request");
-        return;
-      }
       const parsedRequestParams = UserRouter.getUserRequestSchema.parse(
         req.params
       );
@@ -85,11 +76,13 @@ export default class UserRouter extends AbstractRouter {
       .Router()
       .post(
         "/newUser",
+        requireAuthenticatedUser,
         validateRequestBody(UserRouter.newUserRequestSchema),
         this.newUser(dbClient)
       )
       .get(
         "/:userId",
+        requireAuthenticatedUser,
         validateRequestParams(UserRouter.getUserRequestSchema),
         this.getUser()
       );

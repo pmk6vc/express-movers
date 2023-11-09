@@ -1,11 +1,11 @@
-import { Log, Logging } from "@google-cloud/logging";
+import { Logger, createLogger, format, transports } from "winston";
 import PostgresConfig from "../util/PostgresConfig";
 import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
 
 export default abstract class AbstractHandler {
   protected serverConfig?: ServerConfig;
   protected databaseConfig?: DatabaseConfig;
-  protected logger?: Log;
+  protected logger?: Logger;
   protected logName = "express-movers-api";
   protected environment?: Environment;
 
@@ -33,14 +33,27 @@ export default abstract class AbstractHandler {
 
   protected async getLogger() {
     if (!this.logger) {
-      this.logger = new Logging().log(this.logName);
+      this.logger = createLogger({
+        level: "info",
+        transports: [
+          new transports.Console({
+            format: format.combine(
+              format.colorize(),
+              format.timestamp(),
+              format.printf(({ timestamp, level, message }) => {
+                return `[${timestamp}] ${level}: ${message}`;
+              })
+            ),
+          }),
+        ],
+      });
     }
     return this.logger;
   }
 
   async getEnvironment() {
     if (!this.environment) {
-      const [serverConfig, databasePool, log] = await Promise.all([
+      const [serverConfig, databasePool, logger] = await Promise.all([
         this.getServerConfig(),
         this.getDatabaseConfig(),
         this.getLogger(),
@@ -48,7 +61,7 @@ export default abstract class AbstractHandler {
       this.environment = {
         server: serverConfig,
         database: databasePool,
-        log: log,
+        logger: logger,
       };
     }
     return this.environment;

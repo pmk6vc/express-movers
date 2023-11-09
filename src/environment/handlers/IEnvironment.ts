@@ -1,8 +1,12 @@
-import { Log, Logging } from "@google-cloud/logging";
+import { LoggingWinston } from "@google-cloud/logging-winston";
 import { Pool } from "pg";
+import { Logger, createLogger, transports } from "winston";
 
-const loggingClient = new Logging();
-const log = loggingClient.log("some-log");
+const loggingWinston = new LoggingWinston();
+const logger = createLogger({
+  level: "info",
+  transports: [new transports.Console(), loggingWinston],
+});
 
 export interface ServerConfig {
   serverPort: number;
@@ -16,5 +20,5 @@ export interface DatabaseConfig {
 export interface Environment {
   server: ServerConfig;
   database: DatabaseConfig;
-  log: Log;
+  logger: Logger;
 }

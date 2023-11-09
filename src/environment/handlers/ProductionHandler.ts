@@ -1,4 +1,5 @@
-import { Logging } from "@google-cloud/logging";
+import { LoggingWinston } from "@google-cloud/logging-winston";
+import { transports } from "winston";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
 import AbstractHandler from "./AbstractHandler";
 
@@ -24,10 +25,9 @@ export class ProductionHandler extends AbstractHandler {
 
   protected override async getLogger() {
     if (!this.logger) {
-      const loggingClient = new Logging({
-        projectId: process.env.GCP_PROJECT_ID,
-      });
-      this.logger = loggingClient.log(this.logName);
+      this.logger = (await super.getLogger())
+        .remove(transports.Console)
+        .add(new LoggingWinston());
     }
     return this.logger;
   }

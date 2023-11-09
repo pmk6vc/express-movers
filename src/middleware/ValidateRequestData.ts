@@ -3,7 +3,7 @@ import { ZodTypeAny } from "zod";
 
 const validateData = (
   schema: ZodTypeAny,
-  data: {},
+  data: object,
   res: Response,
   next: NextFunction
 ) => {

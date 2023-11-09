@@ -46,7 +46,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@google-cloud/logging": "^11.0.0",
     "@google-cloud/logging-winston": "^6.0.0",
     "@testcontainers/postgresql": "^10.1.0",
     "@types/pg": "^8.6.6",

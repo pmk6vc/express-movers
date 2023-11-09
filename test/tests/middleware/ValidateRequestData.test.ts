@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import { validateRequestBody } from "../../../src/middleware/ValidateRequestData";
+import {validateRequestBody, validateRequestParams} from "../../../src/middleware/ValidateRequestData";
 
 describe("request validation middleware should work", () => {
   let mockRequest: Request;
@@ -13,6 +13,7 @@ describe("request validation middleware should work", () => {
   beforeEach(() => {
     mockRequest = {
       body: {},
+      params: {}
     } as Request;
     nextFunction = jest.fn();
   });
@@ -92,4 +93,26 @@ describe("request validation middleware should work", () => {
       expect(nextFunction).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe("request param validation should mirror body validation", () => {
+    it("should return 400 for incompatible request param and requirement", async () => {
+      const requestSchema = z
+          .object({
+            rightKey: z.string(),
+          })
+          .strict();
+      mockRequest.params = {
+        wrongKey: "oops",
+      };
+      await validateRequestParams(requestSchema)(
+          mockRequest,
+          mockResponse,
+          nextFunction
+      );
+      expect(mockResponse.status).toHaveBeenCalledWith(400);
+      expect(mockResponse.status).toHaveBeenCalledTimes(1);
+      expect(mockResponse.send).toHaveBeenCalledTimes(1);
+      expect(nextFunction).toHaveBeenCalledTimes(0);
+    });
+  })
 });

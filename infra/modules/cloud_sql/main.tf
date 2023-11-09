@@ -8,7 +8,6 @@ resource "google_sql_database_instance" "db" {
   database_version = "POSTGRES_15"
   region = var.cloud_sql_region
 
-  # TODO: Figure out how to limit access to app and local dev
   # TODO: Improve password validation policy
   settings {
     tier = "db-f1-micro"

@@ -97,7 +97,7 @@ describe("request validation middleware should work", () => {
     });
   });
 
-  describe("request param validation should mirror body validation", () => {
+  describe("request param validation should mirror body validation behavior", () => {
     it("should return 400 for incompatible request param and requirement", async () => {
       const requestSchema = z
         .object({

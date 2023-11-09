@@ -123,18 +123,7 @@ describe("user routes should work", () => {
 
     it("creates new authenticated user", async () => {
       const user = testUsers[0];
-      const bearerToken = await getIdTokenWithEmailPassword(
-        user.userCredentials.email,
-        user.userCredentials.password
-      );
-      const requestBody = {
-        email: user.userCredentials.email,
-        profile: user.profile,
-      };
-      const res = await request(expressApp)
-        .post(NEW_USER_ROUTE_PREFIX)
-        .set("Authorization", `Bearer ${bearerToken}`)
-        .send(requestBody);
+      const res = await newUserHelper(user);
       const users = await dbClient.pgPoolClient.select().from(userTableDef);
       expect(res.status).toBe(201);
       expect(res.text).toBe(`New user ${user.userRecord.uid} created`);

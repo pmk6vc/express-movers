@@ -6,7 +6,6 @@ export default abstract class AbstractHandler {
   protected serverConfig?: ServerConfig;
   protected databaseConfig?: DatabaseConfig;
   protected logger?: Logger;
-  protected logName = "express-movers-api";
   protected environment?: Environment;
 
   protected async getServerConfig() {

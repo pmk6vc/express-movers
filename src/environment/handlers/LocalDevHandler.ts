@@ -32,6 +32,10 @@ export class LocalDevHandler extends AbstractHandler {
     return this.databaseConfig;
   }
 
+  protected override async getProjectId() {
+    return "gcp-test-project-id";
+  }
+
   static getInstance() {
     if (!LocalDevHandler.instance) {
       LocalDevHandler.instance = new LocalDevHandler();

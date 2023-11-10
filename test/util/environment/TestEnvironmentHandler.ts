@@ -1,6 +1,7 @@
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
 import PostgresConfig from "../../../src/environment/util/PostgresConfig";
+import { TEST_GCP_PROJECT_ID } from "../TestConstants";
 
 export class TestEnvironmentHandler extends AbstractHandler {
   private static instance: TestEnvironmentHandler;
@@ -32,6 +33,10 @@ export class TestEnvironmentHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
+  }
+
+  protected override async getProjectId() {
+    return TEST_GCP_PROJECT_ID;
   }
 
   static getInstance() {

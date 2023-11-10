@@ -72,18 +72,18 @@ export default class UserRouter extends AbstractRouter {
     };
   }
 
-  protected buildRouter(dbClient: DatabaseClient): Router {
+  protected buildRouter(dbClient: DatabaseClient, logger: Logger): Router {
     return express
       .Router()
       .post(
         "/newUser",
-        requireAuthenticatedUser,
+        requireAuthenticatedUser(logger),
         validateRequestBody(UserRouter.newUserRequestSchema),
         this.newUser(dbClient)
       )
       .get(
         "/:userId",
-        requireAuthenticatedUser,
+        requireAuthenticatedUser(logger),
         validateRequestParams(UserRouter.getUserRequestSchema),
         this.getUser()
       );

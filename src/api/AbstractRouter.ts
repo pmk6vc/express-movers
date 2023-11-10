@@ -4,13 +4,14 @@ import DatabaseClient from "../db/DatabaseClient";
 
 export default abstract class AbstractRouter {
   protected router;
-  protected logger;
   protected constructor(dbClient: DatabaseClient, logger: Logger) {
-    this.router = this.buildRouter(dbClient);
-    this.logger = logger;
+    this.router = this.buildRouter(dbClient, logger);
   }
 
-  protected abstract buildRouter(dbClient: DatabaseClient): Router;
+  protected abstract buildRouter(
+    dbClient: DatabaseClient,
+    logger: Logger
+  ): Router;
   getRouter() {
     return this.router;
   }

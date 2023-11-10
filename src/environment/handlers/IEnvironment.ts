@@ -14,4 +14,5 @@ export interface Environment {
   server: ServerConfig;
   database: DatabaseConfig;
   logger: Logger;
+  projectId: string;
 }

@@ -50,17 +50,25 @@ export default abstract class AbstractHandler {
     return this.logger;
   }
 
+  protected async getProjectId() {
+    return process.env.GCP_PROJECT_ID!;
+  }
+
   async getEnvironment() {
     if (!this.environment) {
-      const [serverConfig, databasePool, logger] = await Promise.all([
-        this.getServerConfig(),
-        this.getDatabaseConfig(),
-        this.getLogger(),
-      ]);
+      const [serverConfig, databasePool, logger, projectId] = await Promise.all(
+        [
+          this.getServerConfig(),
+          this.getDatabaseConfig(),
+          this.getLogger(),
+          this.getProjectId(),
+        ]
+      );
       this.environment = {
         server: serverConfig,
         database: databasePool,
         logger: logger,
+        projectId: projectId,
       };
     }
     return this.environment;

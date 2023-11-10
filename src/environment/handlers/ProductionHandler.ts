@@ -1,3 +1,5 @@
+import { LoggingWinston } from "@google-cloud/logging-winston";
+import { transports } from "winston";
 import CloudSqlPostgresConfig from "../util/CloudSqlPostgresConfig";
 import AbstractHandler from "./AbstractHandler";
 
@@ -19,6 +21,15 @@ export class ProductionHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
+  }
+
+  protected override async getLogger() {
+    if (!this.logger) {
+      this.logger = (await super.getLogger())
+        .remove(transports.Console)
+        .add(new LoggingWinston());
+    }
+    return this.logger;
   }
 
   static getInstance() {

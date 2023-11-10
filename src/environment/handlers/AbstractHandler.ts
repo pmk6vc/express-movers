@@ -1,9 +1,11 @@
+import { Logger, createLogger, format, transports } from "winston";
 import PostgresConfig from "../util/PostgresConfig";
 import { DatabaseConfig, Environment, ServerConfig } from "./IEnvironment";
 
 export default abstract class AbstractHandler {
   protected serverConfig?: ServerConfig;
   protected databaseConfig?: DatabaseConfig;
+  protected logger?: Logger;
   protected environment?: Environment;
 
   protected async getServerConfig() {
@@ -28,15 +30,37 @@ export default abstract class AbstractHandler {
     return this.databaseConfig;
   }
 
+  protected async getLogger() {
+    if (!this.logger) {
+      this.logger = createLogger({
+        level: "info",
+        transports: [
+          new transports.Console({
+            format: format.combine(
+              format.colorize(),
+              format.timestamp(),
+              format.printf(({ timestamp, level, message }) => {
+                return `[${timestamp}] ${level}: ${message}`;
+              })
+            ),
+          }),
+        ],
+      });
+    }
+    return this.logger;
+  }
+
   async getEnvironment() {
     if (!this.environment) {
-      const [serverConfig, databasePool] = await Promise.all([
+      const [serverConfig, databasePool, logger] = await Promise.all([
         this.getServerConfig(),
         this.getDatabaseConfig(),
+        this.getLogger(),
       ]);
       this.environment = {
         server: serverConfig,
         database: databasePool,
+        logger: logger,
       };
     }
     return this.environment;

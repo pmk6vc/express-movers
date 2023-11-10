@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import express, { Request, Response, Router } from "express";
+import { Logger } from "winston";
 import { z } from "zod";
 import DatabaseClient from "../db/DatabaseClient";
 import { NewUser, userTableDef } from "../db/model/entity/User";
@@ -88,9 +89,9 @@ export default class UserRouter extends AbstractRouter {
       );
   }
 
-  static getRouter(dbClient: DatabaseClient): Router {
+  static getRouter(dbClient: DatabaseClient, logger: Logger): Router {
     if (!UserRouter.instance) {
-      UserRouter.instance = new UserRouter(dbClient);
+      UserRouter.instance = new UserRouter(dbClient, logger);
     }
     return UserRouter.instance.getRouter();
   }

@@ -43,7 +43,7 @@ export async function setupIntegrationTest(
   const firebaseAdminApp = connectToFirebaseEmulator();
   const env = await EnvironmentFactory.getHandler().getEnvironment();
   const dbClient = DatabaseClient.getInstance(env);
-  const expressApp = buildApp(dbClient);
+  const expressApp = await buildApp(dbClient);
 
   const testUsers = await setupUsers(firebaseAdminApp);
   return { firebaseAdminApp, dbClient, expressApp, testUsers };

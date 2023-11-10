@@ -5,7 +5,7 @@ import DatabaseClient from "./db/DatabaseClient";
 import authenticateUser from "./middleware/AuthenticateUser";
 
 const app = express();
-export const buildApp = (dbClient: DatabaseClient) => {
+export const buildApp = async (dbClient: DatabaseClient) => {
   // Expose static public assets in API
   app.use(express.static("public"));
 

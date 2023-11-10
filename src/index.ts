@@ -16,7 +16,7 @@ const main = async () => {
   await db.runMigrations();
 
   logger.info("Configuring Express app");
-  const app = buildApp(db);
+  const app = await buildApp(db);
 
   logger.info("Initializing Firebase admin");
   admin.initializeApp();

@@ -5,6 +5,7 @@ import { z } from "zod";
 import DatabaseClient from "../db/DatabaseClient";
 import { NewUser, userTableDef } from "../db/model/entity/User";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
+import { GLOBAL_LOG_OBJ } from "../middleware/CorrelatedRequestLogging";
 import requireAuthenticatedUser from "../middleware/RequireAuthenticatedUser";
 import {
   validateRequestBody,
@@ -31,7 +32,7 @@ export default class UserRouter extends AbstractRouter {
     })
     .strict();
 
-  private newUser(dbClient: DatabaseClient) {
+  private newUser(dbClient: DatabaseClient, logger: Logger) {
     return async (req: Request, res: Response) => {
       // Confirm that authenticated user has not already been created
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
@@ -40,6 +41,10 @@ export default class UserRouter extends AbstractRouter {
         .from(userTableDef)
         .where(eq(userTableDef.uid, authenticatedUserRecord.uid));
       if (maybeUser.length > 0) {
+        logger.info(
+          `User ${authenticatedUserRecord.uid} already exists in database`,
+          res.locals[GLOBAL_LOG_OBJ]
+        );
         res.status(409).send("User already exists");
         return;
       }
@@ -52,22 +57,31 @@ export default class UserRouter extends AbstractRouter {
         profile: parsedRequestBody.profile,
       };
       await dbClient.pgPoolClient.insert(userTableDef).values(newCustomer);
+      logger.info(
+        `User ${authenticatedUserRecord.uid} successfully written to database`,
+        res.locals[GLOBAL_LOG_OBJ]
+      );
       return res
         .status(201)
         .send(`New user ${authenticatedUserRecord.uid} created`);
     };
   }
 
-  private getUser() {
+  private getUser(logger: Logger) {
     return async (req: Request, res: Response) => {
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
       const parsedRequestParams = UserRouter.getUserRequestSchema.parse(
         req.params
       );
       if (parsedRequestParams.userId != authenticatedUserRecord.uid) {
+        logger.info(
+          `Authenticated user ${authenticatedUserRecord.uid} does not match requested user ${parsedRequestParams.userId}`,
+          res.locals[GLOBAL_LOG_OBJ]
+        );
         res.status(403).send("Unauthorized request");
         return;
       }
+      // TODO: Think about what user data you actually want to expose through this endpoint
       res.status(200).send(authenticatedUserRecord);
     };
   }
@@ -79,13 +93,13 @@ export default class UserRouter extends AbstractRouter {
         "/newUser",
         requireAuthenticatedUser(logger),
         validateRequestBody(UserRouter.newUserRequestSchema),
-        this.newUser(dbClient)
+        this.newUser(dbClient, logger)
       )
       .get(
         "/:userId",
         requireAuthenticatedUser(logger),
         validateRequestParams(UserRouter.getUserRequestSchema),
-        this.getUser()
+        this.getUser(logger)
       );
   }
 

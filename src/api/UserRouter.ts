@@ -65,6 +65,7 @@ export default class UserRouter extends AbstractRouter {
   private getUser = async (req: Request, res: Response) => {
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
     const parsedRequestParams = this.getUserRequestSchema.parse(req.params);
+    // TODO: Build middleware instead to determine if incoming bearer token is authorized to operate on this user
     if (parsedRequestParams.userId != authenticatedUserRecord.uid) {
       this.logger.info(
         `Authenticated user ${authenticatedUserRecord.uid} does not match requested user ${parsedRequestParams.userId}`,
@@ -78,6 +79,7 @@ export default class UserRouter extends AbstractRouter {
   };
 
   buildRouter(): Router {
+    // TODO: Add additional middleware to confirm that authenticated user is active
     return express
       .Router()
       .post(

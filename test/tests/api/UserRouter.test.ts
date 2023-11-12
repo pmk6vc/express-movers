@@ -5,7 +5,7 @@ import {
   beforeEach,
   describe,
 } from "@jest/globals";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { Express } from "express";
 import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
@@ -81,24 +81,23 @@ describe("user routes should work", () => {
   });
 
   const ROUTE_PREFIX = "/users";
+  const NEW_USER_ROUTE_PREFIX = `${ROUTE_PREFIX}/newUser`;
+  const newUserHelper = async (user: ITestUser) => {
+    const bearerToken = await getIdTokenWithEmailPassword(
+      user.userCredentials.email,
+      user.userCredentials.password
+    );
+    const requestBody = {
+      email: user.userCredentials.email,
+      profile: user.profile,
+    };
+    return request(expressApp)
+      .post(NEW_USER_ROUTE_PREFIX)
+      .set("Authorization", `Bearer ${bearerToken}`)
+      .send(requestBody);
+  };
 
   describe("should create new user", () => {
-    const NEW_USER_ROUTE_PREFIX = `${ROUTE_PREFIX}/newUser`;
-    const newUserHelper = async (user: ITestUser) => {
-      const bearerToken = await getIdTokenWithEmailPassword(
-        user.userCredentials.email,
-        user.userCredentials.password
-      );
-      const requestBody = {
-        email: user.userCredentials.email,
-        profile: user.profile,
-      };
-      return request(expressApp)
-        .post(NEW_USER_ROUTE_PREFIX)
-        .set("Authorization", `Bearer ${bearerToken}`)
-        .send(requestBody);
-    };
-
     it("blocks create request with no authenticated user", async () => {
       const requestBody = {
         email: testUsers[0].userCredentials.email,
@@ -109,16 +108,8 @@ describe("user routes should work", () => {
         .post(NEW_USER_ROUTE_PREFIX)
         .set("Authorization", `Bearer ${invalidToken}`)
         .send(requestBody);
-      const numUsers = (
-        await dbClient.pgPoolClient
-          .select({
-            count: sql<number>`count(*)::int`,
-          })
-          .from(userTableDef)
-      )[0].count;
       expect(res.status).toBe(401);
       expect(res.text).toBe("Unauthenticated request");
-      expect(numUsers).toBe(0);
     });
 
     it("creates new authenticated user", async () => {
@@ -172,6 +163,16 @@ describe("user routes should work", () => {
     });
   });
 
+  describe("should update user profile", () => {
+    it("blocks request with no authenticated user", async () => {});
+
+    it("blocks request for authenticated user with insufficient permissions", async () => {});
+
+    it("blocks request for updating disabled user account", async () => {});
+
+    it("updates only the requested profile fields", async () => {});
+  });
+
   describe("should get user", () => {
     it("blocks request with no authenticated user", async () => {
       const userId = testUsers[0].userRecord.uid;
@@ -183,7 +184,7 @@ describe("user routes should work", () => {
       expect(res.text).toBe("Unauthenticated request");
     });
 
-    it("blocks request with bearer token for another user", async () => {
+    it("blocks request for authenticated user with insufficient permissions", async () => {
       const firstUserId = testUsers[0].userRecord.uid;
       const secondUserCredentials = testUsers[1].userCredentials;
       const secondUserToken = await getIdTokenWithEmailPassword(

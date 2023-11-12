@@ -1,8 +1,6 @@
 import { eq } from "drizzle-orm";
 import express, { Request, Response, Router } from "express";
-import { Logger } from "winston";
 import { z } from "zod";
-import DatabaseClient from "../db/DatabaseClient";
 import { NewUser, userTableDef } from "../db/model/entity/User";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
 import { GLOBAL_LOG_OBJ } from "../middleware/CorrelatedRequestLogging";
@@ -14,8 +12,7 @@ import {
 import AbstractRouter from "./AbstractRouter";
 
 export default class UserRouter extends AbstractRouter {
-  private static instance: UserRouter;
-  private static newUserRequestSchema = z
+  private newUserRequestSchema = z
     .object({
       email: z.string().email(),
       profile: z.object({
@@ -26,22 +23,22 @@ export default class UserRouter extends AbstractRouter {
       }),
     })
     .strict();
-  private static getUserRequestSchema = z
+  private getUserRequestSchema = z
     .object({
       userId: z.string(),
     })
     .strict();
 
-  private newUser(dbClient: DatabaseClient, logger: Logger) {
+  private newUser() {
     return async (req: Request, res: Response) => {
       // Confirm that authenticated user has not already been created
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
-      const maybeUser = await dbClient.pgPoolClient
+      const maybeUser = await this.dbClient.pgPoolClient
         .select()
         .from(userTableDef)
         .where(eq(userTableDef.uid, authenticatedUserRecord.uid));
       if (maybeUser.length > 0) {
-        logger.info(
+        this.logger.info(
           `User ${authenticatedUserRecord.uid} already exists in database`,
           res.locals[GLOBAL_LOG_OBJ]
         );
@@ -50,14 +47,14 @@ export default class UserRouter extends AbstractRouter {
       }
 
       // Create new customer
-      const parsedRequestBody = UserRouter.newUserRequestSchema.parse(req.body);
+      const parsedRequestBody = this.newUserRequestSchema.parse(req.body);
       const newCustomer: NewUser = {
         uid: authenticatedUserRecord.uid,
         email: parsedRequestBody.email,
         profile: parsedRequestBody.profile,
       };
-      await dbClient.pgPoolClient.insert(userTableDef).values(newCustomer);
-      logger.info(
+      await this.dbClient.pgPoolClient.insert(userTableDef).values(newCustomer);
+      this.logger.info(
         `User ${authenticatedUserRecord.uid} successfully written to database`,
         res.locals[GLOBAL_LOG_OBJ]
       );
@@ -67,14 +64,12 @@ export default class UserRouter extends AbstractRouter {
     };
   }
 
-  private getUser(logger: Logger) {
+  private getUser() {
     return async (req: Request, res: Response) => {
       const authenticatedUserRecord = res.locals[USER_PROPERTY];
-      const parsedRequestParams = UserRouter.getUserRequestSchema.parse(
-        req.params
-      );
+      const parsedRequestParams = this.getUserRequestSchema.parse(req.params);
       if (parsedRequestParams.userId != authenticatedUserRecord.uid) {
-        logger.info(
+        this.logger.info(
           `Authenticated user ${authenticatedUserRecord.uid} does not match requested user ${parsedRequestParams.userId}`,
           res.locals[GLOBAL_LOG_OBJ]
         );
@@ -86,27 +81,20 @@ export default class UserRouter extends AbstractRouter {
     };
   }
 
-  protected buildRouter(dbClient: DatabaseClient, logger: Logger): Router {
+  buildRouter(): Router {
     return express
       .Router()
       .post(
         "/newUser",
-        requireAuthenticatedUser(logger),
-        validateRequestBody(UserRouter.newUserRequestSchema),
-        this.newUser(dbClient, logger)
+        requireAuthenticatedUser(this.logger),
+        validateRequestBody(this.newUserRequestSchema),
+        this.newUser()
       )
       .get(
         "/:userId",
-        requireAuthenticatedUser(logger),
-        validateRequestParams(UserRouter.getUserRequestSchema),
-        this.getUser(logger)
+        requireAuthenticatedUser(this.logger),
+        validateRequestParams(this.getUserRequestSchema),
+        this.getUser()
       );
-  }
-
-  static getRouter(dbClient: DatabaseClient, logger: Logger): Router {
-    if (!UserRouter.instance) {
-      UserRouter.instance = new UserRouter(dbClient, logger);
-    }
-    return UserRouter.instance.getRouter();
   }
 }

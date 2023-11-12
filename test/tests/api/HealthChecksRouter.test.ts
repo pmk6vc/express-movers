@@ -49,12 +49,12 @@ describe("should test health check", () => {
 
   const ROUTE_PREFIX = "/_health";
 
-  it("returns expected response for default health check endpoint", async () => {
+  it("returns expected response for ping endpoint", async () => {
     const res = await request(expressApp)
-      .get(ROUTE_PREFIX)
+      .get(`${ROUTE_PREFIX}/ping`)
       .expect("Content-Type", "text/html; charset=utf-8");
     expect(res.status).toBe(200);
     expect(res.body).toEqual({});
-    expect(res.text).toBe("Hello, world!");
+    expect(res.text).toBe("Ping!");
   });
 });

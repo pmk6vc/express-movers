@@ -1,4 +1,5 @@
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
+import { createLogger, transports } from "winston";
 import AbstractHandler from "../../../src/environment/handlers/AbstractHandler";
 import PostgresConfig from "../../../src/environment/util/PostgresConfig";
 import { TEST_GCP_PROJECT_ID } from "../TestConstants";
@@ -33,6 +34,16 @@ export class TestEnvironmentHandler extends AbstractHandler {
       );
     }
     return this.databaseConfig;
+  }
+
+  protected override async getLogger() {
+    if (!this.logger) {
+      this.logger = createLogger({
+        transports: [new transports.Console()],
+        silent: true,
+      });
+    }
+    return this.logger;
   }
 
   protected override async getProjectId() {

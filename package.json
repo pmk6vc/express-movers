@@ -4,22 +4,23 @@
   "description": "Marketplace for movers",
   "main": "dist/index.js",
   "scripts": {
-    "prebuild": "npx eslint .",
-    "build": "tsc",
-    "prestart": "npm run build",
-    "start": "node .",
-    "start:dev": "firebase emulators:exec --project gcp-test-project-id --ui \"nodemon src/index.ts\"",
-    "start:docker": "docker-compose --env-file .env/app.env --env-file .env/db.env up --build",
+    "prettier:check": "prettier -c .",
+    "prettier:fix": "prettier --write .",
+    "lint": "npx eslint .",
     "test": "firebase emulators:exec --project gcp-test-project-id \"jest --detectOpenHandles\"",
     "test:ci": "firebase emulators:exec --project gcp-test-project-id \"jest --ci --verbose --no-cache\"",
     "emulators:start": "firebase emulators:start --project gcp-test-project-id",
-    "prettier:check": "prettier -c .",
-    "prettier:fix": "prettier --write .",
+    "start:dev": "firebase emulators:exec --project gcp-test-project-id --ui \"nodemon src/index.ts\"",
+    "start:docker": "docker-compose up --build",
+    "prebuild": "npm run lint",
+    "build": "tsc",
+    "start": "node .",
     "migrations:generate": "drizzle-kit generate:pg",
     "migrations:drop": "drizzle-kit drop"
   },
   "pre-commit": [
-    "prettier:check"
+    "prettier:check",
+    "lint"
   ],
   "keywords": [],
   "author": "",

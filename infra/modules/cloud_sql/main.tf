@@ -17,7 +17,7 @@ resource "google_sql_database_instance" "db" {
     password_validation_policy {
       enable_password_policy = true
       disallow_username_substring = true
-      complexity = true
+      complexity = "COMPLEXITY_DEFAULT"
       min_length = 12
     }
   }

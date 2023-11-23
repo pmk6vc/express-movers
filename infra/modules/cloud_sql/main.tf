@@ -8,7 +8,6 @@ resource "google_sql_database_instance" "db" {
   database_version = "POSTGRES_15"
   region = var.cloud_sql_region
 
-  # TODO: Improve password validation policy
   settings {
     tier = "db-f1-micro"
     activation_policy = "ALWAYS"
@@ -17,7 +16,9 @@ resource "google_sql_database_instance" "db" {
     disk_type = "PD_HDD"
     password_validation_policy {
       enable_password_policy = true
-      min_length = 6
+      disallow_username_substring = true
+      complexity = true
+      min_length = 12
     }
   }
 }

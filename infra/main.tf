@@ -7,8 +7,8 @@ terraform {
   }
   # Point to manually created and configured bucket to manage TF state
   backend "gcs" {
-    bucket = "zugzwang-terraform-backend"
-    prefix = "terraform/express-movers-state"
+    bucket = "terraform-express-movers-api"
+    prefix = "tf_state"
   }
 }
 

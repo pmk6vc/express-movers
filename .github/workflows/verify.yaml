@@ -2,7 +2,7 @@ name: Actions for pull requests to main
 
 on:
   pull_request:
-    branches: [main]
+    branches: [DUMMY_REPLACE]
 
 env:
   TF_WORKSPACE_NAME: production

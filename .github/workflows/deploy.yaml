@@ -29,7 +29,7 @@ jobs:
         run: npm run test:ci
 
   terraform:
-    # Note - can specify environment key and inject env-specific values if necessary later
+    needs: test
     runs-on: ubuntu-latest
     outputs:
       ARTIFACT_REPO_NAME: ${{ steps.repo.outputs.artifact_repo }}
@@ -41,13 +41,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Use keyless authentication to authenticate remaining actions
-      # This obviously assumes that the service account, IAM roles, and OIDC pools / providers have already been created prior to running pipeline
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           token_format: access_token
-          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ vars.WORKLOAD_IDENTITY_POOL }}/providers/${{ vars.WORKLOAD_IDENTITY_POOL_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
       - name: Set up Terraform
@@ -86,7 +84,6 @@ jobs:
         run: echo "db_instance=$(terraform output db_connection_name | tr -d '"')" >> "$GITHUB_OUTPUT"
 
   clean-registry:
-    # Note - can specify environment key and inject env-specific values if necessary later
     needs: terraform
     runs-on: ubuntu-latest
     outputs:
@@ -109,7 +106,7 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           token_format: access_token
-          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ vars.WORKLOAD_IDENTITY_POOL }}/providers/${{ vars.WORKLOAD_IDENTITY_POOL_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
       - name: Setup gcloud
@@ -129,8 +126,7 @@ jobs:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
   deploy:
-    # Note - can specify environment key and inject env-specific values if necessary later
-    needs: [test, terraform, clean-registry]
+    needs: [terraform, clean-registry]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -144,7 +140,7 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           token_format: access_token
-          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/tf-managed-pool/providers/tf-managed-pool-provider
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ vars.WORKLOAD_IDENTITY_POOL }}/providers/${{ vars.WORKLOAD_IDENTITY_POOL_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
       - name: Authorize Docker to push to registry

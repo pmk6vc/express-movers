@@ -52,7 +52,7 @@ resource "google_project_iam_member" "workload_identity_pools_admin" {
 * Also assumes that Terraform has been set up with pre-existing bucket as remote backend
 */
 resource "google_storage_bucket_iam_member" "tf_state_bucket_storage_admin" {
-  bucket = "zugzwang-terraform-backend"
+  bucket = "terraform-express-movers-api"
   role = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.service_account.email}"
 }
@@ -79,8 +79,8 @@ resource "google_project_iam_member" "workload_identity_user" {
 module "oidc" {
   source = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
   project_id = var.gcp_project_id
-  pool_id = "tf-managed-pool"
-  provider_id = "tf-managed-pool-provider"
+  pool_id = "tf-express-movers-api-pool"
+  provider_id = "github"
   sa_mapping = {
     (google_service_account.service_account.account_id) = {
       sa_name = google_service_account.service_account.name

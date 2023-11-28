@@ -5,45 +5,33 @@ import { authSchema } from "./AuthSchema";
 
 const PERMISSIONS_TABLE = "permissions";
 
-export enum MovingCustomerPermissionsEnum {
-  CREATE_CUSTOMER = "create:customer",
-  READ_CUSTOMER = "read:customer",
-  UPDATE_CUSTOMER = "update:customer",
-  DELETE_CUSTOMER = "delete:customer",
-}
-export enum MovingBusinessEmployeePermissionsEnum {
-  CREATE_EMPLOYEE = "create:employee",
-  READ_EMPLOYEE = "read:employee",
-  UPDATE_EMPLOYEE = "update:employee",
-  DELETE_EMPLOYEE = "delete:employee",
-}
-export enum MovingBusinessPermissionsEnum {
-  CREATE_BUSINESS = "create:business",
-  READ_BUSINESS = "read:business",
-  UPDATE_BUSINESS = "update:business",
-  DELETE_BUSINESS = "delete:business",
-}
-export enum MovingJobPermissionsEnum {
-  CREATE_JOB = "create:job",
-  READ_JOB = "read:job",
-  UPDATE_JOB = "update:job",
-  DELETE_JOB = "delete:job",
-}
-export enum MovingBidPermissionsEnum {
-  CREATE_BID = "create:bid",
-  READ_BID = "read:bid",
-  UPDATE_BID = "update:bid",
-  DELETE_BID = "delete:bid",
-  ACCEPT_BID = "accept:bid",
-  REJECT_BID = "reject:bid",
+export enum PermissionsEnum {
+  CREATE_CUSTOMER = "customer:create",
+  READ_CUSTOMER = "customer:read",
+  UPDATE_CUSTOMER = "customer:update",
+  DELETE_CUSTOMER = "customer:delete",
+  CREATE_EMPLOYEE = "employee:create",
+  READ_EMPLOYEE = "employee:read",
+  UPDATE_EMPLOYEE = "employee:update",
+  DELETE_EMPLOYEE = "employee:delete",
+  CREATE_BUSINESS = "business:create",
+  READ_BUSINESS = "business:read",
+  UPDATE_BUSINESS = "business:update",
+  DELETE_BUSINESS = "business:delete",
+  CREATE_JOB = "job:create",
+  READ_JOB = "job:read",
+  UPDATE_JOB = "job:update",
+  DELETE_JOB = "job:delete",
+  CREATE_BID = "bid:create",
+  READ_BID = "bid:read",
+  UPDATE_BID = "bid:update",
+  DELETE_BID = "bid:delete",
+  ACCEPT_BID = "bid:accept",
+  REJECT_BID = "bid:reject",
 }
 
 export const permissionsPgEnum = convertStringEnumsToPgEnum("permission", [
-  MovingCustomerPermissionsEnum,
-  MovingBusinessEmployeePermissionsEnum,
-  MovingBusinessPermissionsEnum,
-  MovingJobPermissionsEnum,
-  MovingBidPermissionsEnum,
+  PermissionsEnum,
 ]);
 
 export const permissionsTableDef = authSchema.table(PERMISSIONS_TABLE, {

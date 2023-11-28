@@ -1,0 +1,22 @@
+ALTER TYPE "permission" ADD VALUE 'customer:create';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'customer:read';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'customer:update';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'customer:delete';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'employee:create';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'employee:read';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'employee:update';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'employee:delete';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'business:create';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'business:read';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'business:update';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'business:delete';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'job:create';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'job:read';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'job:update';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'job:delete';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'bid:create';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'bid:read';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'bid:update';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'bid:delete';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'bid:accept';--> statement-breakpoint
+ALTER TYPE "permission" ADD VALUE 'bid:reject';

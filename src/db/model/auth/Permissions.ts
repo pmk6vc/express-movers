@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { uuid } from "drizzle-orm/pg-core";
-import { convertStringEnumsToPgEnum } from "../../util/DatabaseHelperFunctions";
+import { convertStringEnumToPgEnum } from "../../util/DatabaseHelperFunctions";
 import { authSchema } from "./AuthSchema";
 
 const PERMISSIONS_TABLE = "permissions";
@@ -30,9 +30,10 @@ export enum PermissionsEnum {
   REJECT_BID = "reject:bid",
 }
 
-export const permissionsPgEnum = convertStringEnumsToPgEnum("permission", [
-  PermissionsEnum,
-]);
+export const permissionsPgEnum = convertStringEnumToPgEnum(
+  "permission",
+  PermissionsEnum
+);
 
 export const permissionsTableDef = authSchema.table(PERMISSIONS_TABLE, {
   id: uuid("id")

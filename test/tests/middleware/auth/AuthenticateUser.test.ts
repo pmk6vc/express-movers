@@ -10,14 +10,14 @@ import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 import authenticateUser, {
   USER_PROPERTY,
-} from "../../../src/middleware/AuthenticateUser";
-import { FIRST_TEST_USER } from "../../util/TestConstants";
-import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
-import { ITestUser } from "../../util/integration/ITestUser";
+} from "../../../../src/middleware/auth/AuthenticateUser";
+import { FIRST_TEST_USER } from "../../../util/TestConstants";
+import { getIdTokenWithEmailPassword } from "../../../util/integration/FirebaseEmulatorsUtil";
+import { ITestUser } from "../../../util/integration/ITestUser";
 import {
   setupIntegrationTest,
   tearDownIntegrationTest,
-} from "../../util/integration/IntegrationTestsUtil";
+} from "../../../util/integration/IntegrationTestsUtil";
 import App = app.App;
 
 describe("authentication middleware should work", () => {

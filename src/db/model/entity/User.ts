@@ -19,6 +19,7 @@ export const userTableDef = entitySchema.table(USER_TABLE, {
     .default(sql`(now() at time zone 'utc')`)
     .notNull(),
   disabled: boolean("is_disabled").default(false).notNull(),
+  isSuperUser: boolean("is_super_user").default(false).notNull(),
 });
 
 export type NewUser = typeof userTableDef.$inferInsert;

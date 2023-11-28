@@ -2,13 +2,13 @@ import { eq } from "drizzle-orm";
 import express, { Request, Response, Router } from "express";
 import { z } from "zod";
 import { NewUser, userTableDef } from "../db/model/entity/User";
-import { USER_PROPERTY } from "../middleware/AuthenticateUser";
 import { GLOBAL_LOG_OBJ } from "../middleware/CorrelatedRequestLogging";
-import requireAuthenticatedUser from "../middleware/RequireAuthenticatedUser";
 import {
   validateRequestBody,
   validateRequestParams,
 } from "../middleware/ValidateRequestData";
+import { USER_PROPERTY } from "../middleware/auth/AuthenticateUser";
+import requireAuthenticatedUser from "../middleware/auth/RequireAuthenticatedUser";
 import AbstractRouter from "./AbstractRouter";
 
 export default class UserRouter extends AbstractRouter {

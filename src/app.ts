@@ -3,8 +3,8 @@ import HealthChecksRouter from "./api/HealthChecksRouter";
 import UserRouter from "./api/UserRouter";
 import DatabaseClient from "./db/DatabaseClient";
 import { Environment } from "./environment/handlers/IEnvironment";
-import authenticateUser from "./middleware/AuthenticateUser";
 import correlatedRequestLogging from "./middleware/CorrelatedRequestLogging";
+import authenticateUser from "./middleware/auth/AuthenticateUser";
 
 const app = express();
 export const buildApp = async (env: Environment, dbClient: DatabaseClient) => {

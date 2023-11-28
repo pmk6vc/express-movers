@@ -1,9 +1,9 @@
 import { afterEach, beforeAll, beforeEach, describe } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
-import EnvironmentFactory from "../../../src/environment/EnvironmentFactory";
-import { Environment } from "../../../src/environment/handlers/IEnvironment";
-import { USER_PROPERTY } from "../../../src/middleware/AuthenticateUser";
-import requireAuthenticatedUser from "../../../src/middleware/RequireAuthenticatedUser";
+import EnvironmentFactory from "../../../../src/environment/EnvironmentFactory";
+import { Environment } from "../../../../src/environment/handlers/IEnvironment";
+import { USER_PROPERTY } from "../../../../src/middleware/auth/AuthenticateUser";
+import requireAuthenticatedUser from "../../../../src/middleware/auth/RequireAuthenticatedUser";
 
 describe("require authentication middleware should work", () => {
   let env: Environment;

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Logger } from "winston";
+import { GLOBAL_LOG_OBJ } from "../CorrelatedRequestLogging";
 import { USER_PROPERTY } from "./AuthenticateUser";
-import { GLOBAL_LOG_OBJ } from "./CorrelatedRequestLogging";
 
 const requireAuthenticatedUserHelper = (
   req: Request,

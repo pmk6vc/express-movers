@@ -47,7 +47,7 @@ export const rolesPermissionsMap = new Map([
     ],
   ],
   [
-    RolesEnum.SUPER_USER,
+    RolesEnum.SUPERUSER,
     [
       PermissionsEnum.CREATE_CUSTOMER,
       PermissionsEnum.READ_CUSTOMER,

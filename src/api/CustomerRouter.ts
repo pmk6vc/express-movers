@@ -11,8 +11,8 @@ import {
 } from "../middleware/ValidateRequestData";
 import AbstractRouter from "./AbstractRouter";
 
-export default class UserRouter extends AbstractRouter {
-  private newUserRequestSchema = z
+export default class CustomerRouter extends AbstractRouter {
+  private newCustomerRequestSchema = z
     .object({
       email: z.string().email(),
       profile: z.object({
@@ -23,13 +23,13 @@ export default class UserRouter extends AbstractRouter {
       }),
     })
     .strict();
-  private getUserRequestSchema = z
+  private getCustomerRequestSchema = z
     .object({
       userId: z.string(),
     })
     .strict();
 
-  private newUser = async (req: Request, res: Response) => {
+  private newCustomer = async (req: Request, res: Response) => {
     // Confirm that authenticated user has not already been created
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
     const maybeUser = await this.dbClient.pgPoolClient
@@ -46,7 +46,7 @@ export default class UserRouter extends AbstractRouter {
     }
 
     // Create new customer
-    const parsedRequestBody = this.newUserRequestSchema.parse(req.body);
+    const parsedRequestBody = this.newCustomerRequestSchema.parse(req.body);
     const newCustomer: NewUser = {
       uid: authenticatedUserRecord.uid,
       email: parsedRequestBody.email,
@@ -59,15 +59,15 @@ export default class UserRouter extends AbstractRouter {
     );
     return res
       .status(201)
-      .send(`New user ${authenticatedUserRecord.uid} created`);
+      .send(`New customer ${authenticatedUserRecord.uid} created`);
   };
 
-  private getUser = async (req: Request, res: Response) => {
+  private getCustomer = async (req: Request, res: Response) => {
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
-    const parsedRequestParams = this.getUserRequestSchema.parse(req.params);
+    const parsedRequestParams = this.getCustomerRequestSchema.parse(req.params);
     if (parsedRequestParams.userId != authenticatedUserRecord.uid) {
       this.logger.info(
-        `Authenticated user ${authenticatedUserRecord.uid} does not match requested user ${parsedRequestParams.userId}`,
+        `Authenticated user ${authenticatedUserRecord.uid} does not match requested customer ${parsedRequestParams.userId}`,
         res.locals[GLOBAL_LOG_OBJ]
       );
       res.status(403).send("Unauthorized request");
@@ -81,16 +81,16 @@ export default class UserRouter extends AbstractRouter {
     return express
       .Router()
       .post(
-        "/newUser",
+        "/",
         requireAuthenticatedUser(this.logger),
-        validateRequestBody(this.newUserRequestSchema),
-        this.newUser
+        validateRequestBody(this.newCustomerRequestSchema),
+        this.newCustomer
       )
       .get(
         "/:userId",
         requireAuthenticatedUser(this.logger),
-        validateRequestParams(this.getUserRequestSchema),
-        this.getUser
+        validateRequestParams(this.getCustomerRequestSchema),
+        this.getCustomer
       );
   }
 }

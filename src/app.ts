@@ -1,6 +1,6 @@
 import express from "express";
+import CustomerRouter from "./api/CustomerRouter";
 import HealthChecksRouter from "./api/HealthChecksRouter";
-import UserRouter from "./api/UserRouter";
 import DatabaseClient from "./db/DatabaseClient";
 import { Environment } from "./environment/handlers/IEnvironment";
 import authenticateUser from "./middleware/AuthenticateUser";
@@ -21,7 +21,7 @@ export const buildApp = async (env: Environment, dbClient: DatabaseClient) => {
     "/_health",
     new HealthChecksRouter(dbClient, env.logger).buildRouter()
   );
-  app.use("/users", new UserRouter(dbClient, env.logger).buildRouter());
+  app.use("/customers", new CustomerRouter(dbClient, env.logger).buildRouter());
 
   // Serve custom 404 response if no preceding path was hit
   // Note that public assets like HTML can link to other public assets like CSS because they are all exposed in API

@@ -25,7 +25,7 @@ export default class CustomerRouter extends AbstractRouter {
     .strict();
   private getCustomerRequestSchema = z
     .object({
-      userId: z.string(),
+      customerId: z.string(),
     })
     .strict();
 
@@ -65,9 +65,9 @@ export default class CustomerRouter extends AbstractRouter {
   private getCustomer = async (req: Request, res: Response) => {
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
     const parsedRequestParams = this.getCustomerRequestSchema.parse(req.params);
-    if (parsedRequestParams.userId != authenticatedUserRecord.uid) {
+    if (parsedRequestParams.customerId != authenticatedUserRecord.uid) {
       this.logger.info(
-        `Authenticated user ${authenticatedUserRecord.uid} does not match requested customer ${parsedRequestParams.userId}`,
+        `Authenticated user ${authenticatedUserRecord.uid} does not match requested customer ${parsedRequestParams.customerId}`,
         res.locals[GLOBAL_LOG_OBJ]
       );
       res.status(403).send("Unauthorized request");
@@ -87,7 +87,7 @@ export default class CustomerRouter extends AbstractRouter {
         this.newCustomer
       )
       .get(
-        "/:userId",
+        "/:customerId",
         requireAuthenticatedUser(this.logger),
         validateRequestParams(this.getCustomerRequestSchema),
         this.getCustomer

@@ -9,7 +9,7 @@ export enum RolesEnum {
   MOVING_CUSTOMER = "MOVING_CUSTOMER",
   MOVING_BUSINESS_EMPLOYEE = "MOVING_BUSINESS_EMPLOYEE",
   MOVING_BUSINESS_ADMIN = "MOVING_BUSINESS_ADMIN",
-  SUPERUSER = "SUPERUSER",
+  SUPER_USER = "SUPER_USER",
 }
 
 export const rolesPgEnum = convertStringEnumToPgEnum("role", RolesEnum);

@@ -1,1 +1,20 @@
-{"version":"5","dialect":"pg","entries":[{"idx":0,"version":"5","when":1699384260541,"tag":"0000_shocking_namora","breakpoints":true}]}
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1699384260541,
+      "tag": "0000_shocking_namora",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1701284134949,
+      "tag": "0001_yielding_doctor_spectrum",
+      "breakpoints": true
+    }
+  ]
+}

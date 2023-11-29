@@ -80,10 +80,10 @@ describe("user routes should work", () => {
     await dbClient.close();
   });
 
-  const ROUTE_PREFIX = "/users";
+  const ROUTE_PREFIX = "/customers";
 
-  describe("should create new user", () => {
-    const NEW_USER_ROUTE_PREFIX = `${ROUTE_PREFIX}/newUser`;
+  describe("should create new customer", () => {
+    const NEW_USER_ROUTE_PREFIX = `${ROUTE_PREFIX}`;
     const newUserHelper = async (user: ITestUser) => {
       const bearerToken = await getIdTokenWithEmailPassword(
         user.userCredentials.email,

@@ -183,7 +183,7 @@ describe("user routes should work", () => {
       expect(res.text).toBe("Unauthenticated request");
     });
 
-    it("blocks request with bearer token for another user", async () => {
+    it("blocks request for authenticated user with insufficient permissions", async () => {
       const firstUserId = testUsers[0].userRecord.uid;
       const secondUserCredentials = testUsers[1].userCredentials;
       const secondUserToken = await getIdTokenWithEmailPassword(

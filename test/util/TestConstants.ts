@@ -25,6 +25,21 @@ export const DEFAULT_TEST_USER = {
     dateOfBirth: new Date("1999-12-31"),
   },
 };
+export const DEFAULT_TEST_SUPERUSER = {
+  email: "super@user.com",
+  emailVerified: false,
+  phoneNumber: "+10987654321",
+  password: "superUser",
+  displayName: "Super User",
+  photoURL: "http://www.example.com/87654321/photo.png",
+  disabled: false,
+  profile: {
+    firstName: "Super",
+    lastName: "User",
+    address: "Super address",
+    dateOfBirth: new Date("1970-12-01"),
+  },
+};
 export const FIRST_TEST_USER = {
   email: "first@user.com",
   password: "firstUser",

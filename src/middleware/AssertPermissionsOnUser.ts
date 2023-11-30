@@ -1,13 +1,15 @@
 import { eq } from "drizzle-orm";
 import { NextFunction, Request, Response } from "express";
+import { Logger } from "winston";
 import DatabaseClient from "../db/DatabaseClient";
 import { PermissionsEnum } from "../db/model/auth/Permissions";
 import { RolesEnum } from "../db/model/auth/Roles";
 import { rolesPermissionsMap } from "../db/model/auth/RolesPermissions";
 import { userTableDef } from "../db/model/entity/User";
 import { USER_PROPERTY } from "./AuthenticateUser";
+import { GLOBAL_LOG_OBJ } from "./CorrelatedRequestLogging";
 
-const getPermissionsOnCustomerResource = async (
+const getPermissionsOnUserResource = async (
   requestedCustomerId: string,
   authenticatedUserId: string,
   dbClient: DatabaseClient
@@ -31,24 +33,32 @@ const getPermissionsOnCustomerResource = async (
   return [];
 };
 
-export const assertPermissionsOnCustomer = (
+export const assertPermissionsOnUser = (
   requiredPermissions: PermissionsEnum[],
-  dbClient: DatabaseClient
+  dbClient: DatabaseClient,
+  logger: Logger
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const requestedCustomerId = req.params["customerId"];
+    const requestedUserId = req.params["userId"];
     const authenticatedUserId = res.locals[USER_PROPERTY].uid;
-    const permissions = await getPermissionsOnCustomerResource(
-      requestedCustomerId,
+    const permissions = await getPermissionsOnUserResource(
+      requestedUserId,
       authenticatedUserId,
       dbClient
+    );
+    logger.info(
+      `Authenticated user ${authenticatedUserId} has the following permissions on requested user ${requestedUserId}: ${permissions}`,
+      res.locals[GLOBAL_LOG_OBJ]
     );
     const isAuthorized = requiredPermissions.every((p) =>
       permissions.includes(p)
     );
     if (!isAuthorized) {
-      // TODO: Figure out appropriate status code and message
-      res.status(403).send("Unauthorized");
+      logger.info(
+        `Authenticated user ${authenticatedUserId} missing at least one of the following required permissions on requested user ${requestedUserId}: ${requiredPermissions}`,
+        res.locals[GLOBAL_LOG_OBJ]
+      );
+      res.status(403).send("Unauthorized request");
       return;
     }
     next();

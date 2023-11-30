@@ -1,7 +1,9 @@
 import { eq } from "drizzle-orm";
 import express, { Request, Response, Router } from "express";
 import { z } from "zod";
+import { PermissionsEnum } from "../db/model/auth/Permissions";
 import { NewUser, userTableDef } from "../db/model/entity/User";
+import { assertPermissionsOnUser } from "../middleware/AssertPermissionsOnUser";
 import { USER_PROPERTY } from "../middleware/AuthenticateUser";
 import { GLOBAL_LOG_OBJ } from "../middleware/CorrelatedRequestLogging";
 import requireAuthenticatedUser from "../middleware/RequireAuthenticatedUser";
@@ -65,14 +67,14 @@ export default class UserRouter extends AbstractRouter {
   private getUser = async (req: Request, res: Response) => {
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
     const parsedRequestParams = this.getUserRequestSchema.parse(req.params);
-    if (parsedRequestParams.userId != authenticatedUserRecord.uid) {
-      this.logger.info(
-        `Authenticated user ${authenticatedUserRecord.uid} does not match requested user ${parsedRequestParams.userId}`,
-        res.locals[GLOBAL_LOG_OBJ]
-      );
-      res.status(403).send("Unauthorized request");
-      return;
-    }
+    // if (parsedRequestParams.userId != authenticatedUserRecord.uid) {
+    //   this.logger.info(
+    //     `Authenticated user ${authenticatedUserRecord.uid} does not match requested user ${parsedRequestParams.userId}`,
+    //     res.locals[GLOBAL_LOG_OBJ]
+    //   );
+    //   res.status(403).send("Unauthorized request");
+    //   return;
+    // }
     // TODO: Think about what user data you actually want to expose through this endpoint
     res.status(200).send(authenticatedUserRecord);
   };
@@ -90,6 +92,11 @@ export default class UserRouter extends AbstractRouter {
         "/:userId",
         requireAuthenticatedUser(this.logger),
         validateRequestParams(this.getUserRequestSchema),
+        assertPermissionsOnUser(
+          [PermissionsEnum.READ_CUSTOMER],
+          this.dbClient,
+          this.logger
+        ),
         this.getUser
       );
   }

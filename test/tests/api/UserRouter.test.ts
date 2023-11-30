@@ -80,7 +80,7 @@ describe("user routes should work", () => {
     await dbClient.close();
   });
 
-  const ROUTE_PREFIX = "/customers";
+  const ROUTE_PREFIX = "/users";
 
   describe("should create new customer", () => {
     const NEW_USER_ROUTE_PREFIX = `${ROUTE_PREFIX}`;

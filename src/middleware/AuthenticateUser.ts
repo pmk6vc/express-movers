@@ -45,8 +45,7 @@ const authenticateUser = (dbClient: DatabaseClient, logger: Logger) => {
       uidExistsInDatabase(maybeVerifiedIdToken!.uid, dbClient),
     ]);
     if (!existsInDatabase) {
-      // TODO: Use error level
-      logger.info(
+      logger.error(
         `User ${
           maybeVerifiedIdToken!.uid
         } exists in Firebase but not in database - investigate`,

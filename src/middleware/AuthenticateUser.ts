@@ -1,12 +1,15 @@
+import { eq } from "drizzle-orm";
 import { NextFunction, Request, Response } from "express";
 import * as admin from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
+import { Logger } from "winston";
+import DatabaseClient from "../db/DatabaseClient";
+import { userTableDef } from "../db/model/entity/User";
+import { GLOBAL_LOG_OBJ } from "./CorrelatedRequestLogging";
 
 export const USER_PROPERTY = "user";
 
-async function fetchUserRecordFromBearerString(
-  bearerString: string | undefined
-) {
+async function getVerifiedIdToken(bearerString: string | undefined) {
   if (!bearerString) {
     return;
   }
@@ -17,19 +20,47 @@ async function fetchUserRecordFromBearerString(
   } catch (e) {
     return;
   }
-  const userRecord = await getAuth().getUser(decodedToken.uid);
-  return userRecord.toJSON();
+  return decodedToken;
 }
 
-const authenticateUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res.locals[USER_PROPERTY] = await fetchUserRecordFromBearerString(
-    req.headers.authorization
-  );
-  next();
+async function uidExistsInDatabase(uid: string, dbClient: DatabaseClient) {
+  const dbRecord = await dbClient.pgPoolClient
+    .select()
+    .from(userTableDef)
+    .where(eq(userTableDef.uid, uid));
+  return dbRecord.length == 1;
+}
+
+const authenticateUser = (dbClient: DatabaseClient, logger: Logger) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const maybeVerifiedIdToken = await getVerifiedIdToken(
+      req.headers.authorization
+    );
+    if (maybeVerifiedIdToken == undefined) {
+      next();
+      return;
+    }
+    const [firebaseRecord, existsInDatabase] = await Promise.all([
+      getAuth().getUser(maybeVerifiedIdToken!.uid),
+      uidExistsInDatabase(maybeVerifiedIdToken!.uid, dbClient),
+    ]);
+    if (!existsInDatabase) {
+      logger.error(
+        `User ${
+          maybeVerifiedIdToken!.uid
+        } exists in Firebase but not in database - investigate`,
+        res.locals[GLOBAL_LOG_OBJ]
+      );
+      res
+        .status(500)
+        .send(
+          "Incomplete sign-up for account - please contact an administrator"
+        );
+      return;
+    }
+    res.locals[USER_PROPERTY] = firebaseRecord.toJSON();
+    next();
+  };
 };
 
 export default authenticateUser;

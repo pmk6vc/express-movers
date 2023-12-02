@@ -10,6 +10,8 @@ import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { userTableDef } from "../../../src/db/model/entity/User";
+import EnvironmentFactory from "../../../src/environment/EnvironmentFactory";
+import { Environment } from "../../../src/environment/handlers/IEnvironment";
 import authenticateUser, {
   USER_PROPERTY,
 } from "../../../src/middleware/AuthenticateUser";
@@ -23,6 +25,7 @@ import {
 import App = app.App;
 
 describe("authentication middleware should work", () => {
+  let env: Environment;
   let firebaseAdminApp: App;
   let dbClient: DatabaseClient;
   let testUsers: ITestUser[];
@@ -55,6 +58,7 @@ describe("authentication middleware should work", () => {
   }
 
   beforeAll(async () => {
+    env = await EnvironmentFactory.getHandler().getEnvironment();
     const setup = await setupIntegrationTest();
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
@@ -77,7 +81,7 @@ describe("authentication middleware should work", () => {
   });
 
   it("should not assign user if bearer token is missing", async () => {
-    await authenticateUser(
+    await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
       nextFunction
@@ -92,7 +96,7 @@ describe("authentication middleware should work", () => {
         authorization: "Bearer Invalid token",
       },
     } as Request;
-    await authenticateUser(
+    await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
       nextFunction
@@ -112,7 +116,7 @@ describe("authentication middleware should work", () => {
         authorization: `Bearer ${bearerToken}`,
       },
     } as Request;
-    await authenticateUser(
+    await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
       nextFunction

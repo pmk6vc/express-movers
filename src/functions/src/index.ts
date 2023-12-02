@@ -7,12 +7,15 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
+import { UserRecord } from "firebase-admin/auth";
 import * as functions from "firebase-functions/v1";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 
 // admin.initializeApp();
-export const newUser = functions.auth.user().onCreate((userRecord: any) => {
-  console.log(userRecord);
-});
+export const newUser = functions.auth
+  .user()
+  .onCreate((userRecord: UserRecord) => {
+    console.log(userRecord);
+  });

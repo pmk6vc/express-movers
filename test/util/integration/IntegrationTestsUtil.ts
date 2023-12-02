@@ -14,7 +14,37 @@ import {
 import { ITestUser } from "./ITestUser";
 import App = app.App;
 
-async function setupDefaultUsers(
+function connectToFirebaseEmulator() {
+  process.env.FIREBASE_AUTH_EMULATOR_HOST = FIREBASE_AUTH_EMULATOR_HOST;
+  return admin.initializeApp({
+    projectId: TEST_GCP_PROJECT_ID,
+  });
+}
+
+export async function setupIntegrationTest() {
+  const firebaseAdminApp = connectToFirebaseEmulator();
+  const env = await EnvironmentFactory.getHandler().getEnvironment();
+  const dbClient = DatabaseClient.getInstance(env);
+  const expressApp = await buildApp(env, dbClient);
+
+  await dbClient.runMigrations();
+  return { firebaseAdminApp, dbClient, expressApp };
+}
+
+export async function tearDownIntegrationTest(
+  firebaseAdminApp: App,
+  testUsers: ITestUser[],
+  dbClient: DatabaseClient
+) {
+  await Promise.all([
+    getAuth(firebaseAdminApp).deleteUsers(
+      testUsers.map((u) => u.userRecord.uid)
+    ),
+    dbClient.close(),
+  ]);
+}
+
+export async function setupDefaultUsers(
   firebaseAdminApp: App,
   dbClient: DatabaseClient
 ): Promise<ITestUser[]> {
@@ -27,7 +57,6 @@ async function setupDefaultUsers(
       uid: defaultTestUser.uid,
       email: DEFAULT_TEST_USER.email,
       profile: DEFAULT_TEST_USER.profile,
-      isSuperuser: false,
     }),
     dbClient.pgPoolClient.insert(userTableDef).values({
       uid: defaultTestSuperuser.uid,
@@ -54,35 +83,4 @@ async function setupDefaultUsers(
       profile: DEFAULT_TEST_SUPERUSER.profile,
     },
   ];
-}
-
-function connectToFirebaseEmulator() {
-  process.env.FIREBASE_AUTH_EMULATOR_HOST = FIREBASE_AUTH_EMULATOR_HOST;
-  return admin.initializeApp({
-    projectId: TEST_GCP_PROJECT_ID,
-  });
-}
-
-export async function setupIntegrationTest(
-  setupUsers: (
-    firebaseAdminApp: App,
-    dbClient: DatabaseClient
-  ) => Promise<ITestUser[]> = setupDefaultUsers
-) {
-  const firebaseAdminApp = connectToFirebaseEmulator();
-  const env = await EnvironmentFactory.getHandler().getEnvironment();
-  const dbClient = DatabaseClient.getInstance(env);
-  const expressApp = await buildApp(env, dbClient);
-
-  const testUsers = await setupUsers(firebaseAdminApp, dbClient);
-  return { firebaseAdminApp, dbClient, expressApp, testUsers };
-}
-
-export async function tearDownIntegrationTest(
-  firebaseAdminApp: App,
-  testUsers: ITestUser[]
-) {
-  await getAuth(firebaseAdminApp).deleteUsers(
-    testUsers.map((u) => u.userRecord.uid)
-  );
 }

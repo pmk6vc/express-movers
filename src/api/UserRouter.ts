@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from "express";
-import { getAuth } from "firebase-admin/auth";
+import { FirebaseError } from "firebase-admin";
+import { UserRecord, getAuth } from "firebase-admin/auth";
 import { z } from "zod";
 import { PermissionsEnum } from "../db/model/auth/Permissions";
 import { NewUser, userTableDef } from "../db/model/entity/User";
@@ -33,39 +34,45 @@ export default class UserRouter extends AbstractRouter {
     .strict();
 
   private newUser = async (req: Request, res: Response) => {
-    // Confirm that user with same email has not already been created
+    // Attempt to create user in Firebase
     const parsedRequestBody = this.newUserRequestSchema.parse(req.body);
-    await getAuth()
-      .getUserByEmail(parsedRequestBody.email)
-      .then((userRecord) => {
+    let firebaseUserRecord: UserRecord;
+    try {
+      firebaseUserRecord = await getAuth().createUser({
+        email: parsedRequestBody.email,
+        password: parsedRequestBody.password,
+        emailVerified: false,
+        displayName: `${parsedRequestBody.profile.firstName} ${parsedRequestBody.profile.lastName}`,
+        disabled: false,
+      });
+      this.logger.info(
+        `User with email ${parsedRequestBody.email} created in Firebase with ID ${firebaseUserRecord.uid}`,
+        res.locals[GLOBAL_LOG_OBJ]
+      );
+    } catch (e: unknown) {
+      if ((e as FirebaseError).code !== undefined) {
         this.logger.info(
-          `User ${userRecord.uid} already exists in Firebase`,
+          (e as FirebaseError).message,
           res.locals[GLOBAL_LOG_OBJ]
         );
         res.status(409).send("User already exists");
-        return;
-      })
-      .catch(() => {
-        this.logger.info(
-          `No user with email ${parsedRequestBody.email} found in Firebase - proceeding with user creation`,
-          res.locals[GLOBAL_LOG_OBJ]
-        );
-      });
+      } else {
+        if (e instanceof Error) {
+          this.logger.error(e.message, res.locals[GLOBAL_LOG_OBJ]);
+        } else {
+          this.logger.error(
+            "Something went really wrong :(",
+            res.locals[GLOBAL_LOG_OBJ]
+          );
+        }
+        res.status(500).send("Something went wrong :(");
+      }
+      return;
+    }
 
-    // Create new user in Firebase and database
+    // Create new user in database
     // TODO: Use Pub/Sub for consistency between Firebase and DB
     // TODO: Add email verification?
-    const firebaseUserRecord = await getAuth().createUser({
-      email: parsedRequestBody.email,
-      password: parsedRequestBody.password,
-      emailVerified: false,
-      displayName: `${parsedRequestBody.profile.firstName} ${parsedRequestBody.profile.lastName}`,
-      disabled: false,
-    });
-    this.logger.info(
-      `User with email ${parsedRequestBody.email} created in Firebase with ID ${firebaseUserRecord.uid}`,
-      res.locals[GLOBAL_LOG_OBJ]
-    );
     const newUser: NewUser = {
       uid: firebaseUserRecord.uid,
       email: parsedRequestBody.email,

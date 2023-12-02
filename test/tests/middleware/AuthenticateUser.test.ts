@@ -11,7 +11,7 @@ import { getAuth } from "firebase-admin/auth";
 import authenticateUser, {
   USER_PROPERTY,
 } from "../../../src/middleware/AuthenticateUser";
-import { FIRST_TEST_USER } from "../../util/TestConstants";
+import { TEST_USER_ONE } from "../../util/TestConstants";
 import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
 import { ITestUser } from "../../util/integration/ITestUser";
 import {
@@ -32,15 +32,15 @@ describe("authentication middleware should work", () => {
 
   async function setupUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
     const userRecord = await getAuth(firebaseAdminApp).createUser(
-      FIRST_TEST_USER
+      TEST_USER_ONE
     );
     const user = {
       userRecord: userRecord,
       userCredentials: {
-        email: FIRST_TEST_USER.email,
-        password: FIRST_TEST_USER.password,
+        email: TEST_USER_ONE.email,
+        password: TEST_USER_ONE.password,
       },
-      profile: FIRST_TEST_USER.profile,
+      profile: TEST_USER_ONE.profile,
     };
     return [user];
   }

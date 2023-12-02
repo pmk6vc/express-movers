@@ -72,7 +72,6 @@ describe("user routes should work", () => {
     });
 
     it("creates new user", async () => {
-      // TODO: Check for DB creation (and possible Pub/Sub invocations) once user creation updated
       const res = await request(expressApp)
         .post(ROUTE_PREFIX)
         .send(TEST_USER_ONE);
@@ -133,16 +132,27 @@ describe("user routes should work", () => {
     });
 
     it("blocks request for authenticated user with insufficient permissions", async () => {
-      const firstUserId = testUsers[0].userRecord.uid;
-      const secondUserCredentials = testUsers[1].userCredentials;
-      const secondUserToken = await getIdTokenWithEmailPassword(
-        secondUserCredentials.email,
-        secondUserCredentials.password
+      // Create new users without any special roles
+      await Promise.all([
+        request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_ONE),
+        request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_TWO),
+      ]);
+
+      // Attempt to fetch user data with token from different user
+      const userOneId = (
+        await dbClient.pgPoolClient
+          .select()
+          .from(userTableDef)
+          .where(eq(userTableDef.email, TEST_USER_ONE.email))
+      )[0].uid;
+      const userTwoToken = await getIdTokenWithEmailPassword(
+        TEST_USER_TWO.email,
+        TEST_USER_TWO.password
       );
 
       const res = await request(expressApp)
-        .get(`${ROUTE_PREFIX}/${firstUserId}`)
-        .set("Authorization", `Bearer ${secondUserToken}`);
+        .get(`${ROUTE_PREFIX}/${userOneId}`)
+        .set("Authorization", `Bearer ${userTwoToken}`);
       expect(res.status).toBe(403);
       expect(res.text).toBe("Unauthorized request");
     });

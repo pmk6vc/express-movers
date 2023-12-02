@@ -71,7 +71,7 @@ export default class UserRouter extends AbstractRouter {
     }
 
     // Create new user in database
-    // TODO: Use Pub/Sub for consistency between Firebase and DB
+    // TODO: Figure out how to ensure eventual consistency between Firebase and database
     // TODO: Add email verification?
     const newUser: NewUser = {
       uid: firebaseUserRecord.uid,

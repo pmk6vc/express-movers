@@ -73,7 +73,7 @@ describe("authentication middleware should work", () => {
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, testUsers, dbClient);
+    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
   });
 
   it("should not assign user if bearer token is missing", async () => {

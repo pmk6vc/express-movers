@@ -55,7 +55,7 @@ describe("user routes should work", () => {
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, testUsers, dbClient);
+    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
   });
 
   const ROUTE_PREFIX = "/users";

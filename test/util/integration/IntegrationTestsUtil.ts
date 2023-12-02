@@ -33,13 +33,11 @@ export async function setupIntegrationTest() {
 
 export async function tearDownIntegrationTest(
   firebaseAdminApp: App,
-  testUsers: ITestUser[],
   dbClient: DatabaseClient
 ) {
+  const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
   await Promise.all([
-    getAuth(firebaseAdminApp).deleteUsers(
-      testUsers.map((u) => u.userRecord.uid)
-    ),
+    getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
     dbClient.close(),
   ]);
 }

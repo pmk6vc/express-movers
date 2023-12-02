@@ -22,7 +22,7 @@ describe("should test health check", () => {
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, [], dbClient);
+    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
   });
 
   const ROUTE_PREFIX = "/_health";

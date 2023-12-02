@@ -15,7 +15,7 @@ import { Environment } from "../../../src/environment/handlers/IEnvironment";
 import authenticateUser, {
   USER_PROPERTY,
 } from "../../../src/middleware/AuthenticateUser";
-import { TEST_USER_ONE } from "../../util/TestConstants";
+import { TEST_USER_ONE, TEST_USER_TWO } from "../../util/TestConstants";
 import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
 import { ITestUser } from "../../util/integration/ITestUser";
 import {
@@ -34,6 +34,8 @@ describe("authentication middleware should work", () => {
   const mockResponse: Response = {
     locals: {},
   } as Response;
+  mockResponse.status = jest.fn(() => mockResponse);
+  mockResponse.send = jest.fn();
   const USER_PROPERTY_KEY = USER_PROPERTY as keyof typeof mockResponse.locals;
 
   async function setupUsers(): Promise<ITestUser[]> {
@@ -103,6 +105,32 @@ describe("authentication middleware should work", () => {
     );
     expect(mockResponse.locals[USER_PROPERTY_KEY]).toBe(undefined);
     expect(nextFunction).toBeCalledTimes(1);
+  });
+
+  it("should return server error if user exists in Firebase but not database", async () => {
+    // Create user only in Firebase
+    await getAuth(firebaseAdminApp).createUser(TEST_USER_TWO);
+    const bearerToken = await getIdTokenWithEmailPassword(
+      TEST_USER_TWO.email,
+      TEST_USER_TWO.password
+    );
+    mockRequest = {
+      headers: {
+        authorization: `Bearer ${bearerToken}`,
+      },
+    } as Request;
+    await authenticateUser(dbClient, env.logger)(
+      mockRequest as Request,
+      mockResponse as Response,
+      nextFunction
+    );
+
+    // Confirm server error in response
+    expect(mockResponse.locals[USER_PROPERTY_KEY]).toBe(undefined);
+    expect(mockResponse.status).toHaveBeenCalledWith(500);
+    expect(mockResponse.status).toHaveBeenCalledTimes(1);
+    expect(mockResponse.send).toHaveBeenCalledTimes(1);
+    expect(nextFunction).toBeCalledTimes(0);
   });
 
   it("should assign user if valid bearer token is passed", async () => {

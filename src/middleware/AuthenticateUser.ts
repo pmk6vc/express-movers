@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextFunction, Request, Response } from "express";
 import * as admin from "firebase-admin";
-import { DecodedIdToken, getAuth } from "firebase-admin/auth";
+import { getAuth } from "firebase-admin/auth";
 import { Logger } from "winston";
 import DatabaseClient from "../db/DatabaseClient";
 import { userTableDef } from "../db/model/entity/User";
@@ -23,16 +23,7 @@ async function getVerifiedIdToken(bearerString: string | undefined) {
   return decodedToken;
 }
 
-async function fetchUserRecordFromVerifiedIdToken(
-  decodedToken: DecodedIdToken
-) {
-  return await getAuth().getUser(decodedToken.uid);
-}
-
-async function validateExistenceInDatabase(
-  uid: string,
-  dbClient: DatabaseClient
-) {
+async function uidExistsInDatabase(uid: string, dbClient: DatabaseClient) {
   const dbRecord = await dbClient.pgPoolClient
     .select()
     .from(userTableDef)
@@ -50,11 +41,12 @@ const authenticateUser = (dbClient: DatabaseClient, logger: Logger) => {
       return;
     }
     const [firebaseRecord, existsInDatabase] = await Promise.all([
-      fetchUserRecordFromVerifiedIdToken(maybeVerifiedIdToken!),
-      validateExistenceInDatabase(maybeVerifiedIdToken!.uid, dbClient),
+      getAuth().getUser(maybeVerifiedIdToken!.uid),
+      uidExistsInDatabase(maybeVerifiedIdToken!.uid, dbClient),
     ]);
     if (!existsInDatabase) {
-      logger.error(
+      // TODO: Use error level
+      logger.info(
         `User ${
           maybeVerifiedIdToken!.uid
         } exists in Firebase but not in database - investigate`,

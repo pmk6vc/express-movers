@@ -8,6 +8,8 @@ import {
 import { NextFunction, Request, Response } from "express";
 import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
+import DatabaseClient from "../../../src/db/DatabaseClient";
+import { userTableDef } from "../../../src/db/model/entity/User";
 import authenticateUser, {
   USER_PROPERTY,
 } from "../../../src/middleware/AuthenticateUser";
@@ -22,6 +24,7 @@ import App = app.App;
 
 describe("authentication middleware should work", () => {
   let firebaseAdminApp: App;
+  let dbClient: DatabaseClient;
   let testUsers: ITestUser[];
   let mockRequest: Request;
   let nextFunction: NextFunction;
@@ -30,25 +33,32 @@ describe("authentication middleware should work", () => {
   } as Response;
   const USER_PROPERTY_KEY = USER_PROPERTY as keyof typeof mockResponse.locals;
 
-  async function setupUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
+  async function setupUsers(): Promise<ITestUser[]> {
     const userRecord = await getAuth(firebaseAdminApp).createUser(
       TEST_USER_ONE
     );
-    const user = {
-      userRecord: userRecord,
-      userCredentials: {
-        email: TEST_USER_ONE.email,
-        password: TEST_USER_ONE.password,
-      },
+    await dbClient.pgPoolClient.insert(userTableDef).values({
+      uid: userRecord.uid,
+      email: TEST_USER_ONE.email,
       profile: TEST_USER_ONE.profile,
-    };
-    return [user];
+    });
+    return [
+      {
+        userRecord: userRecord,
+        userCredentials: {
+          email: TEST_USER_ONE.email,
+          password: TEST_USER_ONE.password,
+        },
+        profile: TEST_USER_ONE.profile,
+      },
+    ];
   }
 
   beforeAll(async () => {
-    const setup = await setupIntegrationTest(setupUsers);
+    const setup = await setupIntegrationTest();
     firebaseAdminApp = setup.firebaseAdminApp;
-    testUsers = setup.testUsers;
+    dbClient = setup.dbClient;
+    testUsers = await setupUsers();
   });
 
   beforeEach(() => {
@@ -63,7 +73,7 @@ describe("authentication middleware should work", () => {
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, testUsers);
+    await tearDownIntegrationTest(firebaseAdminApp, testUsers, dbClient);
   });
 
   it("should not assign user if bearer token is missing", async () => {

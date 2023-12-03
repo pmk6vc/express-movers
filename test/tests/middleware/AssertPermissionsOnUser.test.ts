@@ -21,7 +21,7 @@ import {
   setupDefaultUsers,
   setupIntegrationTest,
   tearDownIntegrationTest,
-  tearDownUsers,
+  tearDownTestData,
 } from "../../util/integration/IntegrationTestsUtil";
 import App = app.App;
 
@@ -52,7 +52,7 @@ describe("user permissions middleware should work", () => {
   });
 
   afterEach(async () => {
-    await tearDownUsers(firebaseAdminApp, dbClient);
+    await tearDownTestData(firebaseAdminApp, dbClient);
     jest.clearAllMocks();
   });
 

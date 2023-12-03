@@ -30,7 +30,7 @@ export async function setupIntegrationTest() {
   const expressApp = await buildApp(env, dbClient);
 
   await dbClient.runMigrations();
-  return { firebaseAdminApp, dbClient, expressApp };
+  return { firebaseAdminApp, env, dbClient, expressApp };
 }
 
 export async function tearDownIntegrationTest(

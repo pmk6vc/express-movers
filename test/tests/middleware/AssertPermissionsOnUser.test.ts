@@ -11,7 +11,6 @@ import { app } from "firebase-admin";
 import request from "supertest";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { PermissionsEnum } from "../../../src/db/model/auth/Permissions";
-import EnvironmentFactory from "../../../src/environment/EnvironmentFactory";
 import { Environment } from "../../../src/environment/handlers/IEnvironment";
 import { assertPermissionsOnUser } from "../../../src/middleware/AssertPermissionsOnUser";
 import { USER_PROPERTY } from "../../../src/middleware/AuthenticateUser";
@@ -36,8 +35,8 @@ describe("user permissions middleware should work", () => {
   let mockResponse: Response;
 
   beforeAll(async () => {
-    env = await EnvironmentFactory.getHandler().getEnvironment();
     const setup = await setupIntegrationTest();
+    env = setup.env;
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
     expressApp = setup.expressApp;

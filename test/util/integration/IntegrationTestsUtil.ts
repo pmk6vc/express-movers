@@ -9,8 +9,10 @@ import {
   DEFAULT_TEST_SUPERUSER,
   DEFAULT_TEST_USER,
   FIREBASE_AUTH_EMULATOR_HOST,
+  TABLES_TO_TRUNCATE,
   TEST_GCP_PROJECT_ID,
 } from "../TestConstants";
+import { truncateTables } from "../TestDatabaseUtil";
 import { ITestUser } from "./ITestUser";
 import App = app.App;
 
@@ -81,4 +83,15 @@ export async function setupDefaultUsers(
       profile: DEFAULT_TEST_SUPERUSER.profile,
     },
   ];
+}
+
+export async function tearDownUsers(
+  firebaseAdminApp: App,
+  dbClient: DatabaseClient
+) {
+  const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
+  await Promise.all([
+    getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
+    truncateTables(dbClient, TABLES_TO_TRUNCATE),
+  ]);
 }

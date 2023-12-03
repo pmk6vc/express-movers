@@ -15,7 +15,12 @@ import { Environment } from "../../../src/environment/handlers/IEnvironment";
 import authenticateUser, {
   USER_PROPERTY,
 } from "../../../src/middleware/AuthenticateUser";
-import { TEST_USER_ONE, TEST_USER_TWO } from "../../util/TestConstants";
+import {
+  TABLES_TO_TRUNCATE,
+  TEST_USER_ONE,
+  TEST_USER_TWO,
+} from "../../util/TestConstants";
+import { truncateTables } from "../../util/TestDatabaseUtil";
 import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
 import { ITestUser } from "../../util/integration/ITestUser";
 import {
@@ -64,17 +69,22 @@ describe("authentication middleware should work", () => {
     const setup = await setupIntegrationTest();
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
-    testUsers = await setupUsers();
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    testUsers = await setupUsers();
     mockRequest = {
       headers: {},
     } as Request;
     nextFunction = jest.fn();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
+    await Promise.all([
+      getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
+      truncateTables(dbClient, TABLES_TO_TRUNCATE),
+    ]);
     jest.clearAllMocks();
   });
 

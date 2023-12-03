@@ -9,23 +9,21 @@ import {
 import { eq } from "drizzle-orm";
 import { Express } from "express";
 import { app } from "firebase-admin";
-import { getAuth } from "firebase-admin/auth";
 import request from "supertest";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { userTableDef } from "../../../src/db/model/entity/User";
 import {
   DEFAULT_TEST_USER,
-  TABLES_TO_TRUNCATE,
   TEST_USER_ONE,
   TEST_USER_TWO,
 } from "../../util/TestConstants";
-import { truncateTables } from "../../util/TestDatabaseUtil";
 import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
 import { ITestUser } from "../../util/integration/ITestUser";
 import {
   setupDefaultUsers,
   setupIntegrationTest,
   tearDownIntegrationTest,
+  tearDownTestData,
 } from "../../util/integration/IntegrationTestsUtil";
 import App = app.App;
 
@@ -47,11 +45,7 @@ describe("user routes should work", () => {
   });
 
   afterEach(async () => {
-    const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
-    await Promise.all([
-      getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
-      truncateTables(dbClient, TABLES_TO_TRUNCATE),
-    ]);
+    await tearDownTestData(firebaseAdminApp, dbClient);
   });
 
   afterAll(async () => {
@@ -157,7 +151,7 @@ describe("user routes should work", () => {
       expect(res.text).toBe("Unauthorized request");
     });
 
-    it("returns user data for request with valid bearer token", async () => {
+    it("returns user data for authenticated user with permissions", async () => {
       const user = testUsers[0];
       const bearerToken = await getIdTokenWithEmailPassword(
         user.userCredentials.email,

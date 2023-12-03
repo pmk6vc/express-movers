@@ -2,7 +2,6 @@
 
 Marketplace for movers
 
-- add tests for perms middleware
-- review tests for user router for coverage
+- remove profile from user creation loop to simplify consistency between firebase and database?
 - figure out consistency between firebase and database
 - husky?

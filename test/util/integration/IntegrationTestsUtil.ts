@@ -9,8 +9,10 @@ import {
   DEFAULT_TEST_SUPERUSER,
   DEFAULT_TEST_USER,
   FIREBASE_AUTH_EMULATOR_HOST,
+  TABLES_TO_TRUNCATE,
   TEST_GCP_PROJECT_ID,
 } from "../TestConstants";
+import { truncateTables } from "../TestDatabaseUtil";
 import { ITestUser } from "./ITestUser";
 import App = app.App;
 
@@ -28,7 +30,7 @@ export async function setupIntegrationTest() {
   const expressApp = await buildApp(env, dbClient);
 
   await dbClient.runMigrations();
-  return { firebaseAdminApp, dbClient, expressApp };
+  return { firebaseAdminApp, env, dbClient, expressApp };
 }
 
 export async function tearDownIntegrationTest(
@@ -38,8 +40,9 @@ export async function tearDownIntegrationTest(
   const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
   await Promise.all([
     getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
-    dbClient.close(),
+    truncateTables(dbClient, TABLES_TO_TRUNCATE),
   ]);
+  await dbClient.close();
 }
 
 export async function setupDefaultUsers(
@@ -81,4 +84,15 @@ export async function setupDefaultUsers(
       profile: DEFAULT_TEST_SUPERUSER.profile,
     },
   ];
+}
+
+export async function tearDownTestData(
+  firebaseAdminApp: App,
+  dbClient: DatabaseClient
+) {
+  const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
+  await Promise.all([
+    getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
+    truncateTables(dbClient, TABLES_TO_TRUNCATE),
+  ]);
 }

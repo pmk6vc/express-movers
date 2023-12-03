@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe } from "@jest/globals";
+import { afterEach, describe } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import {
@@ -7,19 +7,14 @@ import {
 } from "../../../src/middleware/ValidateRequestData";
 
 describe("request validation middleware should work", () => {
-  let mockRequest: Request;
-  let nextFunction: NextFunction;
+  const mockRequest: Request = {
+    body: {},
+    params: {},
+  } as Request;
   const mockResponse: Response = {} as Response;
   mockResponse.status = jest.fn(() => mockResponse);
   mockResponse.send = jest.fn();
-
-  beforeEach(() => {
-    mockRequest = {
-      body: {},
-      params: {},
-    } as Request;
-    nextFunction = jest.fn();
-  });
+  const nextFunction: NextFunction = jest.fn();
 
   afterEach(() => {
     jest.clearAllMocks();

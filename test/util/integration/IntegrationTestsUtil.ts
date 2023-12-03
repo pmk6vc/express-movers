@@ -40,8 +40,9 @@ export async function tearDownIntegrationTest(
   const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
   await Promise.all([
     getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
-    dbClient.close(),
+    truncateTables(dbClient, TABLES_TO_TRUNCATE),
   ]);
+  await dbClient.close();
 }
 
 export async function setupDefaultUsers(
@@ -85,7 +86,7 @@ export async function setupDefaultUsers(
   ];
 }
 
-export async function tearDownUsers(
+export async function tearDownTestData(
   firebaseAdminApp: App,
   dbClient: DatabaseClient
 ) {

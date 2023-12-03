@@ -23,7 +23,7 @@ import {
   setupDefaultUsers,
   setupIntegrationTest,
   tearDownIntegrationTest,
-  tearDownUsers,
+  tearDownTestData,
 } from "../../util/integration/IntegrationTestsUtil";
 import App = app.App;
 
@@ -45,7 +45,7 @@ describe("user routes should work", () => {
   });
 
   afterEach(async () => {
-    await tearDownUsers(firebaseAdminApp, dbClient);
+    await tearDownTestData(firebaseAdminApp, dbClient);
   });
 
   afterAll(async () => {

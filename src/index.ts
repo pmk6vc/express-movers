@@ -19,7 +19,9 @@ const main = async () => {
   const app = await buildApp(environment, db);
 
   logger.info("Initializing Firebase admin");
-  admin.initializeApp();
+  admin.initializeApp({
+    projectId: process.env.GCP_PROJECT_ID,
+  });
 
   logger.info(`Starting app on port ${environment.server.serverPort}`);
   const server = app.listen(environment.server.serverPort, () => {

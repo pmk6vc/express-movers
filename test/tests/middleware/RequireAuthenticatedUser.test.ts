@@ -1,4 +1,4 @@
-import { afterEach, beforeAll, beforeEach, describe } from "@jest/globals";
+import { afterEach, beforeAll, describe } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 import EnvironmentFactory from "../../../src/environment/EnvironmentFactory";
 import { Environment } from "../../../src/environment/handlers/IEnvironment";
@@ -8,19 +8,15 @@ import requireAuthenticatedUser from "../../../src/middleware/RequireAuthenticat
 describe("require authentication middleware should work", () => {
   let env: Environment;
   const mockRequest: Request = {} as Request;
-  let mockResponse: Response;
+  const mockResponse: Response = {
+    locals: {},
+  } as Response;
+  mockResponse.status = jest.fn(() => mockResponse);
+  mockResponse.send = jest.fn();
   const nextFunction: NextFunction = jest.fn();
 
   beforeAll(async () => {
     env = await EnvironmentFactory.getHandler().getEnvironment();
-  });
-
-  beforeEach(() => {
-    mockResponse = {
-      locals: {},
-    } as Response;
-    mockResponse.status = jest.fn(() => mockResponse);
-    mockResponse.send = jest.fn();
   });
 
   afterEach(() => {
@@ -40,8 +36,7 @@ describe("require authentication middleware should work", () => {
   });
 
   it("should allow request with authenticated user", async () => {
-    const USER_PROPERTY_KEY = USER_PROPERTY as keyof typeof mockResponse.locals;
-    mockResponse.locals[USER_PROPERTY_KEY] = "Some authenticated user data";
+    mockResponse.locals[USER_PROPERTY] = "Some authenticated user data";
     await requireAuthenticatedUser(env.logger)(
       mockRequest,
       mockResponse,

@@ -4,25 +4,26 @@ import {
   beforeAll,
   beforeEach,
   describe,
+  it,
 } from "@jest/globals";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { Express } from "express";
 import { app } from "firebase-admin";
-import { getAuth } from "firebase-admin/auth";
 import request from "supertest";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { userTableDef } from "../../../src/db/model/entity/User";
 import {
-  FIRST_TEST_USER,
-  SECOND_TEST_USER,
-  TABLES_TO_TRUNCATE,
+  DEFAULT_TEST_USER,
+  TEST_USER_ONE,
+  TEST_USER_TWO,
 } from "../../util/TestConstants";
-import { truncateTables } from "../../util/TestDatabaseUtil";
 import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
 import { ITestUser } from "../../util/integration/ITestUser";
 import {
+  setupDefaultUsers,
   setupIntegrationTest,
   tearDownIntegrationTest,
+  tearDownUsers,
 } from "../../util/integration/IntegrationTestsUtil";
 import App = app.App;
 
@@ -32,143 +33,84 @@ describe("user routes should work", () => {
   let expressApp: Express;
   let testUsers: ITestUser[];
 
-  async function setupUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
-    const firstUserRecord = await getAuth(firebaseAdminApp).createUser(
-      FIRST_TEST_USER
-    );
-    const firstUser = {
-      userRecord: firstUserRecord,
-      userCredentials: {
-        email: FIRST_TEST_USER.email,
-        password: FIRST_TEST_USER.password,
-      },
-      profile: FIRST_TEST_USER.profile,
-    };
-
-    const secondUserRecord = await getAuth(firebaseAdminApp).createUser(
-      SECOND_TEST_USER
-    );
-    const secondUser = {
-      userRecord: secondUserRecord,
-      userCredentials: {
-        email: SECOND_TEST_USER.email,
-        password: SECOND_TEST_USER.password,
-      },
-      profile: SECOND_TEST_USER.profile,
-    };
-    return [firstUser, secondUser];
-  }
-
   beforeAll(async () => {
-    const setup = await setupIntegrationTest(setupUsers);
+    const setup = await setupIntegrationTest();
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
     expressApp = setup.expressApp;
-    testUsers = setup.testUsers;
   });
 
   beforeEach(async () => {
-    await dbClient.runMigrations();
+    testUsers = await setupDefaultUsers(firebaseAdminApp, dbClient);
   });
 
   afterEach(async () => {
-    await truncateTables(dbClient, TABLES_TO_TRUNCATE);
+    await tearDownUsers(firebaseAdminApp, dbClient);
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, testUsers);
-    await dbClient.close();
+    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
   });
 
   const ROUTE_PREFIX = "/users";
 
   describe("should create new user", () => {
-    const NEW_USER_ROUTE_PREFIX = `${ROUTE_PREFIX}/newUser`;
-    const newUserHelper = async (user: ITestUser) => {
-      const bearerToken = await getIdTokenWithEmailPassword(
-        user.userCredentials.email,
-        user.userCredentials.password
-      );
-      const requestBody = {
-        email: user.userCredentials.email,
-        profile: user.profile,
-      };
-      return request(expressApp)
-        .post(NEW_USER_ROUTE_PREFIX)
-        .set("Authorization", `Bearer ${bearerToken}`)
-        .send(requestBody);
-    };
-
-    it("blocks create request with no authenticated user", async () => {
-      const requestBody = {
-        email: testUsers[0].userCredentials.email,
-        profile: {},
-      };
-      const invalidToken = "not-a-valid-token";
+    it("blocks create request for duplicate user", async () => {
       const res = await request(expressApp)
-        .post(NEW_USER_ROUTE_PREFIX)
-        .set("Authorization", `Bearer ${invalidToken}`)
-        .send(requestBody);
-      const numUsers = (
-        await dbClient.pgPoolClient
-          .select({
-            count: sql<number>`count(*)::int`,
-          })
-          .from(userTableDef)
-      )[0].count;
-      expect(res.status).toBe(401);
-      expect(res.text).toBe("Unauthenticated request");
-      expect(numUsers).toBe(0);
+        .post(ROUTE_PREFIX)
+        .send(DEFAULT_TEST_USER);
+      const users = await dbClient.pgPoolClient.select().from(userTableDef);
+      expect(res.status).toBe(409);
+      expect(res.text).toBe("User already exists");
+      expect(users.length).toBe(testUsers.length);
     });
 
-    it("creates new authenticated user", async () => {
-      const user = testUsers[0];
-      const res = await newUserHelper(user);
+    it("creates new user", async () => {
+      const res = await request(expressApp)
+        .post(ROUTE_PREFIX)
+        .send(TEST_USER_ONE);
       const users = await dbClient.pgPoolClient.select().from(userTableDef);
       expect(res.status).toBe(201);
-      expect(res.text).toBe(`New user ${user.userRecord.uid} created`);
-      expect(users.length).toBe(1);
+      expect(res.text).toBe(`New user ${TEST_USER_ONE.email} created`);
+      expect(users.length).toBe(testUsers.length + 1);
     });
 
     it("persists user data correctly", async () => {
       // Create new users with varying levels of profile information
-      const firstUser = testUsers[0];
-      const secondUser = testUsers[1];
-      await Promise.all([newUserHelper(firstUser), newUserHelper(secondUser)]);
+      await Promise.all([
+        request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_ONE),
+        request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_TWO),
+      ]);
 
       // Confirm that user data was persisted to DB correctly
-      const firstUserRow = (
+      const testUserOneRow = (
         await dbClient.pgPoolClient
           .select()
           .from(userTableDef)
-          .where(eq(userTableDef.uid, firstUser.userRecord.uid))
+          .where(eq(userTableDef.email, TEST_USER_ONE.email))
       )[0];
-      expect(firstUserRow.uid).toBe(firstUser.userRecord.uid);
-      expect(firstUserRow.email).toBe(firstUser.userCredentials.email);
+      const testUserOneFirebase = await firebaseAdminApp
+        .auth()
+        .getUserByEmail(TEST_USER_ONE.email);
+      expect(testUserOneRow.uid).toBe(testUserOneFirebase.uid);
+      expect(testUserOneRow.email).toBe(testUserOneFirebase.email);
       expect({
-        ...firstUserRow.profile,
-        dateOfBirth: new Date(firstUserRow.profile.dateOfBirth!),
-      }).toEqual(firstUser.profile);
+        ...testUserOneRow.profile,
+        dateOfBirth: new Date(testUserOneRow.profile.dateOfBirth!),
+      }).toEqual(TEST_USER_ONE.profile);
 
-      const secondUserRow = (
+      const testUserTwoRow = (
         await dbClient.pgPoolClient
           .select()
           .from(userTableDef)
-          .where(eq(userTableDef.uid, secondUser.userRecord.uid))
+          .where(eq(userTableDef.email, TEST_USER_TWO.email))
       )[0];
-      expect(secondUserRow.uid).toBe(secondUser.userRecord.uid);
-      expect(secondUserRow.email).toBe(secondUser.userCredentials.email);
-      expect(secondUserRow.profile).toEqual(secondUser.profile);
-    });
-
-    it("blocks create request for duplicate user", async () => {
-      const user = testUsers[0];
-      await newUserHelper(user);
-      const res = await newUserHelper(user);
-      const users = await dbClient.pgPoolClient.select().from(userTableDef);
-      expect(res.status).toBe(409);
-      expect(res.text).toBe("User already exists");
-      expect(users.length).toBe(1);
+      const testUserTwoFirebase = await firebaseAdminApp
+        .auth()
+        .getUserByEmail(TEST_USER_TWO.email);
+      expect(testUserTwoRow.uid).toBe(testUserTwoFirebase.uid);
+      expect(testUserTwoRow.email).toBe(testUserTwoFirebase.email);
+      expect(testUserTwoRow.profile).toEqual(TEST_USER_TWO.profile);
     });
   });
 
@@ -183,21 +125,33 @@ describe("user routes should work", () => {
       expect(res.text).toBe("Unauthenticated request");
     });
 
-    it("blocks request with bearer token for another user", async () => {
-      const firstUserId = testUsers[0].userRecord.uid;
-      const secondUserCredentials = testUsers[1].userCredentials;
-      const secondUserToken = await getIdTokenWithEmailPassword(
-        secondUserCredentials.email,
-        secondUserCredentials.password
+    it("blocks request for authenticated user with insufficient permissions", async () => {
+      // Create new users without any special roles
+      await Promise.all([
+        request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_ONE),
+        request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_TWO),
+      ]);
+
+      // Attempt to fetch user data with token from different user
+      const userOneId = (
+        await dbClient.pgPoolClient
+          .select()
+          .from(userTableDef)
+          .where(eq(userTableDef.email, TEST_USER_ONE.email))
+      )[0].uid;
+      const userTwoToken = await getIdTokenWithEmailPassword(
+        TEST_USER_TWO.email,
+        TEST_USER_TWO.password
       );
+
       const res = await request(expressApp)
-        .get(`${ROUTE_PREFIX}/${firstUserId}`)
-        .set("Authorization", `Bearer ${secondUserToken}`);
+        .get(`${ROUTE_PREFIX}/${userOneId}`)
+        .set("Authorization", `Bearer ${userTwoToken}`);
       expect(res.status).toBe(403);
       expect(res.text).toBe("Unauthorized request");
     });
 
-    it("returns user data for request with valid bearer token", async () => {
+    it("returns user data for authenticated user with permissions", async () => {
       const user = testUsers[0];
       const bearerToken = await getIdTokenWithEmailPassword(
         user.userCredentials.email,

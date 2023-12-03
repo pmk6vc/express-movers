@@ -14,7 +14,7 @@ export const buildApp = async (env: Environment, dbClient: DatabaseClient) => {
   // Use middlewares in order of evaluation
   app.use(correlatedRequestLogging(env.projectId));
   app.use(express.json());
-  app.use(authenticateUser);
+  app.use(authenticateUser(dbClient, env.logger));
 
   // Attach routers in order of evaluation
   app.use(

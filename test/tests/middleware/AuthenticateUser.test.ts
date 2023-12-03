@@ -8,10 +8,18 @@ import {
 import { NextFunction, Request, Response } from "express";
 import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
+import DatabaseClient from "../../../src/db/DatabaseClient";
+import { userTableDef } from "../../../src/db/model/entity/User";
+import { Environment } from "../../../src/environment/handlers/IEnvironment";
 import authenticateUser, {
   USER_PROPERTY,
 } from "../../../src/middleware/AuthenticateUser";
-import { FIRST_TEST_USER } from "../../util/TestConstants";
+import {
+  TABLES_TO_TRUNCATE,
+  TEST_USER_ONE,
+  TEST_USER_TWO,
+} from "../../util/TestConstants";
+import { truncateTables } from "../../util/TestDatabaseUtil";
 import { getIdTokenWithEmailPassword } from "../../util/integration/FirebaseEmulatorsUtil";
 import { ITestUser } from "../../util/integration/ITestUser";
 import {
@@ -21,74 +29,110 @@ import {
 import App = app.App;
 
 describe("authentication middleware should work", () => {
+  let env: Environment;
   let firebaseAdminApp: App;
+  let dbClient: DatabaseClient;
   let testUsers: ITestUser[];
-  let mockRequest: Request;
-  let nextFunction: NextFunction;
+  const mockRequest: Request = {
+    headers: {},
+  } as Request;
   const mockResponse: Response = {
     locals: {},
   } as Response;
-  const USER_PROPERTY_KEY = USER_PROPERTY as keyof typeof mockResponse.locals;
+  mockResponse.status = jest.fn(() => mockResponse);
+  mockResponse.send = jest.fn();
+  const nextFunction: NextFunction = jest.fn();
 
-  async function setupUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
+  async function setupUsers(): Promise<ITestUser[]> {
     const userRecord = await getAuth(firebaseAdminApp).createUser(
-      FIRST_TEST_USER
+      TEST_USER_ONE
     );
-    const user = {
-      userRecord: userRecord,
-      userCredentials: {
-        email: FIRST_TEST_USER.email,
-        password: FIRST_TEST_USER.password,
+    await dbClient.pgPoolClient.insert(userTableDef).values({
+      uid: userRecord.uid,
+      email: TEST_USER_ONE.email,
+      profile: TEST_USER_ONE.profile,
+    });
+    return [
+      {
+        userRecord: userRecord,
+        userCredentials: {
+          email: TEST_USER_ONE.email,
+          password: TEST_USER_ONE.password,
+        },
+        profile: TEST_USER_ONE.profile,
       },
-      profile: FIRST_TEST_USER.profile,
-    };
-    return [user];
+    ];
   }
 
   beforeAll(async () => {
-    const setup = await setupIntegrationTest(setupUsers);
+    const setup = await setupIntegrationTest();
     firebaseAdminApp = setup.firebaseAdminApp;
-    testUsers = setup.testUsers;
+    env = setup.env;
+    dbClient = setup.dbClient;
   });
 
-  beforeEach(() => {
-    mockRequest = {
-      headers: {},
-    } as Request;
-    nextFunction = jest.fn();
+  beforeEach(async () => {
+    testUsers = await setupUsers();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
+    await Promise.all([
+      getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
+      truncateTables(dbClient, TABLES_TO_TRUNCATE),
+    ]);
     jest.clearAllMocks();
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, testUsers);
+    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
   });
 
   it("should not assign user if bearer token is missing", async () => {
-    await authenticateUser(
+    await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
       nextFunction
     );
-    expect(mockResponse.locals[USER_PROPERTY_KEY]).toBe(undefined);
+    expect(mockResponse.locals[USER_PROPERTY]).toBe(undefined);
     expect(nextFunction).toBeCalledTimes(1);
   });
 
   it("should not assign user if bearer token is invalid", async () => {
-    mockRequest = {
-      headers: {
-        authorization: "Bearer Invalid token",
-      },
-    } as Request;
-    await authenticateUser(
+    mockRequest.headers = {
+      authorization: "Bearer Invalid token",
+    };
+    await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
       nextFunction
     );
-    expect(mockResponse.locals[USER_PROPERTY_KEY]).toBe(undefined);
+    expect(mockResponse.locals[USER_PROPERTY]).toBe(undefined);
     expect(nextFunction).toBeCalledTimes(1);
+  });
+
+  it("should return server error if user exists in Firebase but not database", async () => {
+    // Create user only in Firebase
+    await getAuth(firebaseAdminApp).createUser(TEST_USER_TWO);
+    const bearerToken = await getIdTokenWithEmailPassword(
+      TEST_USER_TWO.email,
+      TEST_USER_TWO.password
+    );
+    mockRequest.headers = {
+      authorization: `Bearer ${bearerToken}`,
+    };
+    await authenticateUser(dbClient, env.logger)(
+      mockRequest as Request,
+      mockResponse as Response,
+      nextFunction
+    );
+
+    // Confirm server error in response
+    expect(mockResponse.locals[USER_PROPERTY]).toBe(undefined);
+    expect(mockResponse.status).toHaveBeenCalledWith(500);
+    expect(mockResponse.status).toHaveBeenCalledTimes(1);
+    expect(mockResponse.send).toHaveBeenCalledTimes(1);
+    expect(nextFunction).toBeCalledTimes(0);
   });
 
   it("should assign user if valid bearer token is passed", async () => {
@@ -97,19 +141,17 @@ describe("authentication middleware should work", () => {
       testUser.userCredentials.email,
       testUser.userCredentials.password
     );
-    mockRequest = {
-      headers: {
-        authorization: `Bearer ${bearerToken}`,
-      },
-    } as Request;
-    await authenticateUser(
+    mockRequest.headers = {
+      authorization: `Bearer ${bearerToken}`,
+    };
+    await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
       nextFunction
     );
 
     const testUserRecord = testUser.userRecord.toJSON();
-    const returnedUserRecord = mockResponse.locals[USER_PROPERTY_KEY];
+    const returnedUserRecord = mockResponse.locals[USER_PROPERTY];
     expect(returnedUserRecord["uid"]).toBe(
       testUserRecord["uid" as keyof typeof testUserRecord]
     );

@@ -1,0 +1,1 @@
+ALTER TABLE "entity"."user" ADD COLUMN "is_superuser" boolean DEFAULT false NOT NULL;

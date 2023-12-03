@@ -1,6 +1,3 @@
-import { permissionsTableDef } from "../../src/db/model/auth/Permissions";
-import { rolesTableDef } from "../../src/db/model/auth/Roles";
-import { rolesPermissionsTableDef } from "../../src/db/model/auth/RolesPermissions";
 import { orgTableDef } from "../../src/db/model/entity/Organization";
 import { userTableDef } from "../../src/db/model/entity/User";
 
@@ -12,12 +9,7 @@ export const FIREBASE_TEST_API_KEY = "test-api-key";
 // Test users
 export const DEFAULT_TEST_USER = {
   email: "default@user.com",
-  emailVerified: false,
-  phoneNumber: "+11234567890",
   password: "defaultUser",
-  displayName: "Default User",
-  photoURL: "http://www.example.com/12345678/photo.png",
-  disabled: false,
   profile: {
     firstName: "Default",
     lastName: "User",
@@ -25,9 +17,19 @@ export const DEFAULT_TEST_USER = {
     dateOfBirth: new Date("1999-12-31"),
   },
 };
-export const FIRST_TEST_USER = {
-  email: "first@user.com",
-  password: "firstUser",
+export const DEFAULT_TEST_SUPERUSER = {
+  email: "super@user.com",
+  password: "superUser",
+  profile: {
+    firstName: "Super",
+    lastName: "User",
+    address: "Super address",
+    dateOfBirth: new Date("1970-12-01"),
+  },
+};
+export const TEST_USER_ONE = {
+  email: "one@user.com",
+  password: "oneUser",
   profile: {
     firstName: "Hello",
     lastName: "World",
@@ -35,9 +37,9 @@ export const FIRST_TEST_USER = {
     dateOfBirth: new Date("1970-01-01"),
   },
 };
-export const SECOND_TEST_USER = {
-  email: "second@user.com",
-  password: "secondUser",
+export const TEST_USER_TWO = {
+  email: "two@user.com",
+  password: "twoUser",
   profile: {
     firstName: "John",
     lastName: "Doe",
@@ -45,10 +47,4 @@ export const SECOND_TEST_USER = {
   },
 };
 
-export const TABLES_TO_TRUNCATE = [
-  rolesTableDef,
-  permissionsTableDef,
-  rolesPermissionsTableDef,
-  orgTableDef,
-  userTableDef,
-];
+export const TABLES_TO_TRUNCATE = [orgTableDef, userTableDef];

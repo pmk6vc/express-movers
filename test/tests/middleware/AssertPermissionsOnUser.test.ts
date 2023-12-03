@@ -6,7 +6,7 @@ import {
   describe,
   it,
 } from "@jest/globals";
-import { Express, NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { app } from "firebase-admin";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { PermissionsEnum } from "../../../src/db/model/auth/Permissions";
@@ -29,7 +29,6 @@ describe("user permissions middleware should work", () => {
   let env: Environment;
   let firebaseAdminApp: App;
   let dbClient: DatabaseClient;
-  let expressApp: Express;
   const mockRequest: Request = {
     body: {},
     params: {},
@@ -46,7 +45,6 @@ describe("user permissions middleware should work", () => {
     env = setup.env;
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
-    expressApp = setup.expressApp;
   });
 
   beforeEach(async () => {

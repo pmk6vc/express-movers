@@ -15,7 +15,6 @@ const getPermissionsOnUserResource = async (
   dbClient: DatabaseClient
 ): Promise<PermissionsEnum[]> => {
   // Fetch authenticated user record from database
-  // TODO: Handle edge case where user exists in Firebase but not in DB
   const authenticatedUserRecord = (
     await dbClient.pgPoolClient
       .select()

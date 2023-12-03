@@ -151,7 +151,7 @@ describe("user routes should work", () => {
       expect(res.text).toBe("Unauthorized request");
     });
 
-    it("returns user data for request with valid bearer token", async () => {
+    it("returns user data for authenticated user with permissions", async () => {
       const user = testUsers[0];
       const bearerToken = await getIdTokenWithEmailPassword(
         user.userCredentials.email,

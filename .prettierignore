@@ -9,7 +9,6 @@ infra
 migrations
 node_modules
 public
-src/functions/lib
 .dockerignore
 .eslintignore
 .gitignore

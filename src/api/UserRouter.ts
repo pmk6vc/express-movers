@@ -16,6 +16,7 @@ import {
 import AbstractRouter from "./AbstractRouter";
 
 export default class UserRouter extends AbstractRouter {
+  // TODO: Remove profile information for this endpoint
   private newUserRequestSchema = z
     .object({
       email: z.string().email(),
@@ -44,7 +45,7 @@ export default class UserRouter extends AbstractRouter {
     const parsedRequestBody = this.newUserRequestSchema.parse(req.body);
     let firebaseUserRecord: UserRecord;
     try {
-      // TODO: Add email verification?
+      // TODO: Add email verification after creation?
       firebaseUserRecord = await getAuth().createUser({
         email: parsedRequestBody.email,
         password: parsedRequestBody.password,
@@ -76,23 +77,12 @@ export default class UserRouter extends AbstractRouter {
       }
       return;
     }
-    //
-    // // Create new user in database
-    // const newUser: NewUser = {
-    //   uid: firebaseUserRecord.uid,
-    //   email: parsedRequestBody.email,
-    //   profile: parsedRequestBody.profile,
-    // };
-    // await this.dbClient.pgPoolClient.insert(userTableDef).values(newUser);
-    // this.logger.info(
-    //   `User ${firebaseUserRecord.uid} successfully written to database`,
-    //   res.locals[GLOBAL_LOG_OBJ]
-    // );
     return res.status(201).send(`New user ${parsedRequestBody.email} created`);
   };
 
   private writeFirebaseUserToDatabase = async (req: Request, res: Response) => {
     // TODO: Only authorize service account to hit this endpoint
+    // TODO: Needs test coverage
     // Kick off I/O concurrently
     const parsedRequestBody = this.writeFirebaseUserToDatabaseSchema.parse(
       req.body

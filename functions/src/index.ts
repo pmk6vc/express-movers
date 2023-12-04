@@ -11,6 +11,9 @@ export const newUser = functions.auth
   .user()
   .onCreate(async (userRecord: UserRecord) => {
     // TODO: Authenticate as service account and add ID token to request
+    // TODO: Need test coverage
+    // TODO: Add termination condition to avoid infinite retries (either in code or in deployment)
+    // TODO: Set up deployment in CICD
     await axios.post(`${AppUrlFactory.getUrl()}/users/writeNewUser`, {
       uid: userRecord.uid,
     });

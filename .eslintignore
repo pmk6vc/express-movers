@@ -4,6 +4,7 @@
 .idea
 coverage
 dist
+functions/lib
 infra
 migrations
 node_modules

@@ -129,7 +129,7 @@ describe("authentication middleware should work", () => {
 
     // Confirm server error in response
     expect(mockResponse.locals[USER_PROPERTY]).toBe(undefined);
-    expect(mockResponse.status).toHaveBeenCalledWith(500);
+    expect(mockResponse.status).toHaveBeenCalledWith(503);
     expect(mockResponse.status).toHaveBeenCalledTimes(1);
     expect(mockResponse.send).toHaveBeenCalledTimes(1);
     expect(nextFunction).toBeCalledTimes(0);

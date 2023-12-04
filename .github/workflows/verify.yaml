@@ -86,12 +86,12 @@ jobs:
           --runtime=nodejs18 \
           --region=${{ vars.GCP_REGION }} \
           --entry-point=persistNewFirebaseUser \
-          --set-env-vars=CONFIG_ENV=production,GCLOUD_PROJECT={{ vars.GCP_PROJECT_ID }} \
+          --set-env-vars=CONFIG_ENV=production,GCLOUD_PROJECT=${{ vars.GCP_PROJECT_ID }} \
           --max-instances=5 \
-          --project={{ vars.GCP_PROJECT_ID }} \
+          --project=${{ vars.GCP_PROJECT_ID }} \
           --memory=128MB \
           --trigger-event=providers/firebase.auth/eventTypes/user.create \
-          --trigger-resource={{ vars.GCP_PROJECT_ID }}
+          --trigger-resource=${{ vars.GCP_PROJECT_ID }}
 
   test:
     runs-on: ubuntu-latest

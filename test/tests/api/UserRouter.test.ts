@@ -40,11 +40,12 @@ describe("user routes should work", () => {
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
     expressApp = setup.expressApp;
+    // TODO: Just return this in the integration test setup
     runningServer = expressApp.listen(setup.env.server.serverPort);
   });
 
   beforeEach(async () => {
-    testUsers = await setupDefaultUsers(firebaseAdminApp);
+    testUsers = await setupDefaultUsers(firebaseAdminApp, dbClient);
   });
 
   afterEach(async () => {
@@ -52,6 +53,7 @@ describe("user routes should work", () => {
   });
 
   afterAll(async () => {
+    // TODO: Just close this server in the teardown
     runningServer.close();
     await tearDownIntegrationTest(firebaseAdminApp, dbClient);
   });
@@ -60,7 +62,6 @@ describe("user routes should work", () => {
 
   describe("should create new user", () => {
     it("should run background functions", async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const numUsers = await dbClient.pgPoolClient.select().from(userTableDef);
       expect(numUsers.length).toBe(2);
     });

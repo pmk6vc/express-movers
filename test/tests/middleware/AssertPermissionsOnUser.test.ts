@@ -48,7 +48,7 @@ describe("user permissions middleware should work", () => {
   });
 
   beforeEach(async () => {
-    await setupDefaultUsers(firebaseAdminApp);
+    await setupDefaultUsers(firebaseAdminApp, dbClient);
   });
 
   afterEach(async () => {

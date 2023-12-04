@@ -6,9 +6,9 @@ import {
   describe,
   it,
 } from "@jest/globals";
-import { eq } from "drizzle-orm";
 import { Express } from "express";
 import { app } from "firebase-admin";
+import { getAuth } from "firebase-admin/auth";
 import request from "supertest";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { userTableDef } from "../../../src/db/model/entity/User";
@@ -123,26 +123,29 @@ describe("user routes should work", () => {
     });
 
     it("blocks request for authenticated user with insufficient permissions", async () => {
-      // Create new users without any special roles
+      // Create new users in Firebase and database without any special roles
+      const [userOneFirebase, userTwoFirebase] = await Promise.all([
+        getAuth(firebaseAdminApp).createUser(TEST_USER_ONE),
+        getAuth(firebaseAdminApp).createUser(TEST_USER_TWO),
+      ]);
       await Promise.all([
-        request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_ONE),
-        request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_TWO),
+        dbClient.pgPoolClient.insert(userTableDef).values({
+          uid: userOneFirebase.uid,
+          email: TEST_USER_ONE.email,
+        }),
+        dbClient.pgPoolClient.insert(userTableDef).values({
+          uid: userTwoFirebase.uid,
+          email: TEST_USER_TWO.email,
+        }),
       ]);
 
       // Attempt to fetch user data with token from different user
-      const userOneId = (
-        await dbClient.pgPoolClient
-          .select()
-          .from(userTableDef)
-          .where(eq(userTableDef.email, TEST_USER_ONE.email))
-      )[0].uid;
       const userTwoToken = await getIdTokenWithEmailPassword(
         TEST_USER_TWO.email,
         TEST_USER_TWO.password
       );
-
       const res = await request(expressApp)
-        .get(`${ROUTE_PREFIX}/${userOneId}`)
+        .get(`${ROUTE_PREFIX}/${userOneFirebase.uid}`)
         .set("Authorization", `Bearer ${userTwoToken}`);
       expect(res.status).toBe(403);
       expect(res.text).toBe("Unauthorized request");

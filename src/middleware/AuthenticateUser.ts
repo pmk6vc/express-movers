@@ -45,17 +45,13 @@ const authenticateUser = (dbClient: DatabaseClient, logger: Logger) => {
       uidExistsInDatabase(maybeVerifiedIdToken!.uid, dbClient),
     ]);
     if (!existsInDatabase) {
-      logger.error(
+      logger.info(
         `User ${
           maybeVerifiedIdToken!.uid
-        } exists in Firebase but not in database - investigate`,
+        } exists in Firebase but not in database`,
         res.locals[GLOBAL_LOG_OBJ]
       );
-      res
-        .status(500)
-        .send(
-          "Incomplete sign-up for account - please contact an administrator"
-        );
+      res.status(503).send("We're still setting up your account");
       return;
     }
     res.locals[USER_PROPERTY] = firebaseRecord.toJSON();

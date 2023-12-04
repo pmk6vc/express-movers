@@ -73,23 +73,24 @@ jobs:
           workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ vars.WORKLOAD_IDENTITY_POOL }}/providers/${{ vars.WORKLOAD_IDENTITY_POOL_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
       - name: Deploy Cloud Functions
         id: deploy
-        uses: google-github-actions/deploy-cloud-functions@v1
-        with:
-          name: newUser
-          runtime: nodejs18
-          entrypoint: lib/index.js
-          region: ${{ vars.GCP_REGION }}
-          env_vars: CONFIG_ENV=production
-          project_id: ${{ vars.GCP_PROJECT_ID }}
-          description: Send new Firebase user to API
-          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com # TODO: Use dedicated runtime service account with minimal perms
-          max_instances: 5 # Remove this limit if app starts to scale
-          event_trigger_type: providers/firebase.auth/eventTypes/user.create
-
-      - name: Show URL
-        run: echo ${{ steps.deploy.outputs.url }}
+        run: |
+          gcloud functions deploy newUserFuncManualDeploy \
+          --runtime=nodejs18 \
+          --region=${{ vars.GCP_REGION }} \
+          --entry-point=persistNewFirebaseUser \
+          --set-env-vars=CONFIG_ENV=production,GCLOUD_PROJECT={{ vars.GCP_PROJECT_ID }} \
+          --max-instances=5 \
+          --project={{ vars.GCP_PROJECT_ID }} \
+          --memory=128MB \
+          --trigger-event=providers/firebase.auth/eventTypes/user.create \
+          --trigger-resource={{ vars.GCP_PROJECT_ID }}
 
   test:
     runs-on: ubuntu-latest

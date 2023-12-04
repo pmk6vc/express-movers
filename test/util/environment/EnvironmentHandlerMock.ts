@@ -7,3 +7,9 @@ jest.mock("../../../src/environment/EnvironmentFactory", () => {
     getHandler: () => TestEnvironmentHandler.getInstance(),
   };
 });
+
+jest.mock("../../../functions/src/AppUrlFactory", () => {
+  return {
+    getUrl: () => "http://localhost:5496",
+  };
+});

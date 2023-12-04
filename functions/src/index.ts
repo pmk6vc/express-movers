@@ -10,7 +10,9 @@ export const newUser = functions.auth
   .user()
   .onCreate(async (userRecord: UserRecord) => {
     console.log("Hello from Firebase function!");
-    await axios.post("http://localhost:5495/users/writeNewUser", {
+    // const baseUrl = "http://localhost:5495" // Local dev
+    const baseUrl = "http://app:5495"; // Docker-compose
+    await axios.post(`${baseUrl}/users/writeNewUser`, {
       uid: userRecord.uid,
     });
   });

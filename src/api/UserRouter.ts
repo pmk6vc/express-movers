@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import express, { Request, Response, Router } from "express";
 import { FirebaseError } from "firebase-admin";
 import { UserRecord, getAuth } from "firebase-admin/auth";
@@ -27,6 +28,11 @@ export default class UserRouter extends AbstractRouter {
       }),
     })
     .strict();
+  private writeFirebaseUserToDatabaseSchema = z
+    .object({
+      uid: z.string(),
+    })
+    .strict();
   private getUserRequestSchema = z
     .object({
       userId: z.string(),
@@ -38,6 +44,7 @@ export default class UserRouter extends AbstractRouter {
     const parsedRequestBody = this.newUserRequestSchema.parse(req.body);
     let firebaseUserRecord: UserRecord;
     try {
+      // TODO: Add email verification?
       firebaseUserRecord = await getAuth().createUser({
         email: parsedRequestBody.email,
         password: parsedRequestBody.password,
@@ -69,21 +76,86 @@ export default class UserRouter extends AbstractRouter {
       }
       return;
     }
+    //
+    // // Create new user in database
+    // const newUser: NewUser = {
+    //   uid: firebaseUserRecord.uid,
+    //   email: parsedRequestBody.email,
+    //   profile: parsedRequestBody.profile,
+    // };
+    // await this.dbClient.pgPoolClient.insert(userTableDef).values(newUser);
+    // this.logger.info(
+    //   `User ${firebaseUserRecord.uid} successfully written to database`,
+    //   res.locals[GLOBAL_LOG_OBJ]
+    // );
+    return res.status(201).send(`New user ${parsedRequestBody.email} created`);
+  };
+
+  private writeFirebaseUserToDatabase = async (req: Request, res: Response) => {
+    // TODO: Only authorize service account to hit this endpoint
+    // Kick off I/O concurrently
+    const parsedRequestBody = this.writeFirebaseUserToDatabaseSchema.parse(
+      req.body
+    );
+    const maybeFirebaseUserRecordPromise = getAuth().getUser(
+      parsedRequestBody.uid
+    );
+    const maybeDatabaseUserRecordPromise = this.dbClient.pgPoolClient
+      .select()
+      .from(userTableDef)
+      .where(eq(userTableDef.uid, parsedRequestBody.uid));
+
+    // Look up Firebase user
+    let firebaseUserRecord: UserRecord;
+    try {
+      firebaseUserRecord = await maybeFirebaseUserRecordPromise;
+    } catch (e: unknown) {
+      if ((e as FirebaseError).code !== undefined) {
+        this.logger.info(
+          (e as FirebaseError).message,
+          res.locals[GLOBAL_LOG_OBJ]
+        );
+        res
+          .status(409)
+          .send(`User ${parsedRequestBody.uid} cannot be found in Firebase`);
+      } else {
+        if (e instanceof Error) {
+          this.logger.error(e.message, res.locals[GLOBAL_LOG_OBJ]);
+        } else {
+          this.logger.error(
+            "Something went really wrong :(",
+            res.locals[GLOBAL_LOG_OBJ]
+          );
+        }
+        res.status(500).send("Something went wrong :(");
+      }
+      return;
+    }
+
+    // Confirm that user does not already exist in database
+    const maybeDatabaseUserRecord = await maybeDatabaseUserRecordPromise;
+    if (maybeDatabaseUserRecord.length > 0) {
+      this.logger.info(
+        `User ${parsedRequestBody.uid} already exists in database`,
+        res.locals[GLOBAL_LOG_OBJ]
+      );
+      res
+        .status(409)
+        .send(`User ${parsedRequestBody.uid} already exists in database`);
+      return;
+    }
 
     // Create new user in database
-    // TODO: Figure out how to ensure eventual consistency between Firebase and database
-    // TODO: Add email verification?
-    const newUser: NewUser = {
+    const newUserData: NewUser = {
       uid: firebaseUserRecord.uid,
-      email: parsedRequestBody.email,
-      profile: parsedRequestBody.profile,
+      email: firebaseUserRecord.email!,
     };
-    await this.dbClient.pgPoolClient.insert(userTableDef).values(newUser);
+    await this.dbClient.pgPoolClient.insert(userTableDef).values(newUserData);
     this.logger.info(
       `User ${firebaseUserRecord.uid} successfully written to database`,
       res.locals[GLOBAL_LOG_OBJ]
     );
-    return res.status(201).send(`New user ${parsedRequestBody.email} created`);
+    return res.status(201).send(`New user ${firebaseUserRecord.email} created`);
   };
 
   private getUser = async (req: Request, res: Response) => {
@@ -96,6 +168,11 @@ export default class UserRouter extends AbstractRouter {
     return express
       .Router()
       .post("/", validateRequestBody(this.newUserRequestSchema), this.newUser)
+      .post(
+        "/writeNewUser",
+        validateRequestBody(this.writeFirebaseUserToDatabaseSchema),
+        this.writeFirebaseUserToDatabase
+      )
       .get(
         "/:userId",
         requireAuthenticatedUser(this.logger),

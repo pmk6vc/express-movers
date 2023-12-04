@@ -152,3 +152,5 @@ resource "google_project_iam_member" "identity_platform_admin" {
   role = "roles/identityplatform.admin"
   member  = "serviceAccount:${google_service_account.service_account.email}"
 }
+
+// TODO: Cloud Functions role

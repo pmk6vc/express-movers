@@ -29,9 +29,8 @@ export async function setupIntegrationTest() {
   const env = await EnvironmentFactory.getHandler().getEnvironment();
   const dbClient = DatabaseClient.getInstance(env);
   const expressApp = await buildApp(env, dbClient);
-  const runningServer = expressApp.listen(env.server.serverPort);
-
   await dbClient.runMigrations();
+  const runningServer = expressApp.listen(env.server.serverPort);
   return { firebaseAdminApp, env, dbClient, expressApp, runningServer };
 }
 
@@ -40,12 +39,12 @@ export async function tearDownIntegrationTest(
   runningServer: Server,
   dbClient: DatabaseClient
 ) {
+  runningServer.close();
   const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
   await Promise.all([
     getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
     truncateTables(dbClient, TABLES_TO_TRUNCATE),
   ]);
-  runningServer.close();
   await dbClient.close();
 }
 

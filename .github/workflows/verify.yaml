@@ -70,6 +70,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build Cloud functions
+        working-directory: ./functions
+        run: npm install && npm run build
+
       - name: Run test suite
         run: npm run test:ci
 

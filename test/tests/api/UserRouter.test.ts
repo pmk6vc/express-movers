@@ -44,7 +44,7 @@ describe("user routes should work", () => {
   });
 
   beforeEach(async () => {
-    testUsers = await setupDefaultUsers(firebaseAdminApp, dbClient);
+    testUsers = await setupDefaultUsers(firebaseAdminApp);
   });
 
   afterEach(async () => {

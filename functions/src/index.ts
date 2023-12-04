@@ -12,28 +12,9 @@ export const newUser = functions.auth
   .onCreate(async (userRecord: UserRecord) => {
     // TODO: Authenticate as service account and add ID token to request
     // TODO: Need test coverage
-    // TODO: Add termination condition to avoid infinite retries (either in code or in deployment)
+    // TODO: Add termination condition to avoid infinite retries (either in code or in deployment) - maybe catch AxiosError?
     // TODO: Set up deployment in CICD
-    try {
-      console.log("RUNNING DB INSERTS IN CLOUD FUNCTION");
-      const res = await axios.post(
-        `${AppUrlFactory.getUrl()}/users/writeNewUser`,
-        {
-          uid: userRecord.uid,
-        }
-      );
-      console.log(res.data);
-      const res2 = await axios.post(
-        `${AppUrlFactory.getUrl()}/users/writeNewUser`,
-        {
-          uid: userRecord.uid,
-        }
-      );
-      console.log(`STATUS FROM SECOND REQUEST: ${res2.status}`);
-    } catch (e: unknown) {
-      console.log(`WHATEVER I CAUGHT: ${e}`);
-      if (e instanceof Error && "errors" in e) {
-        console.log(e.errors);
-      }
-    }
+    await axios.post(`${AppUrlFactory.getUrl()}/users/writeNewUser`, {
+      uid: userRecord.uid,
+    });
   });

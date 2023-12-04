@@ -26,6 +26,8 @@ services:
     ports:
       - "9099:9099"
       - "4000:4000"
+    environment:
+      - CONFIG_ENV=local-docker-compose
 
   app:
     image: express-movers-docker:latest

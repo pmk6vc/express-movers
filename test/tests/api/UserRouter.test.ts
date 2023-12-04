@@ -9,6 +9,7 @@ import {
 import { Express } from "express";
 import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
+import { Server } from "http";
 import request from "supertest";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { userTableDef } from "../../../src/db/model/entity/User";
@@ -31,6 +32,7 @@ describe("user routes should work", () => {
   let firebaseAdminApp: App;
   let dbClient: DatabaseClient;
   let expressApp: Express;
+  let runningServer: Server;
   let testUsers: ITestUser[];
 
   beforeAll(async () => {
@@ -38,9 +40,7 @@ describe("user routes should work", () => {
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
     expressApp = setup.expressApp;
-    expressApp.listen(setup.env.server.serverPort, () => {
-      setup.env.logger.info("App successfully started!");
-    });
+    runningServer = expressApp.listen(setup.env.server.serverPort);
   });
 
   beforeEach(async () => {
@@ -52,6 +52,7 @@ describe("user routes should work", () => {
   });
 
   afterAll(async () => {
+    runningServer.close();
     await tearDownIntegrationTest(firebaseAdminApp, dbClient);
   });
 

@@ -8,6 +8,7 @@ import {
 import { NextFunction, Request, Response } from "express";
 import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
+import { Server } from "http";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { userTableDef } from "../../../src/db/model/entity/User";
 import { Environment } from "../../../src/environment/handlers/IEnvironment";
@@ -32,6 +33,8 @@ describe("authentication middleware should work", () => {
   let env: Environment;
   let firebaseAdminApp: App;
   let dbClient: DatabaseClient;
+  let runningServer: Server;
+
   let testUsers: ITestUser[];
   const mockRequest: Request = {
     headers: {},
@@ -69,6 +72,7 @@ describe("authentication middleware should work", () => {
     firebaseAdminApp = setup.firebaseAdminApp;
     env = setup.env;
     dbClient = setup.dbClient;
+    runningServer = setup.runningServer;
   });
 
   beforeEach(async () => {
@@ -85,7 +89,7 @@ describe("authentication middleware should work", () => {
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
+    await tearDownIntegrationTest(firebaseAdminApp, runningServer, dbClient);
   });
 
   it("should not assign user if bearer token is missing", async () => {

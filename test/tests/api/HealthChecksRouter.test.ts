@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 import { Express } from "express";
 import { app } from "firebase-admin";
+import { Server } from "http";
 import request from "supertest";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import {
@@ -13,16 +14,18 @@ describe("should test health check", () => {
   let firebaseAdminApp: App;
   let dbClient: DatabaseClient;
   let expressApp: Express;
+  let runningServer: Server;
 
   beforeAll(async () => {
     const setup = await setupIntegrationTest();
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
     expressApp = setup.expressApp;
+    runningServer = setup.runningServer;
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
+    await tearDownIntegrationTest(firebaseAdminApp, runningServer, dbClient);
   });
 
   const ROUTE_PREFIX = "/_health";

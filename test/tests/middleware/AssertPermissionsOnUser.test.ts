@@ -8,6 +8,7 @@ import {
 } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 import { app } from "firebase-admin";
+import { Server } from "http";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { PermissionsEnum } from "../../../src/db/model/auth/Permissions";
 import { Environment } from "../../../src/environment/handlers/IEnvironment";
@@ -29,6 +30,8 @@ describe("user permissions middleware should work", () => {
   let env: Environment;
   let firebaseAdminApp: App;
   let dbClient: DatabaseClient;
+  let runningServer: Server;
+
   const mockRequest: Request = {
     body: {},
     params: {},
@@ -45,6 +48,7 @@ describe("user permissions middleware should work", () => {
     env = setup.env;
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
+    runningServer = setup.runningServer;
   });
 
   beforeEach(async () => {
@@ -57,7 +61,7 @@ describe("user permissions middleware should work", () => {
   });
 
   afterAll(async () => {
-    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
+    await tearDownIntegrationTest(firebaseAdminApp, runningServer, dbClient);
   });
 
   it("should block request for user with insufficient permissions", async () => {

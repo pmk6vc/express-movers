@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
 import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
+import { Server } from "http";
 import { buildApp } from "../../../src/app";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { userTableDef } from "../../../src/db/model/entity/User";
@@ -28,13 +29,15 @@ export async function setupIntegrationTest() {
   const env = await EnvironmentFactory.getHandler().getEnvironment();
   const dbClient = DatabaseClient.getInstance(env);
   const expressApp = await buildApp(env, dbClient);
+  const runningServer = expressApp.listen(env.server.serverPort);
 
   await dbClient.runMigrations();
-  return { firebaseAdminApp, env, dbClient, expressApp };
+  return { firebaseAdminApp, env, dbClient, expressApp, runningServer };
 }
 
 export async function tearDownIntegrationTest(
   firebaseAdminApp: App,
+  runningServer: Server,
   dbClient: DatabaseClient
 ) {
   const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
@@ -42,6 +45,7 @@ export async function tearDownIntegrationTest(
     getAuth(firebaseAdminApp).deleteUsers(firebaseUsers.map((u) => u.uid)),
     truncateTables(dbClient, TABLES_TO_TRUNCATE),
   ]);
+  runningServer.close();
   await dbClient.close();
 }
 

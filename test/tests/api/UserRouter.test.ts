@@ -40,8 +40,7 @@ describe("user routes should work", () => {
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
     expressApp = setup.expressApp;
-    // TODO: Just return this in the integration test setup
-    runningServer = expressApp.listen(setup.env.server.serverPort);
+    runningServer = setup.runningServer;
   });
 
   beforeEach(async () => {
@@ -53,9 +52,7 @@ describe("user routes should work", () => {
   });
 
   afterAll(async () => {
-    // TODO: Just close this server in the teardown
-    runningServer.close();
-    await tearDownIntegrationTest(firebaseAdminApp, dbClient);
+    await tearDownIntegrationTest(firebaseAdminApp, runningServer, dbClient);
   });
 
   const ROUTE_PREFIX = "/users";

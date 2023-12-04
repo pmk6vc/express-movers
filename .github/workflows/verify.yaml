@@ -7,6 +7,7 @@ on:
 env:
   TF_WORKSPACE_NAME: production
   TF_WORKING_DIR: infra
+  CF_WORKING_DIR: functions
 
 jobs:
   terraform:
@@ -79,7 +80,7 @@ jobs:
           project_id: ${{ vars.GCP_PROJECT_ID }}
 
       - name: Deploy Cloud Functions
-        id: deploy
+        working-directory: ${{ env.CF_WORKING_DIR }}
         run: |
           gcloud functions deploy newUserFuncManualDeploy \
           --runtime=nodejs18 \

@@ -3,7 +3,6 @@ import { app } from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 import { buildApp } from "../../../src/app";
 import DatabaseClient from "../../../src/db/DatabaseClient";
-import { userTableDef } from "../../../src/db/model/entity/User";
 import EnvironmentFactory from "../../../src/environment/EnvironmentFactory";
 import {
   DEFAULT_TEST_SUPERUSER,
@@ -53,19 +52,20 @@ export async function setupDefaultUsers(
     getAuth(firebaseAdminApp).createUser(DEFAULT_TEST_USER),
     getAuth(firebaseAdminApp).createUser(DEFAULT_TEST_SUPERUSER),
   ]);
-  await Promise.all([
-    dbClient.pgPoolClient.insert(userTableDef).values({
-      uid: defaultTestUser.uid,
-      email: DEFAULT_TEST_USER.email,
-      profile: DEFAULT_TEST_USER.profile,
-    }),
-    dbClient.pgPoolClient.insert(userTableDef).values({
-      uid: defaultTestSuperuser.uid,
-      email: DEFAULT_TEST_SUPERUSER.email,
-      profile: DEFAULT_TEST_SUPERUSER.profile,
-      isSuperuser: true,
-    }),
-  ]);
+  // console.log("RUNNING DB INSERTS IN TEST SETUP");
+  // await Promise.all([
+  //   dbClient.pgPoolClient.insert(userTableDef).values({
+  //     uid: defaultTestUser.uid,
+  //     email: DEFAULT_TEST_USER.email,
+  //     profile: DEFAULT_TEST_USER.profile,
+  //   }),
+  //   dbClient.pgPoolClient.insert(userTableDef).values({
+  //     uid: defaultTestSuperuser.uid,
+  //     email: DEFAULT_TEST_SUPERUSER.email,
+  //     profile: DEFAULT_TEST_SUPERUSER.profile,
+  //     isSuperuser: true,
+  //   }),
+  // ]);
   return [
     {
       userCredentials: {

@@ -14,7 +14,26 @@ export const newUser = functions.auth
     // TODO: Need test coverage
     // TODO: Add termination condition to avoid infinite retries (either in code or in deployment)
     // TODO: Set up deployment in CICD
-    await axios.post(`${AppUrlFactory.getUrl()}/users/writeNewUser`, {
-      uid: userRecord.uid,
-    });
+    try {
+      console.log("RUNNING DB INSERTS IN CLOUD FUNCTION");
+      const res = await axios.post(
+        `${AppUrlFactory.getUrl()}/users/writeNewUser`,
+        {
+          uid: userRecord.uid,
+        }
+      );
+      console.log(res.data);
+      const res2 = await axios.post(
+        `${AppUrlFactory.getUrl()}/users/writeNewUser`,
+        {
+          uid: userRecord.uid,
+        }
+      );
+      console.log(`STATUS FROM SECOND REQUEST: ${res2.status}`);
+    } catch (e: unknown) {
+      console.log(`WHATEVER I CAUGHT: ${e}`);
+      if (e instanceof Error && "errors" in e) {
+        console.log(e.errors);
+      }
+    }
   });

@@ -38,6 +38,9 @@ describe("user routes should work", () => {
     firebaseAdminApp = setup.firebaseAdminApp;
     dbClient = setup.dbClient;
     expressApp = setup.expressApp;
+    expressApp.listen(setup.env.server.serverPort, () => {
+      setup.env.logger.info("App successfully started!");
+    });
   });
 
   beforeEach(async () => {
@@ -55,6 +58,12 @@ describe("user routes should work", () => {
   const ROUTE_PREFIX = "/users";
 
   describe("should create new user", () => {
+    it("should run background functions", async () => {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      const numUsers = await dbClient.pgPoolClient.select().from(userTableDef);
+      expect(numUsers.length).toBe(2);
+    });
+
     it("blocks create request for duplicate user", async () => {
       const res = await request(expressApp)
         .post(ROUTE_PREFIX)
@@ -67,6 +76,7 @@ describe("user routes should work", () => {
       const res = await request(expressApp)
         .post(ROUTE_PREFIX)
         .send(TEST_USER_ONE);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       expect(res.status).toBe(201);
       expect(res.text).toBe(`New user ${TEST_USER_ONE.email} created`);
     });

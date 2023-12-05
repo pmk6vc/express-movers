@@ -36,18 +36,14 @@ export const persistNewFirebaseUser = functions.auth
       });
       console.log(`Successfully persisted Firebase user ${userRecord.uid}`);
     } catch (e: unknown) {
+      // Swallow error if 409 for duplicate user, else throw for retry
       console.log(`Error occurred: ${e}`);
-      if (axios.isAxiosError(e)) {
-        // Swallow error if server indicates that user has already been created to avoid retries
-        if (e.status == 409) {
-          console.log(
-            `User ${userRecord.uid} has already been persisted - not attempting retry`
-          );
-          return;
-        }
-      } else {
-        // Otherwise rethrow error to force retry
-        throw e;
+      if (axios.isAxiosError(e) && e.status == 409) {
+        console.log(
+          `User ${userRecord.uid} has already been persisted - not attempting retry`
+        );
+        return;
       }
+      throw e;
     }
   });

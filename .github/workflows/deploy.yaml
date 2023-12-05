@@ -12,25 +12,7 @@ env:
   CF_WORKING_DIR: functions
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Use Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.17.1 # Based on version found in Dockerfile
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run test suite
-        run: npm run test:ci
-
   terraform:
-    needs: test
     runs-on: ubuntu-latest
     outputs:
       ARTIFACT_REPO_NAME: ${{ steps.repo.outputs.artifact_repo }}

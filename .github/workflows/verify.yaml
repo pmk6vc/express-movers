@@ -82,7 +82,7 @@ jobs:
       - name: Deploy Cloud Functions
         working-directory: ${{ env.CF_WORKING_DIR }}
         run: |
-          gcloud functions deploy newUserFuncManualDeploy \
+          gcloud functions deploy PersistNewFirebaseUser \
           --runtime=nodejs18 \
           --region=${{ vars.GCP_REGION }} \
           --entry-point=persistNewFirebaseUser \

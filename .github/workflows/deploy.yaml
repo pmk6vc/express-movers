@@ -216,6 +216,7 @@ jobs:
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
 
+      # TODO: Set dedicated runtime service account with minimal perms to execute function logic
       - name: Deploy Cloud Functions
         working-directory: ${{ env.CF_WORKING_DIR }}
         run: |

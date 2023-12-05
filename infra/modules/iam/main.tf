@@ -152,3 +152,12 @@ resource "google_project_iam_member" "identity_platform_admin" {
   role = "roles/identityplatform.admin"
   member  = "serviceAccount:${google_service_account.service_account.email}"
 }
+
+/**
+* Assign the role required to manage Cloud Function resources
+*/
+resource "google_project_iam_member" "cloud_functions_developer" {
+  project = var.gcp_project_id
+  role = "roles/cloudfunctions.developer"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
+}

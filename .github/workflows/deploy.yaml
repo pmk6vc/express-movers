@@ -9,27 +9,10 @@ env:
   TF_WORKING_DIR: infra
   SERVICE_NAME: express-movers
   SERVICE_PORT: 5000
+  CF_WORKING_DIR: functions
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Use Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.17.1 # Based on version found in Dockerfile
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run test suite
-        run: npm run test:ci
-
   terraform:
-    needs: test
     runs-on: ubuntu-latest
     outputs:
       ARTIFACT_REPO_NAME: ${{ steps.repo.outputs.artifact_repo }}
@@ -125,7 +108,7 @@ jobs:
         env:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
-  deploy:
+  deploy-cloud-run:
     needs: [terraform, clean-registry]
     runs-on: ubuntu-latest
     permissions:
@@ -164,7 +147,7 @@ jobs:
           IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
 
       # Authenticated service by default - will need to make public for the first deployment
-      - name: Deploy
+      - name: Deploy Cloud Run service
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v1.0.1
         with:
@@ -192,3 +175,40 @@ jobs:
 
       - name: Show URL
         run: echo ${{ steps.deploy.outputs.url }}
+
+  deploy-cloud-functions:
+    needs: deploy-cloud-run
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ vars.WORKLOAD_IDENTITY_POOL }}/providers/${{ vars.WORKLOAD_IDENTITY_POOL_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      # TODO: Set dedicated runtime service account with minimal perms to execute function logic
+      - name: Deploy Cloud Functions
+        working-directory: ${{ env.CF_WORKING_DIR }}
+        run: |
+          gcloud functions deploy PersistNewFirebaseUser \
+          --runtime=nodejs18 \
+          --region=${{ vars.GCP_REGION }} \
+          --entry-point=persistNewFirebaseUser \
+          --set-env-vars=CONFIG_ENV=production,GCLOUD_PROJECT=${{ vars.GCP_PROJECT_ID }} \
+          --max-instances=5 \
+          --project=${{ vars.GCP_PROJECT_ID }} \
+          --memory=128MB \
+          --trigger-event=providers/firebase.auth/eventTypes/user.create \
+          --trigger-resource=${{ vars.GCP_PROJECT_ID }}

@@ -7,13 +7,14 @@ import AppUrlFactory from "./AppUrlFactory";
 admin.initializeApp({
   projectId: process.env.GCP_PROJECT_ID,
 });
-export const newUser = functions.auth
+export const persistNewFirebaseUser = functions.auth
   .user()
   .onCreate(async (userRecord: UserRecord) => {
+    // TODO: Logging and error handling
+    // TODO: Test coverage
+    // TODO: Set up retries and add termination condition to avoid infinite retries (either in code or in deployment)
+    // TODO: Add delete user equivalent
     // TODO: Authenticate as service account and add ID token to request
-    // TODO: Need test coverage
-    // TODO: Add termination condition to avoid infinite retries (either in code or in deployment)
-    // TODO: Set up deployment in CICD
     await axios.post(`${AppUrlFactory.getUrl()}/users/writeNewUser`, {
       uid: userRecord.uid,
     });

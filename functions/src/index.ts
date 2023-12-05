@@ -10,6 +10,7 @@ admin.initializeApp({
 export const persistNewFirebaseUser = functions.auth
   .user()
   .onCreate(async (userRecord: UserRecord) => {
+    // TODO: Logging and error handling
     // TODO: Test coverage
     // TODO: Set up retries and add termination condition to avoid infinite retries (either in code or in deployment)
     // TODO: Add delete user equivalent

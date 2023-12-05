@@ -11,7 +11,7 @@
     "test:ci": "firebase emulators:exec --project gcp-test-project-id --only auth \"jest --ci --verbose --no-cache\"",
     "emulators:start": "firebase emulators:start --project gcp-test-project-id",
     "start:dev": "firebase emulators:exec --project gcp-test-project-id --ui \"nodemon src/index.ts\"",
-    "start:docker": "docker-compose up --build",
+    "start:docker": "docker-compose up --force-recreate",
     "prebuild": "npm run lint",
     "build": "tsc",
     "start": "node .",

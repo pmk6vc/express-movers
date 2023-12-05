@@ -212,3 +212,4 @@ jobs:
           --memory=128MB \
           --trigger-event=providers/firebase.auth/eventTypes/user.create \
           --trigger-resource=${{ vars.GCP_PROJECT_ID }}
+          --retry

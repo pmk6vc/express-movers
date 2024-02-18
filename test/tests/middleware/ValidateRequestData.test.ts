@@ -28,7 +28,7 @@ describe("request validation middleware should work", () => {
       await validateRequestBody(requestSchema)(
         mockRequest,
         mockResponse,
-        nextFunction
+        nextFunction,
       );
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect(mockResponse.status).toHaveBeenCalledTimes(1);
@@ -44,7 +44,7 @@ describe("request validation middleware should work", () => {
       await validateRequestBody(requestSchema)(
         mockRequest,
         mockResponse,
-        nextFunction
+        nextFunction,
       );
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect(mockResponse.status).toHaveBeenCalledTimes(1);
@@ -64,7 +64,7 @@ describe("request validation middleware should work", () => {
       await validateRequestBody(requestSchema)(
         mockRequest,
         mockResponse,
-        nextFunction
+        nextFunction,
       );
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect(mockResponse.status).toHaveBeenCalledTimes(1);
@@ -84,7 +84,7 @@ describe("request validation middleware should work", () => {
       await validateRequestBody(requestSchema)(
         mockRequest,
         mockResponse,
-        nextFunction
+        nextFunction,
       );
       expect(mockResponse.status).toHaveBeenCalledTimes(0);
       expect(mockResponse.send).toHaveBeenCalledTimes(0);
@@ -105,7 +105,7 @@ describe("request validation middleware should work", () => {
       await validateRequestParams(requestSchema)(
         mockRequest,
         mockResponse,
-        nextFunction
+        nextFunction,
       );
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect(mockResponse.status).toHaveBeenCalledTimes(1);

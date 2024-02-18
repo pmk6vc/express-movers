@@ -12,7 +12,7 @@ import { GLOBAL_LOG_OBJ } from "./CorrelatedRequestLogging";
 const getPermissionsOnUserResource = async (
   requestedCustomerId: string,
   authenticatedUserId: string,
-  dbClient: DatabaseClient
+  dbClient: DatabaseClient,
 ): Promise<PermissionsEnum[]> => {
   // Fetch authenticated user record from database
   const authenticatedUserRecord = (
@@ -35,7 +35,7 @@ const getPermissionsOnUserResource = async (
 export const assertPermissionsOnUser = (
   requiredPermissions: PermissionsEnum[],
   dbClient: DatabaseClient,
-  logger: Logger
+  logger: Logger,
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const requestedUserId = req.params["userId"];
@@ -43,19 +43,19 @@ export const assertPermissionsOnUser = (
     const permissions = await getPermissionsOnUserResource(
       requestedUserId,
       authenticatedUserId,
-      dbClient
+      dbClient,
     );
     logger.info(
       `Authenticated user ${authenticatedUserId} has the following permissions on requested user ${requestedUserId}: ${permissions}`,
-      res.locals[GLOBAL_LOG_OBJ]
+      res.locals[GLOBAL_LOG_OBJ],
     );
     const isAuthorized = requiredPermissions.every((p) =>
-      permissions.includes(p)
+      permissions.includes(p),
     );
     if (!isAuthorized) {
       logger.info(
         `Authenticated user ${authenticatedUserId} missing at least one of the following required permissions on requested user ${requestedUserId}: ${requiredPermissions}`,
-        res.locals[GLOBAL_LOG_OBJ]
+        res.locals[GLOBAL_LOG_OBJ],
       );
       res.status(403).send("Unauthorized request");
       return;

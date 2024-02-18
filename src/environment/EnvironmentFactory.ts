@@ -15,7 +15,7 @@ export default class EnvironmentFactory {
 
   static getHandler(): AbstractHandler {
     return EnvironmentFactory.configMap.get(
-      process.env.NODE_CONFIG_ENV || "local-dev"
+      process.env.NODE_CONFIG_ENV || "local-dev",
     )!;
   }
 }

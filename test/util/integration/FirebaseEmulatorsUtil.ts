@@ -10,7 +10,7 @@ const authEmulatorClient = axios.create({
 
 export async function getIdTokenWithEmailPassword(
   email: string,
-  password: string
+  password: string,
 ) {
   const res = await authEmulatorClient({
     method: "POST",

@@ -34,7 +34,7 @@ async function uidExistsInDatabase(uid: string, dbClient: DatabaseClient) {
 const authenticateUser = (dbClient: DatabaseClient, logger: Logger) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const maybeVerifiedIdToken = await getVerifiedIdToken(
-      req.headers.authorization
+      req.headers.authorization,
     );
     if (maybeVerifiedIdToken == undefined) {
       next();
@@ -49,7 +49,7 @@ const authenticateUser = (dbClient: DatabaseClient, logger: Logger) => {
         `User ${
           maybeVerifiedIdToken!.uid
         } exists in Firebase but not in database`,
-        res.locals[GLOBAL_LOG_OBJ]
+        res.locals[GLOBAL_LOG_OBJ],
       );
       res.status(503).send("We're still setting up your account");
       return;

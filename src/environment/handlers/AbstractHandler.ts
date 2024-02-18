@@ -24,7 +24,7 @@ export default abstract class AbstractHandler {
         process.env.DB_PASSWORD!,
         process.env.DB_HOST!,
         +process.env.DB_PORT!,
-        process.env.DB_NAME!
+        process.env.DB_NAME!,
       );
     }
     return this.databaseConfig;
@@ -41,7 +41,7 @@ export default abstract class AbstractHandler {
               format.timestamp(),
               format.printf(({ timestamp, level, message }) => {
                 return `[${timestamp}] ${level}: ${message}`;
-              })
+              }),
             ),
           }),
         ],
@@ -62,7 +62,7 @@ export default abstract class AbstractHandler {
           this.getDatabaseConfig(),
           this.getLogger(),
           this.getProjectId(),
-        ]
+        ],
       );
       this.environment = {
         server: serverConfig,

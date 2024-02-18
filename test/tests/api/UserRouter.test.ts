@@ -142,7 +142,7 @@ describe("user routes should work", () => {
       // Attempt to fetch user data with token from different user
       const userTwoToken = await getIdTokenWithEmailPassword(
         TEST_USER_TWO.email,
-        TEST_USER_TWO.password
+        TEST_USER_TWO.password,
       );
       const res = await request(expressApp)
         .get(`${ROUTE_PREFIX}/${userOneFirebase.uid}`)
@@ -155,7 +155,7 @@ describe("user routes should work", () => {
       const user = testUsers[0];
       const bearerToken = await getIdTokenWithEmailPassword(
         user.userCredentials.email,
-        user.userCredentials.password
+        user.userCredentials.password,
       );
       const res = await request(expressApp)
         .get(`${ROUTE_PREFIX}/${user.userRecord.uid}`)

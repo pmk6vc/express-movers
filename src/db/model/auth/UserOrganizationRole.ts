@@ -31,7 +31,7 @@ export const userOrgRoleTableDef = authSchema.table(
     return {
       pk: primaryKey(table.uid, table.organizationId, table.roleId),
     };
-  }
+  },
 );
 
 export type NewUserOrgRole = typeof userOrgRoleTableDef.$inferInsert;

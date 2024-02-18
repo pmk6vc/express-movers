@@ -44,9 +44,8 @@ describe("authentication middleware should work", () => {
   const nextFunction: NextFunction = jest.fn();
 
   async function setupUsers(): Promise<ITestUser[]> {
-    const userRecord = await getAuth(firebaseAdminApp).createUser(
-      TEST_USER_ONE
-    );
+    const userRecord =
+      await getAuth(firebaseAdminApp).createUser(TEST_USER_ONE);
     await dbClient.pgPoolClient.insert(userTableDef).values({
       uid: userRecord.uid,
       email: TEST_USER_ONE.email,
@@ -92,7 +91,7 @@ describe("authentication middleware should work", () => {
     await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
-      nextFunction
+      nextFunction,
     );
     expect(mockResponse.locals[USER_PROPERTY]).toBe(undefined);
     expect(nextFunction).toBeCalledTimes(1);
@@ -105,7 +104,7 @@ describe("authentication middleware should work", () => {
     await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
-      nextFunction
+      nextFunction,
     );
     expect(mockResponse.locals[USER_PROPERTY]).toBe(undefined);
     expect(nextFunction).toBeCalledTimes(1);
@@ -116,7 +115,7 @@ describe("authentication middleware should work", () => {
     await getAuth(firebaseAdminApp).createUser(TEST_USER_TWO);
     const bearerToken = await getIdTokenWithEmailPassword(
       TEST_USER_TWO.email,
-      TEST_USER_TWO.password
+      TEST_USER_TWO.password,
     );
     mockRequest.headers = {
       authorization: `Bearer ${bearerToken}`,
@@ -124,7 +123,7 @@ describe("authentication middleware should work", () => {
     await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
-      nextFunction
+      nextFunction,
     );
 
     // Confirm server error in response
@@ -139,7 +138,7 @@ describe("authentication middleware should work", () => {
     const testUser = testUsers[0];
     const bearerToken = await getIdTokenWithEmailPassword(
       testUser.userCredentials.email,
-      testUser.userCredentials.password
+      testUser.userCredentials.password,
     );
     mockRequest.headers = {
       authorization: `Bearer ${bearerToken}`,
@@ -147,16 +146,16 @@ describe("authentication middleware should work", () => {
     await authenticateUser(dbClient, env.logger)(
       mockRequest as Request,
       mockResponse as Response,
-      nextFunction
+      nextFunction,
     );
 
     const testUserRecord = testUser.userRecord.toJSON();
     const returnedUserRecord = mockResponse.locals[USER_PROPERTY];
     expect(returnedUserRecord["uid"]).toBe(
-      testUserRecord["uid" as keyof typeof testUserRecord]
+      testUserRecord["uid" as keyof typeof testUserRecord],
     );
     expect(returnedUserRecord["email"]).toBe(
-      testUserRecord["email" as keyof typeof testUserRecord]
+      testUserRecord["email" as keyof typeof testUserRecord],
     );
     expect(nextFunction).toBeCalledTimes(1);
   });

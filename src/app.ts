@@ -19,7 +19,7 @@ export const buildApp = async (env: Environment, dbClient: DatabaseClient) => {
   // Attach routers in order of evaluation
   app.use(
     "/_health",
-    new HealthChecksRouter(dbClient, env.logger).buildRouter()
+    new HealthChecksRouter(dbClient, env.logger).buildRouter(),
   );
   app.use("/users", new UserRouter(dbClient, env.logger).buildRouter());
 

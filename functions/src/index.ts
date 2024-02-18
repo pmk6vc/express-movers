@@ -20,7 +20,7 @@ export const persistNewFirebaseUser = functions.auth
       Date.now() - new Date(userRecord.metadata.creationTime).getTime();
     if (eventAgeMs > expirationMs) {
       console.log(
-        `Skipping processing for Firebase user ${userRecord.uid} - creation occurred ${eventAgeMs}ms ago, exceeding ${expirationMs}ms expiration`
+        `Skipping processing for Firebase user ${userRecord.uid} - creation occurred ${eventAgeMs}ms ago, exceeding ${expirationMs}ms expiration`,
       );
       return;
     }
@@ -28,7 +28,7 @@ export const persistNewFirebaseUser = functions.auth
     // Attempt to persist created Firebase user
     const url = `${AppUrlFactory.getUrl()}/users/writeNewUser`;
     console.log(
-      `Attempting to persist Firebase user ${userRecord.uid} at ${url}`
+      `Attempting to persist Firebase user ${userRecord.uid} at ${url}`,
     );
     try {
       await axios.post(url, {
@@ -40,7 +40,7 @@ export const persistNewFirebaseUser = functions.auth
       console.log(`Error occurred: ${e}`);
       if (axios.isAxiosError(e) && e.status == 409) {
         console.log(
-          `User ${userRecord.uid} has already been persisted - not attempting retry`
+          `User ${userRecord.uid} has already been persisted - not attempting retry`,
         );
         return;
       }

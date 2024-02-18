@@ -32,7 +32,7 @@ export enum PermissionsEnum {
 
 export const permissionsPgEnum = convertStringEnumToPgEnum(
   "permission",
-  PermissionsEnum
+  PermissionsEnum,
 );
 
 export const permissionsTableDef = authSchema.table(PERMISSIONS_TABLE, {

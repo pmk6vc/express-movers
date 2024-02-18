@@ -35,7 +35,7 @@ export async function setupIntegrationTest() {
 
 export async function tearDownIntegrationTest(
   firebaseAdminApp: App,
-  dbClient: DatabaseClient
+  dbClient: DatabaseClient,
 ) {
   const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
   await Promise.all([
@@ -47,7 +47,7 @@ export async function tearDownIntegrationTest(
 
 export async function setupDefaultUsers(
   firebaseAdminApp: App,
-  dbClient: DatabaseClient
+  dbClient: DatabaseClient,
 ): Promise<ITestUser[]> {
   const [defaultTestUser, defaultTestSuperuser] = await Promise.all([
     getAuth(firebaseAdminApp).createUser(DEFAULT_TEST_USER),
@@ -88,7 +88,7 @@ export async function setupDefaultUsers(
 
 export async function tearDownTestData(
   firebaseAdminApp: App,
-  dbClient: DatabaseClient
+  dbClient: DatabaseClient,
 ) {
   const firebaseUsers = (await getAuth(firebaseAdminApp).listUsers()).users;
   await Promise.all([

@@ -22,7 +22,7 @@ describe("correlated request logging middleware should work", () => {
     await correlatedRequestLogging(TEST_GCP_PROJECT_ID)(
       mockRequest,
       mockResponse,
-      nextFunction
+      nextFunction,
     );
     expect(mockRequest.header).toHaveBeenCalledTimes(1);
     expect(mockRequest.header).toHaveBeenCalledWith("X-Cloud-Trace-Context");
@@ -35,7 +35,7 @@ describe("correlated request logging middleware should work", () => {
     await correlatedRequestLogging(TEST_GCP_PROJECT_ID)(
       mockRequest,
       mockResponse,
-      nextFunction
+      nextFunction,
     );
     expect(mockRequest.header).toHaveBeenCalledTimes(1);
     expect(mockRequest.header).toHaveBeenCalledWith("X-Cloud-Trace-Context");

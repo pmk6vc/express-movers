@@ -55,13 +55,13 @@ export default class UserRouter extends AbstractRouter {
       });
       this.logger.info(
         `User with email ${parsedRequestBody.email} created in Firebase with ID ${firebaseUserRecord.uid}`,
-        res.locals[GLOBAL_LOG_OBJ]
+        res.locals[GLOBAL_LOG_OBJ],
       );
     } catch (e: unknown) {
       if ((e as FirebaseError).code !== undefined) {
         this.logger.info(
           (e as FirebaseError).message,
-          res.locals[GLOBAL_LOG_OBJ]
+          res.locals[GLOBAL_LOG_OBJ],
         );
         res.status(409).send("User already exists");
       } else {
@@ -70,7 +70,7 @@ export default class UserRouter extends AbstractRouter {
         } else {
           this.logger.error(
             "Something went really wrong :(",
-            res.locals[GLOBAL_LOG_OBJ]
+            res.locals[GLOBAL_LOG_OBJ],
           );
         }
         res.status(500).send("Something went wrong :(");
@@ -85,10 +85,10 @@ export default class UserRouter extends AbstractRouter {
     // TODO: Needs test coverage
     // Kick off I/O concurrently
     const parsedRequestBody = this.writeFirebaseUserToDatabaseSchema.parse(
-      req.body
+      req.body,
     );
     const maybeFirebaseUserRecordPromise = getAuth().getUser(
-      parsedRequestBody.uid
+      parsedRequestBody.uid,
     );
     const maybeDatabaseUserRecordPromise = this.dbClient.pgPoolClient
       .select()
@@ -103,7 +103,7 @@ export default class UserRouter extends AbstractRouter {
       if ((e as FirebaseError).code !== undefined) {
         this.logger.info(
           (e as FirebaseError).message,
-          res.locals[GLOBAL_LOG_OBJ]
+          res.locals[GLOBAL_LOG_OBJ],
         );
         res
           .status(409)
@@ -114,7 +114,7 @@ export default class UserRouter extends AbstractRouter {
         } else {
           this.logger.error(
             "Something went really wrong :(",
-            res.locals[GLOBAL_LOG_OBJ]
+            res.locals[GLOBAL_LOG_OBJ],
           );
         }
         res.status(500).send("Something went wrong :(");
@@ -127,7 +127,7 @@ export default class UserRouter extends AbstractRouter {
     if (maybeDatabaseUserRecord.length > 0) {
       this.logger.info(
         `User ${parsedRequestBody.uid} already exists in database`,
-        res.locals[GLOBAL_LOG_OBJ]
+        res.locals[GLOBAL_LOG_OBJ],
       );
       res
         .status(409)
@@ -143,7 +143,7 @@ export default class UserRouter extends AbstractRouter {
     await this.dbClient.pgPoolClient.insert(userTableDef).values(newUserData);
     this.logger.info(
       `User ${firebaseUserRecord.uid} successfully written to database`,
-      res.locals[GLOBAL_LOG_OBJ]
+      res.locals[GLOBAL_LOG_OBJ],
     );
     return res.status(201).send(`New user ${firebaseUserRecord.email} created`);
   };
@@ -161,7 +161,7 @@ export default class UserRouter extends AbstractRouter {
       .post(
         "/writeNewUser",
         validateRequestBody(this.writeFirebaseUserToDatabaseSchema),
-        this.writeFirebaseUserToDatabase
+        this.writeFirebaseUserToDatabase,
       )
       .get(
         "/:userId",
@@ -170,9 +170,9 @@ export default class UserRouter extends AbstractRouter {
         assertPermissionsOnUser(
           [PermissionsEnum.READ_CUSTOMER],
           this.dbClient,
-          this.logger
+          this.logger,
         ),
-        this.getUser
+        this.getUser,
       );
   }
 }

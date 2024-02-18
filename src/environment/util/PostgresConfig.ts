@@ -14,7 +14,7 @@ export default class PostgresConfig implements DatabaseConfig {
     password: string,
     host: string,
     port: number,
-    database: string
+    database: string,
   ) {
     this.username = username;
     this.password = password;

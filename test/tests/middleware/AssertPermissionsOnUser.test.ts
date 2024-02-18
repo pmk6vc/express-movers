@@ -74,7 +74,7 @@ describe("user permissions middleware should work", () => {
     await assertPermissionsOnUser(
       [PermissionsEnum.READ_CUSTOMER],
       dbClient,
-      env.logger
+      env.logger,
     )(mockRequest, mockResponse, nextFunction);
 
     expect(mockResponse.status).toHaveBeenCalledWith(403);
@@ -95,7 +95,7 @@ describe("user permissions middleware should work", () => {
     await assertPermissionsOnUser(
       [PermissionsEnum.READ_CUSTOMER],
       dbClient,
-      env.logger
+      env.logger,
     )(mockRequest, mockResponse, nextFunction);
 
     expect(mockResponse.status).toHaveBeenCalledTimes(0);
@@ -117,7 +117,7 @@ describe("user permissions middleware should work", () => {
     await assertPermissionsOnUser([], dbClient, env.logger)(
       mockRequest,
       mockResponse,
-      nextFunction
+      nextFunction,
     );
 
     expect(mockResponse.status).toHaveBeenCalledTimes(0);
@@ -144,7 +144,7 @@ describe("user permissions middleware should work", () => {
         PermissionsEnum.DELETE_CUSTOMER,
       ],
       dbClient,
-      env.logger
+      env.logger,
     )(mockRequest, mockResponse, nextFunction);
 
     expect(mockResponse.status).toHaveBeenCalledTimes(0);

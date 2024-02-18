@@ -6,15 +6,14 @@ const correlateLogsInProduction = (
   projectId: string,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const globalLogFields: { [key: string]: string } = {};
   const traceHeader = req.header("X-Cloud-Trace-Context");
   if (traceHeader) {
     const [trace] = traceHeader.split("/");
-    globalLogFields[
-      "logging.googleapis.com/trace"
-    ] = `projects/${projectId}/traces/${trace}`;
+    globalLogFields["logging.googleapis.com/trace"] =
+      `projects/${projectId}/traces/${trace}`;
   }
   res.locals[GLOBAL_LOG_OBJ] = globalLogFields;
   return next();

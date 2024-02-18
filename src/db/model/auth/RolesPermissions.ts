@@ -95,7 +95,7 @@ export const rolesPermissionsTableDef = authSchema.table(
     return {
       pk: primaryKey(table.roleId, table.permissionId),
     };
-  }
+  },
 );
 
 export type NewRolePermission = typeof rolesPermissionsTableDef.$inferInsert;

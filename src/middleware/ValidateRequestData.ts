@@ -5,7 +5,7 @@ const validateData = (
   schema: ZodTypeAny,
   data: object,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const result = schema.safeParse(data);
   if (!result.success) {

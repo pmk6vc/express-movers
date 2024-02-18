@@ -30,7 +30,7 @@ export class TestEnvironmentHandler extends AbstractHandler {
         startedContainer.getPassword(),
         startedContainer.getHost(),
         startedContainer.getPort(),
-        startedContainer.getDatabase()
+        startedContainer.getDatabase(),
       );
     }
     return this.databaseConfig;

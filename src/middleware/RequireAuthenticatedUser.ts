@@ -7,7 +7,7 @@ const requireAuthenticatedUserHelper = (
   req: Request,
   res: Response,
   next: NextFunction,
-  logger: Logger
+  logger: Logger,
 ) => {
   if (!res.locals[USER_PROPERTY]) {
     logger.info("Unauthenticated request", res.locals[GLOBAL_LOG_OBJ]);

@@ -55,7 +55,7 @@ export default class DatabaseClient {
     ]);
     const rolesMap = new Map(roles.map((r) => [r.role.toString(), r.id]));
     const permissionsMap = new Map(
-      permissions.map((p) => [p.permission.toString(), p.id])
+      permissions.map((p) => [p.permission.toString(), p.id]),
     );
     rolesPermissionsMap.forEach((associatedPermissions, role) => {
       associatedPermissions.map((permission) => {

@@ -26,7 +26,7 @@ export class LocalDevHandler extends AbstractHandler {
         container.getPassword(),
         container.getHost(),
         container.getPort(),
-        container.getDatabase()
+        container.getDatabase(),
       );
     }
     return this.databaseConfig;

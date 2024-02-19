@@ -9,7 +9,6 @@ import {
 import { Express } from "express";
 import { app } from "firebase-admin";
 import request from "supertest";
-import { persistNewFirebaseUser } from "../../../functions/src";
 import DatabaseClient from "../../../src/db/DatabaseClient";
 import { TEST_USER_ONE } from "../../util/TestConstants";
 import { ITestUser } from "../../util/integration/ITestUser";
@@ -48,8 +47,13 @@ describe("new user persistence should work", () => {
   });
 
   it("invoked upon user creation", async () => {
-    const mock = jest.fn(persistNewFirebaseUser);
+    const persistNewFirebaseUserMock = jest.fn();
+    jest.mock("functions/src", () => {
+      return {
+        persistNewFirebaseUser: persistNewFirebaseUserMock,
+      };
+    });
     await request(expressApp).post("/users").send(TEST_USER_ONE);
-    expect(mock).toHaveBeenCalledTimes(1);
+    expect(persistNewFirebaseUserMock).toHaveBeenCalledTimes(1);
   });
 });

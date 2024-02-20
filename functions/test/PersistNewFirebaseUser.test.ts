@@ -32,25 +32,51 @@ describe("persisting new Firebase users should work", () => {
   });
 
   it("should invoke service to persist new Firebase user", async () => {
-    const mock = jest.fn();
-    const spy = jest.spyOn(
+    // Spies and mocks
+    const expSpy = jest.spyOn(
+      PersistNewFirebaseUserHelpers,
+      "checkEventExpiration",
+    );
+    const persistSpy = jest.spyOn(
       PersistNewFirebaseUserHelpers,
       "persistFirebaseUserRecord",
     );
-    spy.mockImplementation(mock);
+    persistSpy.mockImplementation(jest.fn());
+
+    // Invoke persistence function
     const newUser = await getAuth(firebaseAdminApp).createUser({
       email: "hello@world.com",
     });
     await persistFirebaseUserRecordFactory(60000)(newUser);
-    expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith(newUser);
+
+    // Assertions
+    expect(expSpy).toHaveBeenCalledTimes(1);
+    expect(expSpy).toHaveBeenCalledWith(newUser, 60000);
+    expect(persistSpy).toHaveBeenCalledTimes(1);
+    expect(persistSpy).toHaveBeenCalledWith(newUser);
   });
 
   it("should ignore expired user creation event", async () => {
-    const x = await getAuth(firebaseAdminApp).createUser({
+    // Spies
+    const expSpy = jest.spyOn(
+      PersistNewFirebaseUserHelpers,
+      "checkEventExpiration",
+    );
+    const persistSpy = jest.spyOn(
+      PersistNewFirebaseUserHelpers,
+      "persistFirebaseUserRecord",
+    );
+
+    // Invoke persistence function
+    const newUser = await getAuth(firebaseAdminApp).createUser({
       email: "hello@world.com",
     });
     await new Promise((res) => setTimeout(res, 1000));
-    await persistFirebaseUserRecordFactory(1000)(x);
+    await persistFirebaseUserRecordFactory(1000)(newUser);
+
+    // Assertions
+    expect(expSpy).toHaveBeenCalledTimes(1);
+    expect(expSpy).toHaveBeenCalledWith(newUser, 1000);
+    expect(persistSpy).toHaveBeenCalledTimes(0);
   });
 });

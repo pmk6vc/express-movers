@@ -14,9 +14,12 @@ describe("persisting new Firebase users should work", () => {
 
   beforeAll(async () => {
     process.env.FIREBASE_AUTH_EMULATOR_HOST = FIREBASE_AUTH_EMULATOR_HOST;
-    firebaseAdminApp = admin.initializeApp({
-      projectId: TEST_GCP_PROJECT_ID,
-    });
+    firebaseAdminApp = admin.initializeApp(
+      {
+        projectId: TEST_GCP_PROJECT_ID,
+      },
+      "PersistNewFirebaseUser",
+    );
   });
 
   it("should invoke service to persist new Firebase user", async () => {});

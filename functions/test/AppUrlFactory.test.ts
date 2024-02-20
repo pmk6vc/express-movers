@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect } from "@jest/globals";
-import AppUrlFactory from "../src/AppUrlFactory";
+import AppUrlFactory from "../src/PersistNewFirebaseUser/AppUrlFactory";
 
 describe("App URL factory should get correct URL", () => {
   const ENV = process.env;

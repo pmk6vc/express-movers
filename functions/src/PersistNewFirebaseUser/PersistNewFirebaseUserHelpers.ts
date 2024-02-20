@@ -1,6 +1,6 @@
 import axios from "axios";
 import { UserRecord } from "firebase-admin/lib/auth";
-import AppUrlFactory from "../AppUrlFactory";
+import AppUrlFactory from "./AppUrlFactory";
 
 export const checkEventExpiration = (
   userRecord: UserRecord,

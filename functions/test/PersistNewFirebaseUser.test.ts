@@ -6,6 +6,7 @@ import {
   FIREBASE_AUTH_EMULATOR_HOST,
   TEST_GCP_PROJECT_ID,
 } from "../../test/util/TestConstants";
+import { persistFirebaseUserRecordFactory } from "../src/PersistNewFirebaseUser";
 import App = app.App;
 
 describe("persisting new Firebase users should work", () => {
@@ -27,11 +28,8 @@ describe("persisting new Firebase users should work", () => {
     const x = await getAuth(firebaseAdminApp).createUser({
       email: "hello@world.com",
     });
-    const delay = (ms: number) => {
-      new Promise((res) => setTimeout(res, ms));
-    };
-    await delay(3000);
-    console.log(x.email);
-    // await persistFirebaseUserRecordFactory(1000)(x);
+    await new Promise((res) => setTimeout(res, 1000));
+    console.log(Date.now() - new Date(x.metadata.creationTime).getTime());
+    await persistFirebaseUserRecordFactory(1000)(x);
   });
 });

@@ -31,7 +31,7 @@ describe("persisting new Firebase users should work", () => {
     jest.clearAllMocks();
   });
 
-  it("should invoke service to persist new Firebase user", async () => {
+  it("should try to persist new Firebase user", async () => {
     // Spies and mocks
     const expSpy = jest.spyOn(
       PersistNewFirebaseUserHelpers,

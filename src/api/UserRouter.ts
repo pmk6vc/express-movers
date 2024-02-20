@@ -81,7 +81,7 @@ export default class UserRouter extends AbstractRouter {
   };
 
   private writeFirebaseUserToDatabase = async (req: Request, res: Response) => {
-    // TODO: Only authorize service account to hit this endpoint
+    // TODO: Move endpoint to dedicated service with enforced authentication to avoid public access
     // TODO: Needs test coverage
     // Kick off I/O concurrently
     const parsedRequestBody = this.writeFirebaseUserToDatabaseSchema.parse(

@@ -1,7 +1,12 @@
+import * as admin from "firebase-admin";
 import { UserRecord } from "firebase-admin/auth";
 import * as functions from "firebase-functions";
 import { dummyFunction } from "./DummyFunction";
-import { persistFirebaseUserRecordFactory } from "./PersistNewFirebaseUser";
+import { persistFirebaseUserRecordFactory } from "./PersistNewFirebaseUser/PersistNewFirebaseUser";
+
+admin.initializeApp({
+  projectId: process.env.GCP_PROJECT_ID,
+});
 
 export const persistNewFirebaseUser = functions.auth
   .user()

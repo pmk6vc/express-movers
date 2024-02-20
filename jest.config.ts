@@ -8,7 +8,7 @@ const config: Config = {
   ],
   testTimeout: 30000,
   collectCoverage: true,
-  collectCoverageFrom: ["src/api/**"],
+  collectCoverageFrom: ["src/api/**", "functions/src/**"],
 };
 
 export default config;

@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.17.1 # Based on version found in Dockerfile
 
@@ -84,7 +84,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.17.1 # Based on version found in Dockerfile
 
@@ -101,7 +101,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.17.1 # Based on version found in Dockerfile
 

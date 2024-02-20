@@ -5,7 +5,6 @@ export default class AppUrlFactory {
     ["production", "https://express-movers-h3fpwbsj7a-uc.a.run.app"],
   ]);
 
-  // TODO: Need test coverage
   static getUrl(): string {
     return AppUrlFactory.urlMap.get(process.env.CONFIG_ENV || "local-dev")!;
   }

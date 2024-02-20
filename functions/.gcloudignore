@@ -1,11 +1,4 @@
-.gcloudignore
-
-# Compiled JavaScript files
-lib/**/*.js
-lib/**/*.js.map
-
-# Node.js dependency directory
-node_modules/
-
-# Tests
+lib
+node_modules
 test
+.gcloudignore

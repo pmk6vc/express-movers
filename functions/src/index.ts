@@ -10,6 +10,5 @@ admin.initializeApp({
 export const persistNewFirebaseUser = functions.auth
   .user()
   .onCreate(async (userRecord: UserRecord) => {
-    // TODO: Add delete user equivalent
     await persistFirebaseUserRecordFactory(60000)(userRecord);
   });

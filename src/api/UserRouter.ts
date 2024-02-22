@@ -82,7 +82,6 @@ export default class UserRouter extends AbstractRouter {
 
   private writeFirebaseUserToDatabase = async (req: Request, res: Response) => {
     // TODO: Move endpoint to dedicated service with enforced authentication to avoid public access
-    // TODO: Needs test coverage
     // Kick off I/O concurrently
     const parsedRequestBody = this.writeFirebaseUserToDatabaseSchema.parse(
       req.body,
@@ -129,9 +128,7 @@ export default class UserRouter extends AbstractRouter {
         `User ${parsedRequestBody.uid} already exists in database`,
         res.locals[GLOBAL_LOG_OBJ],
       );
-      res
-        .status(409)
-        .send(`User ${parsedRequestBody.uid} already exists in database`);
+      res.status(409).send(`User ${parsedRequestBody.uid} already exists`);
       return;
     }
 

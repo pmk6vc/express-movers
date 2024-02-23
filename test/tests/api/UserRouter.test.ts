@@ -197,6 +197,7 @@ describe("user routes should work", () => {
       )[0].profile;
       expect(profileBeforeUpdate).toMatchObject({});
 
+      const { firstName, lastName } = defaultTestUser.profile;
       const bearerToken = await getIdTokenWithEmailPassword(
         defaultTestUser.userCredentials.email,
         defaultTestUser.userCredentials.password,
@@ -206,7 +207,7 @@ describe("user routes should work", () => {
           `${ROUTE_PREFIX}/${defaultTestUser.userRecord.uid}/updateProfile`,
         )
         .set("Authorization", `Bearer ${bearerToken}`)
-        .send(defaultTestUser.profile);
+        .send({ firstName, lastName });
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject(defaultTestUser.profile);
 
@@ -216,7 +217,7 @@ describe("user routes should work", () => {
           .from(userTableDef)
           .where(eq(userTableDef.email, defaultTestUser.userCredentials.email))
       )[0].profile;
-      expect(profileAfterUpdate).toMatchObject(defaultTestUser.profile);
+      expect(profileAfterUpdate).toMatchObject({ firstName, lastName });
     });
   });
 });

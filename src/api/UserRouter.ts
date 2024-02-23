@@ -16,25 +16,26 @@ import {
 import AbstractRouter from "./AbstractRouter";
 
 export default class UserRouter extends AbstractRouter {
-  // TODO: Remove profile information for this endpoint
   private newUserRequestSchema = z
     .object({
       email: z.string().email(),
       password: z.string().min(6),
-      profile: z.object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        address: z.string().optional(),
-        dateOfBirth: z.coerce.date().optional(),
-      }),
     })
     .strict();
-  private writeFirebaseUserToDatabaseSchema = z
+  private writeFirebaseUserToDatabaseRequestSchema = z
     .object({
       uid: z.string(),
     })
     .strict();
-  private getUserRequestSchema = z
+  private updateProfileRequestSchema = z
+    .object({
+      firstName: z.string().optional(),
+      lastName: z.string().optional(),
+      address: z.string().optional(),
+      dateOfBirth: z.coerce.date().optional(),
+    })
+    .strict();
+  private userParamSchema = z
     .object({
       userId: z.string(),
     })
@@ -50,7 +51,6 @@ export default class UserRouter extends AbstractRouter {
         email: parsedRequestBody.email,
         password: parsedRequestBody.password,
         emailVerified: false,
-        displayName: `${parsedRequestBody.profile.firstName} ${parsedRequestBody.profile.lastName}`,
         disabled: false,
       });
       this.logger.info(
@@ -83,9 +83,8 @@ export default class UserRouter extends AbstractRouter {
   private writeFirebaseUserToDatabase = async (req: Request, res: Response) => {
     // TODO: Move endpoint to dedicated service with enforced authentication to avoid public access
     // Kick off I/O concurrently
-    const parsedRequestBody = this.writeFirebaseUserToDatabaseSchema.parse(
-      req.body,
-    );
+    const parsedRequestBody =
+      this.writeFirebaseUserToDatabaseRequestSchema.parse(req.body);
     const maybeFirebaseUserRecordPromise = getAuth().getUser(
       parsedRequestBody.uid,
     );
@@ -145,6 +144,22 @@ export default class UserRouter extends AbstractRouter {
     return res.status(201).send(`New user ${firebaseUserRecord.email} created`);
   };
 
+  private updateUserProfile = async (req: Request, res: Response) => {
+    this.logger.info(
+      `Attempting to update profile of user ${req.params["userId"]}`,
+      res.locals[GLOBAL_LOG_OBJ],
+    );
+    const parsedRequestBody = this.updateProfileRequestSchema.parse(req.body);
+    const updatedProfileRow = await this.dbClient.pgPoolClient
+      .update(userTableDef)
+      .set({
+        profile: parsedRequestBody,
+      })
+      .where(eq(userTableDef.uid, req.params["userId"]))
+      .returning();
+    res.status(200).send(updatedProfileRow[0].profile);
+  };
+
   private getUser = async (req: Request, res: Response) => {
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
     // TODO: Think about what user data you actually want to expose through this endpoint
@@ -157,13 +172,25 @@ export default class UserRouter extends AbstractRouter {
       .post("/", validateRequestBody(this.newUserRequestSchema), this.newUser)
       .post(
         "/writeNewUser",
-        validateRequestBody(this.writeFirebaseUserToDatabaseSchema),
+        validateRequestBody(this.writeFirebaseUserToDatabaseRequestSchema),
         this.writeFirebaseUserToDatabase,
+      )
+      .patch(
+        "/:userId/updateProfile",
+        requireAuthenticatedUser(this.logger),
+        validateRequestParams(this.userParamSchema),
+        validateRequestBody(this.updateProfileRequestSchema),
+        assertPermissionsOnUser(
+          [PermissionsEnum.UPDATE_CUSTOMER],
+          this.dbClient,
+          this.logger,
+        ),
+        this.updateUserProfile,
       )
       .get(
         "/:userId",
         requireAuthenticatedUser(this.logger),
-        validateRequestParams(this.getUserRequestSchema),
+        validateRequestParams(this.userParamSchema),
         assertPermissionsOnUser(
           [PermissionsEnum.READ_CUSTOMER],
           this.dbClient,

@@ -57,9 +57,10 @@ describe("user routes should work", () => {
 
   describe("should create new user in Firebase", () => {
     it("blocks create request for duplicate user", async () => {
+      const { email, password } = DEFAULT_TEST_USER;
       const res = await request(expressApp)
         .post(ROUTE_PREFIX)
-        .send(DEFAULT_TEST_USER);
+        .send({ email, password });
       expect(res.status).toBe(409);
       expect(res.text).toBe("User already exists");
     });
@@ -70,9 +71,10 @@ describe("user routes should work", () => {
       };
       await expect(fetchUserOne).rejects.toThrow();
 
+      const { email, password } = TEST_USER_ONE;
       const res = await request(expressApp)
         .post(ROUTE_PREFIX)
-        .send(TEST_USER_ONE);
+        .send({ email, password });
       expect(res.status).toBe(201);
       expect(res.text).toBe(`New user ${TEST_USER_ONE.email} created`);
       expect((await fetchUserOne()).email).toEqual(TEST_USER_ONE.email);
@@ -184,44 +186,43 @@ describe("user routes should work", () => {
     });
   });
 
-  describe("should persist user profile", () => {
-    // TODO: Add this test for profile update
-    // it("persists user data correctly", async () => {
-    //   // Create new users with varying levels of profile information
-    //   await Promise.all([
-    //     request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_ONE),
-    //     request(expressApp).post(ROUTE_PREFIX).send(TEST_USER_TWO),
-    //   ]);
-    //
-    //   // Confirm that user data was persisted to DB correctly
-    //   const testUserOneRow = (
-    //     await dbClient.pgPoolClient
-    //       .select()
-    //       .from(userTableDef)
-    //       .where(eq(userTableDef.email, TEST_USER_ONE.email))
-    //   )[0];
-    //   const testUserOneFirebase = await firebaseAdminApp
-    //     .auth()
-    //     .getUserByEmail(TEST_USER_ONE.email);
-    //   expect(testUserOneRow.uid).toBe(testUserOneFirebase.uid);
-    //   expect(testUserOneRow.email).toBe(testUserOneFirebase.email);
-    //   expect({
-    //     ...testUserOneRow.profile,
-    //     dateOfBirth: new Date(testUserOneRow.profile.dateOfBirth!),
-    //   }).toEqual(TEST_USER_ONE.profile);
-    //
-    //   const testUserTwoRow = (
-    //     await dbClient.pgPoolClient
-    //       .select()
-    //       .from(userTableDef)
-    //       .where(eq(userTableDef.email, TEST_USER_TWO.email))
-    //   )[0];
-    //   const testUserTwoFirebase = await firebaseAdminApp
-    //     .auth()
-    //     .getUserByEmail(TEST_USER_TWO.email);
-    //   expect(testUserTwoRow.uid).toBe(testUserTwoFirebase.uid);
-    //   expect(testUserTwoRow.email).toBe(testUserTwoFirebase.email);
-    //   expect(testUserTwoRow.profile).toEqual(TEST_USER_TWO.profile);
-    // });
+  describe("should update user profile", () => {
+    it("updates user profile", async () => {
+      const defaultTestUser = testUsers[0];
+      const profileBeforeUpdate = (
+        await dbClient.pgPoolClient
+          .select()
+          .from(userTableDef)
+          .where(eq(userTableDef.email, defaultTestUser.userCredentials.email))
+      )[0].profile;
+      expect(profileBeforeUpdate).toMatchObject({});
+
+      const bearerToken = await getIdTokenWithEmailPassword(
+        defaultTestUser.userCredentials.email,
+        defaultTestUser.userCredentials.password,
+      );
+      const res = await request(expressApp)
+        .patch(
+          `${ROUTE_PREFIX}/${defaultTestUser.userRecord.uid}/updateProfile`,
+        )
+        .set("Authorization", `Bearer ${bearerToken}`)
+        .send(defaultTestUser.profile);
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        ...defaultTestUser.profile,
+        dateOfBirth: defaultTestUser.profile.dateOfBirth!.toISOString(),
+      });
+
+      const profileAfterUpdate = (
+        await dbClient.pgPoolClient
+          .select()
+          .from(userTableDef)
+          .where(eq(userTableDef.email, defaultTestUser.userCredentials.email))
+      )[0].profile;
+      expect(profileAfterUpdate).toMatchObject({
+        ...defaultTestUser.profile,
+        dateOfBirth: defaultTestUser.profile.dateOfBirth!.toISOString(),
+      });
+    });
   });
 });

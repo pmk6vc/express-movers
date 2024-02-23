@@ -209,8 +209,8 @@ describe("user routes should work", () => {
         .send(defaultTestUser.profile);
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
-        dateOfBirth: defaultTestUser.profile.dateOfBirth!.toISOString(),
         ...defaultTestUser.profile,
+        dateOfBirth: defaultTestUser.profile.dateOfBirth!.toISOString(),
       });
 
       const profileAfterUpdate = (
@@ -220,8 +220,8 @@ describe("user routes should work", () => {
           .where(eq(userTableDef.email, defaultTestUser.userCredentials.email))
       )[0].profile;
       expect(profileAfterUpdate).toMatchObject({
-        dateOfBirth: defaultTestUser.profile.dateOfBirth!.toISOString(),
         ...defaultTestUser.profile,
+        dateOfBirth: defaultTestUser.profile.dateOfBirth!.toISOString(),
       });
     });
   });

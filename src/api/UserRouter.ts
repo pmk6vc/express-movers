@@ -147,6 +147,7 @@ export default class UserRouter extends AbstractRouter {
   private updateUserProfile = async (req: Request, res: Response) => {
     this.logger.info(
       `Attempting to update profile of user ${req.params["userId"]}`,
+      res.locals[GLOBAL_LOG_OBJ],
     );
     const parsedRequestBody = this.updateProfileRequestSchema.parse(req.body);
     const updatedProfileRow = await this.dbClient.pgPoolClient

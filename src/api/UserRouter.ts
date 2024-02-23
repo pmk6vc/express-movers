@@ -21,12 +21,6 @@ export default class UserRouter extends AbstractRouter {
     .object({
       email: z.string().email(),
       password: z.string().min(6),
-      profile: z.object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        address: z.string().optional(),
-        dateOfBirth: z.coerce.date().optional(),
-      }),
     })
     .strict();
   private writeFirebaseUserToDatabaseSchema = z
@@ -50,7 +44,6 @@ export default class UserRouter extends AbstractRouter {
         email: parsedRequestBody.email,
         password: parsedRequestBody.password,
         emailVerified: false,
-        displayName: `${parsedRequestBody.profile.firstName} ${parsedRequestBody.profile.lastName}`,
         disabled: false,
       });
       this.logger.info(

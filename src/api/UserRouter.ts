@@ -145,6 +145,10 @@ export default class UserRouter extends AbstractRouter {
     return res.status(201).send(`New user ${firebaseUserRecord.email} created`);
   };
 
+  private updateUserProfile = async (req: Request, res: Response) => {
+    res.status(200).send("PINGU");
+  };
+
   private getUser = async (req: Request, res: Response) => {
     const authenticatedUserRecord = res.locals[USER_PROPERTY];
     // TODO: Think about what user data you actually want to expose through this endpoint
@@ -160,6 +164,7 @@ export default class UserRouter extends AbstractRouter {
         validateRequestBody(this.writeFirebaseUserToDatabaseSchema),
         this.writeFirebaseUserToDatabase,
       )
+      .patch("/:userId/updateProfile", this.updateUserProfile)
       .get(
         "/:userId",
         requireAuthenticatedUser(this.logger),

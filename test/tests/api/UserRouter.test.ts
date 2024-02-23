@@ -57,9 +57,10 @@ describe("user routes should work", () => {
 
   describe("should create new user in Firebase", () => {
     it("blocks create request for duplicate user", async () => {
+      const { email, password } = DEFAULT_TEST_USER;
       const res = await request(expressApp)
         .post(ROUTE_PREFIX)
-        .send(DEFAULT_TEST_USER);
+        .send({ email, password });
       expect(res.status).toBe(409);
       expect(res.text).toBe("User already exists");
     });
@@ -70,9 +71,10 @@ describe("user routes should work", () => {
       };
       await expect(fetchUserOne).rejects.toThrow();
 
+      const { email, password } = TEST_USER_ONE;
       const res = await request(expressApp)
         .post(ROUTE_PREFIX)
-        .send(TEST_USER_ONE);
+        .send({ email, password });
       expect(res.status).toBe(201);
       expect(res.text).toBe(`New user ${TEST_USER_ONE.email} created`);
       expect((await fetchUserOne()).email).toEqual(TEST_USER_ONE.email);
